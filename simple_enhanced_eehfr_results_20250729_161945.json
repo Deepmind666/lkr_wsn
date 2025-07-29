@@ -1,0 +1,30 @@
+{
+  "Enhanced_EEHFR_Chain": {
+    "total_energy_consumed": 12.173411779130392,
+    "network_lifetime": 361,
+    "packets_sent": 24861,
+    "packets_received": 24861,
+    "packet_delivery_ratio": 1.0,
+    "alive_nodes": 49,
+    "dead_nodes": 1,
+    "survival_rate": 0.98,
+    "average_residual_energy": 1.8120473953507517,
+    "energy_efficiency": 2042.2376611477728,
+    "rounds_completed": 500,
+    "simulation_time": 0.3123435974121094
+  },
+  "Enhanced_EEHFR_Traditional": {
+    "total_energy_consumed": 15.701273311345643,
+    "network_lifetime": 500,
+    "packets_sent": 25000,
+    "packets_received": 25000,
+    "packet_delivery_ratio": 1.0,
+    "alive_nodes": 50,
+    "dead_nodes": 0,
+    "survival_rate": 1.0,
+    "average_residual_energy": 1.7052486911422005,
+    "energy_efficiency": 1592.2275540503556,
+    "rounds_completed": 500,
+    "simulation_time": 0.09546923637390137
+  }
+}

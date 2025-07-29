@@ -25,12 +25,14 @@ import time
 import json
 
 # 添加路径
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'baseline_protocols'))
+current_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(current_dir)
+src_dir = os.path.join(parent_dir, 'src')
+sys.path.append(src_dir)
 
 # 导入协议实现
 from baseline_protocols.leach_protocol import LEACHProtocol, LEACHNode
-from baseline_protocols.pegasis_protocol import PEGASISProtocol, PEGASISNode  
+from baseline_protocols.pegasis_protocol import PEGASISProtocol, PEGASISNode
 from baseline_protocols.heed_protocol import HEEDProtocol, HEEDNode
 from intel_dataset_loader import IntelLabDataLoader
 
