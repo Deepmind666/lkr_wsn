@@ -142,12 +142,13 @@ class ImprovedEnergyModel:
         # 根据距离选择传播模型
         if distance <= self.params.path_loss_threshold:
             # 自由空间传播: Pamp = ε_fs * d^2
+            # 修复: 增大系数使距离影响显著
             amplifier_energy = (tx_power_linear / self.params.amplifier_efficiency) * \
-                             (distance ** 2) * 1e-12  # ε_fs = 10 pJ/bit/m^2
+                             (distance ** 2) * 1e-9 * data_size_bits  # 修复后的系数
         else:
             # 多径传播: Pamp = ε_mp * d^4
             amplifier_energy = (tx_power_linear / self.params.amplifier_efficiency) * \
-                             (distance ** 4) * 1e-15  # ε_mp = 0.0013 pJ/bit/m^4
+                             (distance ** 4) * 1e-12 * data_size_bits  # 包含数据大小
         
         # 环境因素影响
         temp_factor = 1 + self.temperature_coefficient * abs(temperature_c - 25.0)
