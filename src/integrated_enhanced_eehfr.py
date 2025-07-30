@@ -283,12 +283,12 @@ class IntegratedEnhancedEEHFRProtocol:
                     # 计算传输距离
                     distance = math.sqrt((member.x - ch.x)**2 + (member.y - ch.y)**2)
                     
-                    # 使用改进的能耗模型计算能耗
+                    # 使用改进的能耗模型计算能耗 (packet_size从bytes转换为bits)
                     tx_energy = self.energy_model.calculate_transmission_energy(
-                        self.config.packet_size, distance, member.transmission_power
+                        self.config.packet_size * 8, distance, member.transmission_power
                     )
-                    
-                    rx_energy = self.energy_model.calculate_reception_energy(self.config.packet_size)
+
+                    rx_energy = self.energy_model.calculate_reception_energy(self.config.packet_size * 8)
                     
                     # 更新能耗
                     member.current_energy -= tx_energy
@@ -315,9 +315,9 @@ class IntegratedEnhancedEEHFRProtocol:
                     (ch.y - self.config.base_station_y)**2
                 )
                 
-                # 计算传输能耗
+                # 计算传输能耗 (packet_size从bytes转换为bits)
                 tx_energy = self.energy_model.calculate_transmission_energy(
-                    self.config.packet_size, distance_to_bs, ch.transmission_power
+                    self.config.packet_size * 8, distance_to_bs, ch.transmission_power
                 )
                 
                 ch.current_energy -= tx_energy

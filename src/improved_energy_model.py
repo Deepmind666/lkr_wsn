@@ -71,12 +71,12 @@ class ImprovedEnergyModel:
         # 基于2024-2025年最新文献的实测参数
         params_dict = {
             HardwarePlatform.CC2420_TELOSB: EnergyParameters(
-                tx_energy_per_bit=50e-9,      # 50 nJ/bit (Nature 2024)
-                rx_energy_per_bit=50e-9,      # 50 nJ/bit (标准接收能耗)
+                tx_energy_per_bit=208.8e-9,   # 208.8 nJ/bit (基于17.4mA@3V@250kbps)
+                rx_energy_per_bit=225.6e-9,   # 225.6 nJ/bit (基于18.8mA@3V@250kbps)
                 processing_energy_per_bit=5e-9,  # 5 nJ/bit (处理能耗)
                 idle_power=1.4e-3,            # 1.4 mW (空闲功耗)
                 sleep_power=15e-6,            # 15 μW (睡眠功耗)
-                amplifier_efficiency=0.35,    # 35% (功放效率)
+                amplifier_efficiency=0.5,     # 50% (功放效率，修复后)
                 path_loss_threshold=87.0      # 87m (自由空间vs多径阈值)
             ),
             
