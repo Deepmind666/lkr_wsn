@@ -1,0 +1,166 @@
+{
+  "nodes_20_area_50x50_energy_1.0": {
+    "LEACH": {
+      "statistics": {
+        "network_lifetime": {
+          "mean": 1287.3333333333333,
+          "std": 16.289055630494154,
+          "min": 1276,
+          "max": 1306,
+          "median": 1280
+        },
+        "total_energy_consumed": {
+          "mean": 20.015596948098462,
+          "std": 0.0036109321940277477,
+          "min": 20.01204054746066,
+          "max": 20.019260046872837
+        },
+        "energy_efficiency": {
+          "mean": 1256.5532159966338,
+          "std": 1.6582635219148785
+        },
+        "packet_delivery_ratio": {
+          "mean": 0.8120681671721881,
+          "std": 0.002220594810464307
+        }
+      },
+      "raw_results": [
+        {
+          "protocol": "LEACH",
+          "config": {
+            "num_nodes": 20,
+            "initial_energy": 1.0,
+            "area_size": "50x50",
+            "packet_size": 1024
+          },
+          "network_lifetime": 1276,
+          "total_energy_consumed": 20.01204054746066,
+          "final_alive_nodes": 0,
+          "energy_efficiency": 1254.7945793157185,
+          "packet_delivery_ratio": 0.8144239576281311,
+          "execution_time": 0.08571672439575195,
+          "additional_metrics": {
+            "average_cluster_heads": 3.649177760375881
+          }
+        },
+        {
+          "protocol": "LEACH",
+          "config": {
+            "num_nodes": 20,
+            "initial_energy": 1.0,
+            "area_size": "50x50",
+            "packet_size": 1024
+          },
+          "network_lifetime": 1280,
+          "total_energy_consumed": 20.019260046872837,
+          "final_alive_nodes": 0,
+          "energy_efficiency": 1258.0884578665657,
+          "packet_delivery_ratio": 0.8100134995632494,
+          "execution_time": 0.08206534385681152,
+          "additional_metrics": {
+            "average_cluster_heads": 3.7353629976580796
+          }
+        },
+        {
+          "protocol": "LEACH",
+          "config": {
+            "num_nodes": 20,
+            "initial_energy": 1.0,
+            "area_size": "50x50",
+            "packet_size": 1024
+          },
+          "network_lifetime": 1306,
+          "total_energy_consumed": 20.015490249961886,
+          "final_alive_nodes": 0,
+          "energy_efficiency": 1256.7766108076169,
+          "packet_delivery_ratio": 0.8117670443251839,
+          "execution_time": 0.08028769493103027,
+          "additional_metrics": {
+            "average_cluster_heads": 3.6228003060443763
+          }
+        }
+      ]
+    },
+    "PEGASIS": {
+      "statistics": {
+        "network_lifetime": {
+          "mean": 2000,
+          "std": 0.0,
+          "min": 2000,
+          "max": 2000,
+          "median": 2000
+        },
+        "total_energy_consumed": {
+          "mean": 20.00307482967238,
+          "std": 1.4852880317156347e-06,
+          "min": 20.00307312582954,
+          "max": 20.003075851211687
+        },
+        "energy_efficiency": {
+          "mean": 1188.917214103608,
+          "std": 8.828065649678996e-05
+        },
+        "packet_delivery_ratio": {
+          "mean": 0.9238499705659743,
+          "std": 0.0
+        }
+      },
+      "raw_results": [
+        {
+          "protocol": "PEGASIS",
+          "config": {
+            "num_nodes": 20,
+            "initial_energy": 1.0,
+            "area_size": "50x50",
+            "packet_size": 1024
+          },
+          "network_lifetime": 2000,
+          "total_energy_consumed": 20.003075851211687,
+          "final_alive_nodes": 1,
+          "energy_efficiency": 1188.9171533866581,
+          "packet_delivery_ratio": 0.9238499705659743,
+          "execution_time": 0.05540871620178223,
+          "additional_metrics": {
+            "average_chain_length": 11.9855
+          }
+        },
+        {
+          "protocol": "PEGASIS",
+          "config": {
+            "num_nodes": 20,
+            "initial_energy": 1.0,
+            "area_size": "50x50",
+            "packet_size": 1024
+          },
+          "network_lifetime": 2000,
+          "total_energy_consumed": 20.003075511975904,
+          "final_alive_nodes": 1,
+          "energy_efficiency": 1188.9171735497196,
+          "packet_delivery_ratio": 0.9238499705659743,
+          "execution_time": 0.04551577568054199,
+          "additional_metrics": {
+            "average_chain_length": 11.9855
+          }
+        },
+        {
+          "protocol": "PEGASIS",
+          "config": {
+            "num_nodes": 20,
+            "initial_energy": 1.0,
+            "area_size": "50x50",
+            "packet_size": 1024
+          },
+          "network_lifetime": 2000,
+          "total_energy_consumed": 20.00307312582954,
+          "final_alive_nodes": 1,
+          "energy_efficiency": 1188.9173153744466,
+          "packet_delivery_ratio": 0.9238499705659743,
+          "execution_time": 0.04337620735168457,
+          "additional_metrics": {
+            "average_chain_length": 11.9855
+          }
+        }
+      ]
+    }
+  }
+}
