@@ -33,6 +33,8 @@ from enum import Enum
 import copy
 
 from improved_energy_model import ImprovedEnergyModel, HardwarePlatform
+from heed_protocol import HEEDProtocol, HEEDConfig
+from teen_protocol import TEENProtocol, TEENConfig
 
 @dataclass
 class Node:
@@ -692,6 +694,131 @@ class PEGASISProtocol:
         return final_stats
 
 # 测试函数
+class HEEDProtocolWrapper:
+    """HEED协议包装类，使其与基准测试框架兼容"""
+
+    def __init__(self, config: NetworkConfig, energy_model: ImprovedEnergyModel):
+        self.config = config
+        self.energy_model = energy_model
+
+        # 创建HEED配置
+        self.heed_config = HEEDConfig(
+            c_prob=0.05,  # 5% cluster heads
+            p_min=0.001,
+            max_iterations=10,
+            transmission_range=30.0,
+            packet_size=1024,
+            initial_energy=config.initial_energy,
+            network_width=config.area_width,
+            network_height=config.area_height,
+            base_station_x=config.base_station_x,
+            base_station_y=config.base_station_y
+        )
+
+        self.heed_protocol = HEEDProtocol(self.heed_config)
+        self.round_stats = []
+
+    def run_simulation(self, max_rounds: int = 200) -> Dict:
+        """运行HEED协议仿真"""
+        # 生成节点位置
+        node_positions = []
+        for _ in range(self.config.num_nodes):
+            x = random.uniform(0, self.config.area_width)
+            y = random.uniform(0, self.config.area_height)
+            node_positions.append((x, y))
+
+        # 初始化网络
+        self.heed_protocol.initialize_network(node_positions)
+
+        # 运行仿真
+        round_num = 0
+        while round_num < max_rounds:
+            if not self.heed_protocol.run_round():
+                break
+
+            # 记录统计信息
+            stats = self.heed_protocol.get_statistics()
+            self.round_stats.append(stats)
+            round_num += 1
+
+        # 计算最终统计
+        final_stats = self.heed_protocol.get_final_statistics()
+
+        # 计算平均簇头数
+        avg_cluster_heads = 0
+        if self.round_stats:
+            total_clusters = sum(len(stats.get('cluster_heads', [])) for stats in self.round_stats)
+            avg_cluster_heads = total_clusters / len(self.round_stats)
+
+        # 返回与其他协议兼容的结果格式
+        return {
+            'protocol': 'HEED',
+            'network_lifetime': final_stats['network_lifetime'],
+            'total_energy_consumed': final_stats['total_energy_consumed'],
+            'packets_transmitted': final_stats['packets_transmitted'],
+            'packets_received': final_stats['packets_received'],
+            'packet_delivery_ratio': final_stats['packet_delivery_ratio'],
+            'energy_efficiency': final_stats['energy_efficiency'],
+            'final_alive_nodes': final_stats['final_alive_nodes'],
+            'average_cluster_heads_per_round': avg_cluster_heads,
+            'additional_metrics': final_stats['additional_metrics']
+        }
+
+class TEENProtocolWrapper:
+    """TEEN协议包装类，使其与基准测试框架兼容"""
+
+    def __init__(self, config: NetworkConfig, energy_model: ImprovedEnergyModel):
+        self.config = config
+        self.energy_model = energy_model
+
+        # 创建TEEN配置
+        self.teen_config = TEENConfig(
+            num_nodes=config.num_nodes,
+            area_width=config.area_width,
+            area_height=config.area_height,
+            base_station_x=config.base_station_x,
+            base_station_y=config.base_station_y,
+            initial_energy=config.initial_energy,
+            transmission_range=30.0,
+            packet_size=1024,
+            hard_threshold=60.0,    # 硬阈值 - 调整为更合理的值
+            soft_threshold=1.0,     # 软阈值 - 调整为更敏感
+            max_time_interval=10,   # 最大时间间隔
+            cluster_head_percentage=0.05
+        )
+
+        self.teen_protocol = TEENProtocol(self.teen_config)
+        self.round_stats = []
+
+    def run_simulation(self, max_rounds: int = 200) -> Dict:
+        """运行TEEN协议仿真"""
+        # 生成节点位置
+        node_positions = []
+        for _ in range(self.config.num_nodes):
+            x = random.uniform(0, self.config.area_width)
+            y = random.uniform(0, self.config.area_height)
+            node_positions.append((x, y))
+
+        # 初始化网络
+        self.teen_protocol.initialize_network(node_positions)
+
+        # 运行仿真
+        results = self.teen_protocol.run_simulation(max_rounds)
+
+        # 返回与其他协议兼容的结果格式
+        return {
+            'protocol': 'TEEN',
+            'network_lifetime': results['network_lifetime'],
+            'total_energy_consumed': results['total_energy_consumed'],
+            'packets_transmitted': results['packets_transmitted'],
+            'packets_received': results['packets_received'],
+            'packet_delivery_ratio': results['packet_delivery_ratio'],
+            'energy_efficiency': results['energy_efficiency'],
+            'final_alive_nodes': results['final_alive_nodes'],
+            'average_cluster_heads_per_round': results['average_cluster_heads_per_round'],
+            'additional_metrics': results['additional_metrics']
+        }
+
 def test_leach_protocol():
     """测试LEACH协议实现"""
 
@@ -756,6 +883,72 @@ def test_pegasis_protocol():
     print(f"   数据包投递率: {results['packet_delivery_ratio']:.3f}")
     print(f"   平均链长度: {results['average_chain_length']:.1f}")
 
+def test_heed_protocol():
+    """测试HEED协议实现"""
+
+    print("\n🧪 测试HEED协议标准实现")
+    print("=" * 50)
+
+    # 创建网络配置
+    config = NetworkConfig(
+        num_nodes=50,
+        initial_energy=2.0,
+        area_width=100,
+        area_height=100
+    )
+
+    # 创建能耗模型
+    energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
+
+    # 创建HEED协议实例
+    heed = HEEDProtocolWrapper(config, energy_model)
+
+    # 运行仿真
+    results = heed.run_simulation(max_rounds=200)
+
+    # 输出结果
+    print("\n📊 HEED协议仿真结果:")
+    print(f"   网络生存时间: {results['network_lifetime']} 轮")
+    print(f"   总能耗: {results['total_energy_consumed']:.6f} J")
+    print(f"   最终存活节点: {results['final_alive_nodes']}")
+    print(f"   能效: {results['energy_efficiency']:.2f} packets/J")
+    print(f"   数据包投递率: {results['packet_delivery_ratio']:.3f}")
+    print(f"   平均簇头数: {results['average_cluster_heads_per_round']:.1f}")
+
+def test_teen_protocol():
+    """测试TEEN协议实现"""
+
+    print("\n🧪 测试TEEN协议标准实现")
+    print("=" * 50)
+
+    # 创建网络配置
+    config = NetworkConfig(
+        num_nodes=50,
+        initial_energy=2.0,
+        area_width=100,
+        area_height=100
+    )
+
+    # 创建能耗模型
+    energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
+
+    # 创建TEEN协议实例
+    teen = TEENProtocolWrapper(config, energy_model)
+
+    # 运行仿真
+    results = teen.run_simulation(max_rounds=200)
+
+    # 输出结果
+    print("\n📊 TEEN协议仿真结果:")
+    print(f"   网络生存时间: {results['network_lifetime']} 轮")
+    print(f"   总能耗: {results['total_energy_consumed']:.6f} J")
+    print(f"   最终存活节点: {results['final_alive_nodes']}")
+    print(f"   能效: {results['energy_efficiency']:.2f} packets/J")
+    print(f"   数据包投递率: {results['packet_delivery_ratio']:.3f}")
+    print(f"   平均簇头数: {results['average_cluster_heads_per_round']:.1f}")
+    print(f"   硬阈值: {results['additional_metrics']['hard_threshold']}")
+    print(f"   软阈值: {results['additional_metrics']['soft_threshold']}")
+
 def test_all_protocols():
     """测试所有基准协议"""
     print("🚀 WSN基准协议对比测试")
@@ -763,6 +956,8 @@ def test_all_protocols():
 
     test_leach_protocol()
     test_pegasis_protocol()
+    test_heed_protocol()
+    test_teen_protocol()
 
 if __name__ == "__main__":
     test_all_protocols()
