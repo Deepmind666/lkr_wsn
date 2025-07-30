@@ -29,6 +29,7 @@ import os
 
 from benchmark_protocols import LEACHProtocol, PEGASISProtocol, NetworkConfig
 from improved_energy_model import ImprovedEnergyModel, HardwarePlatform
+from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
 
 @dataclass
 class ExperimentConfig:
@@ -93,7 +94,12 @@ class ComprehensiveBenchmark:
         print(f"      🎲 实验 {experiment_id} 使用随机种子: {seed}")
 
         # 创建协议实例
-        protocol = protocol_class(network_config, self.energy_model)
+        if protocol_class == IntegratedEnhancedEEHFRProtocol:
+            # Enhanced EEHFR只需要network_config
+            protocol = protocol_class(network_config)
+        else:
+            # LEACH和PEGASIS需要network_config和energy_model
+            protocol = protocol_class(network_config, self.energy_model)
         
         # 运行仿真
         results = protocol.run_simulation(self.config.max_rounds)
@@ -135,6 +141,7 @@ class ComprehensiveBenchmark:
         protocols = [
             ('LEACH', LEACHProtocol),
             ('PEGASIS', PEGASISProtocol),
+            ('Enhanced_EEHFR', IntegratedEnhancedEEHFRProtocol),
         ]
         
         comparison_results = {}

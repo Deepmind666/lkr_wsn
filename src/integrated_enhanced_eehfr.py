@@ -429,6 +429,12 @@ class IntegratedEnhancedEEHFRProtocol:
             'execution_time': execution_time,
             'environment_type': self.current_environment.value,
             'round_statistics': self.round_statistics,
+            'config': {
+                'num_nodes': len(self.nodes),
+                'initial_energy': self.config.initial_energy,
+                'area_size': f"{self.config.area_width}x{self.config.area_height}",
+                'packet_size': self.config.packet_size
+            },
             'additional_metrics': {
                 'total_packets_sent': self.total_packets_sent,
                 'total_packets_received': self.total_packets_received,
