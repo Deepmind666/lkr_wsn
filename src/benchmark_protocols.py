@@ -362,6 +362,10 @@ class LEACHProtocol:
             'energy_efficiency': self.stats['packets_transmitted'] / self.stats['total_energy_consumed'] if self.stats['total_energy_consumed'] > 0 else 0,
             'packet_delivery_ratio': self.stats['packets_received'] / self.stats['packets_transmitted'] if self.stats['packets_transmitted'] > 0 else 0,
             'average_cluster_heads_per_round': np.mean([r.get('cluster_heads', 0) for r in self.stats['round_statistics']]) if self.stats['round_statistics'] else 0,
+            'additional_metrics': {
+                'total_packets_sent': self.stats['packets_transmitted'],
+                'total_packets_received': self.stats['packets_received']
+            },
             'config': {
                 'num_nodes': self.config.num_nodes,
                 'initial_energy': self.config.initial_energy,
@@ -673,6 +677,10 @@ class PEGASISProtocol:
             'energy_efficiency': self.stats['packets_transmitted'] / self.stats['total_energy_consumed'] if self.stats['total_energy_consumed'] > 0 else 0,
             'packet_delivery_ratio': self.stats['packets_received'] / self.stats['packets_transmitted'] if self.stats['packets_transmitted'] > 0 else 0,
             'average_chain_length': np.mean([r.get('chain_length', 0) for r in self.stats['round_statistics']]) if self.stats['round_statistics'] else 0,
+            'additional_metrics': {
+                'total_packets_sent': self.stats['packets_transmitted'],
+                'total_packets_received': self.stats['packets_received']
+            },
             'config': {
                 'num_nodes': self.config.num_nodes,
                 'initial_energy': self.config.initial_energy,
