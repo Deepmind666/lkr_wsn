@@ -286,7 +286,7 @@ class EnhancedEEHFR2Protocol:
                 if not member.is_alive():
                     continue
 
-                # 计算传输能耗
+                # 计算传输能耗 (正确参数顺序: data_size_bits, distance)
                 distance = member.distance_to(head)
                 tx_energy = self.energy_model.calculate_transmission_energy(
                     self.config.packet_size * 8, distance
@@ -370,6 +370,9 @@ class EnhancedEEHFR2Protocol:
     def run_simulation(self, max_rounds: int = 200) -> Dict:
         """运行完整仿真"""
         print(f"🚀 开始Enhanced EEHFR 2.0仿真 (最大轮数: {max_rounds})")
+
+        # 初始化网络
+        self.initialize_network()
 
         while self.current_round < max_rounds:
             if not self.run_round():

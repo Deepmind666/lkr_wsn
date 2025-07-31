@@ -1,0 +1,34 @@
+{
+  "pegasis": {
+    "total_energy": 0.02948598986369467,
+    "chain_length": 50,
+    "transmission_count": 50,
+    "avg_chain_distance": 11.783761042948361,
+    "max_chain_distance": 57.03146759618406,
+    "bs_distance": 7.594132967118036,
+    "bs_energy": 0.00045684396484384275,
+    "chain_energy": 0.029029145898850826,
+    "expected_packets_received": 49.0
+  },
+  "enhanced": {
+    "total_energy": 0.05554890040160571,
+    "num_cluster_heads": 7,
+    "transmission_count": 50,
+    "bs_transmission_count": 7,
+    "avg_intra_distance": 27.76217431798042,
+    "avg_inter_distance": 19.231477627021842,
+    "max_inter_distance": 24.71092957790293,
+    "min_inter_distance": 7.594132967118036,
+    "intra_cluster_energy": 0.05041110374593513,
+    "inter_cluster_energy": 0.005137796655670579,
+    "expected_packets_received": 6.6499999999999995
+  },
+  "comparison": {
+    "pegasis_efficiency": 1695.7205856454457,
+    "enhanced_efficiency": 900.107826410812,
+    "efficiency_improvement_percent": -46.918859508437116,
+    "pegasis_pdr": 0.98,
+    "enhanced_pdr": 0.13299999999999998,
+    "pdr_change_percent": -86.42857142857143
+  }
+}
