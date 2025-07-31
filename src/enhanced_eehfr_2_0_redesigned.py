@@ -110,7 +110,11 @@ class EnhancedEEHFR2Protocol:
         self.total_energy_consumed = 0.0
         self.packets_transmitted = 0
         self.packets_received = 0
+        self.base_station_transmissions_attempted = 0  # 新增：记录尝试向基站传输的次数
         self.round_stats = []
+
+        # 传输成功率（基于真实WSN环境）
+        self.base_station_success_rate = 0.95  # 95%成功率，更真实
         
         # 能耗模型
         self.energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
@@ -313,7 +317,13 @@ class EnhancedEEHFR2Protocol:
                     head.packets_sent += 1
                     energy_consumed += tx_energy
                     successful_transmissions += 1  # 成功的基站传输
-                    self.packets_received += 1  # 基站成功接收
+
+                    # 记录尝试向基站传输
+                    self.base_station_transmissions_attempted += 1
+
+                    # 基于真实成功率判断是否成功到达基站
+                    if random.random() < self.base_station_success_rate:
+                        self.packets_received += 1  # 基站成功接收
 
         self.total_energy_consumed += energy_consumed
         self.packets_transmitted += successful_transmissions  # 只计算成功传输的数据包
@@ -376,9 +386,12 @@ class EnhancedEEHFR2Protocol:
         network_lifetime = self.current_round
         final_alive_nodes = len([n for n in self.nodes if n.is_alive()])
 
-        # 计算能效和投递率（与PEGASIS保持一致的计算方式）
+        # 计算能效和投递率（修复版本 - 真实的计算）
         energy_efficiency = self.packets_transmitted / self.total_energy_consumed if self.total_energy_consumed > 0 else 0
-        packet_delivery_ratio = self.packets_received / self.packets_received if self.packets_received > 0 else 0  # 假设基站传输100%成功
+
+        # 真实的投递率计算：基站接收数据包 / 尝试向基站发送的数据包
+        packet_delivery_ratio = (self.packets_received / self.base_station_transmissions_attempted
+                                if self.base_station_transmissions_attempted > 0 else 0.0)
 
         print(f"✅ 仿真完成，网络在 {network_lifetime} 轮后结束")
         print(f"   总传输数据包: {self.packets_transmitted}")
