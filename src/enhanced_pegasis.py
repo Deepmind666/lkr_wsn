@@ -96,6 +96,7 @@ class EnhancedPEGASISProtocol:
         self.total_energy_consumed = 0.0
         self.packets_transmitted = 0
         self.packets_received = 0
+        self.packets_sent = 0  # 添加发送数据包统计
         self.network_lifetime = 0
         self.round_stats = []
         
@@ -219,36 +220,134 @@ class EnhancedPEGASISProtocol:
         return -1
     
     def data_transmission_round(self) -> int:
-        """简化的数据传输轮次 - 与原始PEGASIS保持一致"""
+        """数据传输轮次 - 修复版本，确保正确的数据包计数"""
         if not self.chain or self.current_leader_id == -1:
             return 0
 
-        # 简化策略：每轮每个节点都向基站发送一个数据包
-        # 通过领导者进行数据聚合和转发
-        packets_to_bs = 0
-
-        # 所有存活节点生成数据
+        total_packets = 0
+        leader_node = self.nodes[self.current_leader_id]
+        leader_position = leader_node.chain_position
         alive_nodes = [node for node in self.nodes if node.is_alive()]
 
-        for node in alive_nodes:
-            # 计算到基站的传输能耗
-            distance_to_bs = node.distance_to_base_station(*self.base_station)
+        if not alive_nodes:
+            return 0
+
+        # 阶段1: 链内数据传输 - 每个节点都生成并传输数据包
+        # 左侧链传输 (从0到leader_position-1)
+        for i in range(leader_position):
+            current_node = self.nodes[self.chain[i]]
+
+            if not current_node.is_alive():
+                continue
+
+            # 找到下一个存活的节点作为接收者
+            next_node = None
+            for j in range(i + 1, len(self.chain)):
+                if self.nodes[self.chain[j]].is_alive():
+                    next_node = self.nodes[self.chain[j]]
+                    break
+
+            if not next_node:
+                continue
+
+            # 计算传输距离和能耗
+            distance = current_node.distance_to(next_node)
+            tx_energy = self.energy_model.calculate_transmission_energy(
+                self.config.packet_size * 8, distance
+            )
+            rx_energy = self.energy_model.calculate_reception_energy(
+                self.config.packet_size * 8
+            )
+
+            # 检查能量是否足够并执行传输
+            if (current_node.current_energy >= tx_energy and
+                next_node.current_energy >= rx_energy):
+
+                # 消耗能量
+                current_node.current_energy -= tx_energy
+                next_node.current_energy -= rx_energy
+
+                # 更新统计
+                current_node.packets_sent += 1
+                current_node.total_distance_transmitted += distance
+                self.total_energy_consumed += (tx_energy + rx_energy)
+                self.packets_sent += 1  # 协议级别统计
+                total_packets += 1
+
+                # 成功接收计数
+                self.packets_received += 1
+
+        # 右侧链传输 (从len(chain)-1到leader_position+1)
+        for i in range(len(self.chain) - 1, leader_position, -1):
+            current_node = self.nodes[self.chain[i]]
+
+            if not current_node.is_alive():
+                continue
+
+            # 找到前一个存活的节点作为接收者
+            prev_node = None
+            for j in range(i - 1, -1, -1):
+                if self.nodes[self.chain[j]].is_alive():
+                    prev_node = self.nodes[self.chain[j]]
+                    break
+
+            if not prev_node:
+                continue
+
+            # 计算传输距离和能耗
+            distance = current_node.distance_to(prev_node)
+            tx_energy = self.energy_model.calculate_transmission_energy(
+                self.config.packet_size * 8, distance
+            )
+            rx_energy = self.energy_model.calculate_reception_energy(
+                self.config.packet_size * 8
+            )
+
+            # 检查能量是否足够并执行传输
+            if (current_node.current_energy >= tx_energy and
+                prev_node.current_energy >= rx_energy):
+
+                # 消耗能量
+                current_node.current_energy -= tx_energy
+                prev_node.current_energy -= rx_energy
+
+                # 更新统计
+                current_node.packets_sent += 1
+                current_node.total_distance_transmitted += distance
+                self.total_energy_consumed += (tx_energy + rx_energy)
+                self.packets_sent += 1  # 协议级别统计
+                total_packets += 1
+
+                # 成功接收计数
+                self.packets_received += 1
+
+        # 阶段2: 数据聚合（领导者处理所有收到的数据）
+        if leader_node.is_alive():
+            # 聚合能耗：每个存活节点的数据都需要处理
+            aggregation_energy = 0.000005 * len(alive_nodes)  # 5nJ per bit per node
+            if leader_node.current_energy >= aggregation_energy:
+                leader_node.current_energy -= aggregation_energy
+                self.total_energy_consumed += aggregation_energy
+
+        # 阶段3: 领导者向基站传输聚合数据
+        if leader_node.is_alive():
+            distance_to_bs = leader_node.distance_to_base_station(*self.base_station)
             tx_energy = self.energy_model.calculate_transmission_energy(
                 self.config.packet_size * 8, distance_to_bs
             )
 
-            # 检查能量是否足够直接传输到基站
-            if node.current_energy >= tx_energy:
-                node.current_energy -= tx_energy
-                node.packets_sent += 1
-                node.total_distance_transmitted += distance_to_bs
-
+            if leader_node.current_energy >= tx_energy:
+                leader_node.current_energy -= tx_energy
+                leader_node.packets_sent += 1
+                leader_node.total_distance_transmitted += distance_to_bs
                 self.total_energy_consumed += tx_energy
-                self.packets_received += 1  # 基站接收
-                packets_to_bs += 1
+                self.packets_sent += 1  # 协议级别统计
+                total_packets += 1
+                self.packets_received += 1  # 基站成功接收聚合数据
 
-        self.packets_transmitted += packets_to_bs
-        return packets_to_bs
+        # 更新总传输数据包计数
+        self.packets_transmitted += total_packets
+        return total_packets
 
     def run_round(self) -> bool:
         """运行一轮协议"""

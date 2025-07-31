@@ -41,7 +41,7 @@ class TEENConfig:
     
     # 通信参数
     transmission_range: float = 30.0
-    packet_size: int = 1024  # bits
+    packet_size: int = 4000  # bits - 与其他协议一致
     
     # TEEN特有参数
     hard_threshold: float = 70.0    # 硬阈值 - 感知属性的绝对阈值
@@ -203,14 +203,20 @@ class TEENProtocol:
         # 随机选择簇头
         cluster_heads = random.sample(alive_nodes, min(expected_cluster_heads, len(alive_nodes)))
         
-        # 设置簇头
+        # 设置簇头并计算广播能耗
         self.clusters = {}
         for i, ch in enumerate(cluster_heads):
             ch.is_cluster_head = True
             ch.cluster_id = i
             ch.cluster_head_id = ch.id
             ch.state = TEENNodeState.CLUSTER_HEAD
-            
+
+            # 簇头广播自己的状态 - 计算能耗
+            broadcast_energy = self._calculate_transmission_energy(self.config.transmission_range, 512)  # 控制包较小
+            if ch.current_energy >= broadcast_energy:
+                ch.current_energy -= broadcast_energy
+                self.total_energy_consumed += broadcast_energy
+
             self.clusters[i] = {
                 'head': ch,
                 'members': [],
@@ -235,6 +241,19 @@ class TEENProtocol:
                     node.cluster_id = best_cluster
                     node.cluster_head_id = self.clusters[best_cluster]['head'].id
                     self.clusters[best_cluster]['members'].append(node)
+
+                    # 成员节点发送加入请求 - 计算能耗
+                    ch = self.clusters[best_cluster]['head']
+                    join_energy = self._calculate_transmission_energy(min_distance, 256)  # 加入请求包很小
+                    if node.current_energy >= join_energy:
+                        node.current_energy -= join_energy
+                        self.total_energy_consumed += join_energy
+
+                        # 簇头接收加入请求
+                        if ch.is_alive():
+                            reception_energy = self._calculate_reception_energy(256)
+                            ch.current_energy -= reception_energy
+                            self.total_energy_consumed += reception_energy
     
     def _broadcast_thresholds(self):
         """簇头广播阈值参数给成员节点"""
@@ -242,11 +261,24 @@ class TEENProtocol:
             ch = cluster_info['head']
             hard_threshold = cluster_info['hard_threshold']
             soft_threshold = cluster_info['soft_threshold']
-            
+
+            # 簇头广播阈值参数 - 计算能耗
+            if cluster_info['members']:  # 只有有成员时才广播
+                broadcast_energy = self._calculate_transmission_energy(self.config.transmission_range, 128)  # 阈值包很小
+                if ch.current_energy >= broadcast_energy:
+                    ch.current_energy -= broadcast_energy
+                    self.total_energy_consumed += broadcast_energy
+
             # 广播给所有成员节点
             for member in cluster_info['members']:
                 member.hard_threshold = hard_threshold
                 member.soft_threshold = soft_threshold
+
+                # 成员节点接收阈值参数
+                reception_energy = self._calculate_reception_energy(128)
+                if member.current_energy >= reception_energy:
+                    member.current_energy -= reception_energy
+                    self.total_energy_consumed += reception_energy
                 
                 # 消耗通信能量
                 distance = ch.distance_to(member)
@@ -285,39 +317,46 @@ class TEENProtocol:
                             reception_energy = self._calculate_reception_energy(self.config.packet_size)
                             ch.current_energy -= reception_energy
                             ch.packets_received += 1
+                            self.packets_received += 1  # 协议级别统计：成员到簇头的成功传输
                             self.total_energy_consumed += reception_energy
             
             # 簇头聚合数据并传输到基站
             if ch.packets_received > 0 and ch.is_alive():
                 distance_to_bs = ch.distance_to_base_station(self.base_station[0], self.base_station[1])
                 energy_cost = self._calculate_transmission_energy(distance_to_bs, self.config.packet_size)
-                
+
                 if ch.current_energy >= energy_cost:
                     ch.current_energy -= energy_cost
                     ch.packets_sent += 1
                     packets_this_round += 1
                     self.total_energy_consumed += energy_cost
-                    self.packets_received += 1  # 基站接收
+                    # 注意：不再重复计数，因为成员到簇头的传输已经计入packets_received
         
         self.packets_transmitted += packets_this_round
         return packets_this_round
     
     def _calculate_transmission_energy(self, distance: float, packet_size: int) -> float:
-        """计算传输能耗"""
-        # 简化的能耗模型
-        E_elec = 50e-9  # 电子能耗 50nJ/bit
-        E_amp = 100e-12  # 放大器能耗 100pJ/bit/m²
-        
-        if distance < 87:  # 自由空间模型
-            energy = E_elec * packet_size + E_amp * packet_size * (distance ** 2)
-        else:  # 多径衰落模型
-            energy = E_elec * packet_size + E_amp * packet_size * (distance ** 4)
-        
-        return energy
+        """计算传输能耗 - 使用改进能耗模型的逻辑"""
+        # 基础电子能耗 (CC2420标准)
+        E_elec = 208.8e-9  # 208.8nJ/bit
+        base_tx_energy = E_elec * packet_size
+
+        # 放大器能耗 (与改进模型一致)
+        tx_power_linear = 1e-3  # 1mW默认发射功率
+        amplifier_efficiency = 0.35  # 35%效率
+
+        if distance <= 87:  # 自由空间传播
+            amplifier_energy = (tx_power_linear / amplifier_efficiency) * \
+                             (distance ** 2) * 1e-9 * packet_size
+        else:  # 多径传播
+            amplifier_energy = (tx_power_linear / amplifier_efficiency) * \
+                             (distance ** 4) * 1e-12 * packet_size
+
+        return base_tx_energy + amplifier_energy
     
     def _calculate_reception_energy(self, packet_size: int) -> float:
-        """计算接收能耗"""
-        E_elec = 50e-9  # 电子能耗 50nJ/bit
+        """计算接收能耗 - 与其他协议一致的能耗参数"""
+        E_elec = 225.6e-9  # 电子能耗 225.6nJ/bit (接收) - CC2420标准
         return E_elec * packet_size
     
     def run_round(self) -> bool:
@@ -374,9 +413,14 @@ class TEENProtocol:
         # 计算最终统计
         self.network_lifetime = self.current_round
         final_alive_nodes = len([n for n in self.nodes if n.is_alive()])
-        
-        # 计算能效和投递率
-        energy_efficiency = self.packets_received / self.total_energy_consumed if self.total_energy_consumed > 0 else 0
+
+        # 修复：使用实际节点能量消耗计算总能耗
+        initial_total_energy = len(self.nodes) * self.config.initial_energy
+        current_total_energy = sum(n.current_energy for n in self.nodes)
+        actual_total_energy_consumed = initial_total_energy - current_total_energy
+
+        # 使用实际能耗计算能效和投递率
+        energy_efficiency = self.packets_received / actual_total_energy_consumed if actual_total_energy_consumed > 0 else 0
         packet_delivery_ratio = self.packets_received / self.packets_transmitted if self.packets_transmitted > 0 else 0
         
         print(f"✅ 仿真完成，网络在 {self.network_lifetime} 轮后结束")
@@ -384,7 +428,7 @@ class TEENProtocol:
         return {
             'protocol': 'TEEN',
             'network_lifetime': self.network_lifetime,
-            'total_energy_consumed': self.total_energy_consumed,
+            'total_energy_consumed': actual_total_energy_consumed,  # 使用实际能耗
             'packets_transmitted': self.packets_transmitted,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': packet_delivery_ratio,
@@ -395,7 +439,9 @@ class TEENProtocol:
                 'hard_threshold': self.config.hard_threshold,
                 'soft_threshold': self.config.soft_threshold,
                 'max_time_interval': self.config.max_time_interval,
-                'total_rounds': self.current_round
+                'total_rounds': self.current_round,
+                'protocol_stat_energy': self.total_energy_consumed,  # 保留协议统计用于调试
+                'actual_energy_consumed': actual_total_energy_consumed
             }
         }
     
