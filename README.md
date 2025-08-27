@@ -5,6 +5,37 @@
 [![Research](https://img.shields.io/badge/Status-Research-orange.svg)]()
 [![Performance](https://img.shields.io/badge/Energy_Reduction-60%25%2B-brightgreen.svg)]()
 
+
+> Status (Aug 27, 2025) — reproducible, real-geometry, CI-backed results
+>
+> - Real dataset and geometry: Intel Berkeley Research Lab (≈2.22M records) + official mote locations
+> - Unified end-to-end metric: packet_delivery_ratio_end2end = source→BS delivery; hop-level PDR reported separately
+> - Baselines aligned: LEACH/HEED/PEGASIS now use the same E2E definition on real geometry
+> - Robust vs Energy profiles: significant E2E improvement with small energy increase (n=50, 95% CI, Welch t)
+> - Curated paper-quality figures: results/plots_curated/ with manifest.json for fast Word insertion
+>
+> Reproduce core figures (one-liners)
+> - conda run -n aether-wsn python scripts/run_intel_replay.py
+> - conda run -n aether-wsn python scripts/run_intel_baselines_all.py
+> - conda run -n aether-wsn python scripts/run_parallel_significance_intel.py 50
+> - conda run -n aether-wsn python scripts/plot_paper_figures.py
+> - conda run -n aether-wsn python scripts/curate_figures.py (puts final figs into results/plots_curated)
+>
+> Curated figures (for Word)
+> - F1: Intel – AETHER Energy (200 rounds) → results/plots_curated/paper_intel_energy.png
+> - F2: Intel – AETHER PDR End-to-End (200 rounds) → results/plots_curated/paper_intel_pdr.png
+> - F3: Intel – AETHER vs Baselines: Energy → results/plots_curated/paper_intel_baselines_energy.png
+> - F4: Intel – AETHER vs Baselines: PDR End-to-End → results/plots_curated/paper_intel_baselines_pdr.png
+> - F5: Intel – Predicted env (LSTM/TCN) vs Conservative: Energy → results/plots_curated/paper_intel_predenv_energy.png
+> - F6: Intel – Predicted env (LSTM/TCN) vs Conservative: PDR → results/plots_curated/paper_intel_predenv_pdr.png
+> - F7: Intel – PDR with 95% CI (n=50) → results/plots_curated/paper_intel_sig_pdr.png
+> - F8: Intel – Energy with 95% CI (n=50) → results/plots_curated/paper_intel_sig_energy.png
+>
+> Data authenticity & mapping
+> - Sensor logs from MIT/CSAIL official site; no fabricated data
+> - Conservative environment→channel mapping: humidity→shadowing_std (tiers), temperature→noise floor micro-shift
+> - Scripts under scripts/ fully reproduce JSON and figures
+
 ## 📋 项目概述
 
 **Enhanced EEHFR** 是一个创新的无线传感器网络(WSN)路由协议，融合了模糊逻辑、混合元启发式优化和链式聚类技术。通过智能的簇头选择和优化的数据传输路径，实现了显著的能效提升和网络寿命延长。
