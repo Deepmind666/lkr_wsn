@@ -1,0 +1,20 @@
+{
+  "AETHER_energy": {
+    "total_energy_consumed": 39.40342180863016,
+    "packet_delivery_ratio": 0.9146195602171313,
+    "packet_delivery_ratio_end2end": 0.36,
+    "final_alive_nodes": 54
+  },
+  "AETHER_robust": {
+    "total_energy_consumed": 40.17700133853641,
+    "packet_delivery_ratio": 0.9085075174184085,
+    "packet_delivery_ratio_end2end": 0.67,
+    "final_alive_nodes": 54
+  },
+  "geometry": {
+    "width": 40.0,
+    "height": 30.0,
+    "num_nodes": 54
+  },
+  "env_mapping": "humidity_percentiles->humidity_ratio (33/50/66)"
+}

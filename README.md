@@ -263,3 +263,43 @@ Enhanced EEHFR 2.0 = 基础EEHFR + 双阶段优化 + 智能切换
 **🔬 研究贡献**: 本项目为WSN路由协议研究提供了创新的混合优化方案，基于严格的实验验证和开源代码，支持学术论文的开放获取(OA)要求。
 
 **📈 项目状态**: 积极开发中 🚀 | **当前阶段**: 基准协议对比完成，Enhanced EEHFR优化进行中 | **最后更新**: 2025年1月30日
+
+
+## Reproducibility (Core Artifacts)
+
+- One-click reproduce
+```
+py -3 scripts/run_reproduce_all.py
+```
+Generates:
+- results/safety_tradeoff_grid_50x200.{json,csv}
+- results/plots/safety_tradeoff.png
+- results/significance_compare_50x200.json
+- results/significance_compare_multi_topo_50x200.json
+
+- Baseline comparison
+```
+py -3 scripts/run_final_baseline_compare.py
+py -3 scripts/summarize_final_baselines.py
+```
+Outputs CSV and plots under results/ and results/plots/.
+
+- Paper figures
+```
+py -3 scripts/plot_paper_figures.py
+```
+Outputs PDF+PNG under results/plots/.
+
+- Profiles
+AETHER supports quick profiles:
+- energy (default): minimal energy, crisis fallback disabled
+- robust: crisis fallback enabled (r=1.0, δ=1dBm)
+
+Example:
+```
+from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
+proto = IntegratedEnhancedEEHFRProtocol(cfg, enable_gateway=True, profile='robust')
+```
+
+- Metric semantics
+We strictly use packet_delivery_ratio_end2end for end-to-end PDR (aggregated by domain delivery semantics). Hop-level PDR is reported separately as packet_delivery_ratio.

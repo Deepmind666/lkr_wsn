@@ -1,0 +1,26 @@
+[
+  {
+    "k": 1,
+    "total_energy_consumed": 37.05901991849246,
+    "packet_delivery_ratio": 0.9425356040235037,
+    "packet_delivery_ratio_end2end": 0.855,
+    "final_alive_nodes": 50,
+    "network_lifetime": 200
+  },
+  {
+    "k": 2,
+    "total_energy_consumed": 37.43249277552303,
+    "packet_delivery_ratio": 0.9413405039338711,
+    "packet_delivery_ratio_end2end": 0.8519,
+    "final_alive_nodes": 50,
+    "network_lifetime": 200
+  },
+  {
+    "k": 3,
+    "total_energy_consumed": 39.20750165202841,
+    "packet_delivery_ratio": 0.93715360253365,
+    "packet_delivery_ratio_end2end": 0.846,
+    "final_alive_nodes": 50,
+    "network_lifetime": 200
+  }
+]

@@ -1,0 +1,2078 @@
+{
+  "LEACH": {
+    "protocol": "LEACH",
+    "network_lifetime": 200,
+    "total_energy_consumed": 45.20683653985288,
+    "final_alive_nodes": 50,
+    "energy_efficiency": 212.35726130796505,
+    "packet_delivery_ratio": 1.0,
+    "average_cluster_heads_per_round": 14.805,
+    "additional_metrics": {
+      "total_packets_sent": 9600,
+      "total_packets_received": 9600
+    },
+    "config": {
+      "num_nodes": 50,
+      "initial_energy": 2.0,
+      "area_size": "100.0x100.0",
+      "packet_size": 1024
+    }
+  },
+  "PEGASIS": {
+    "protocol": "PEGASIS",
+    "network_lifetime": 200,
+    "total_energy_consumed": 39.34837458219613,
+    "final_alive_nodes": 50,
+    "energy_efficiency": 254.14010378270308,
+    "packet_delivery_ratio": 0.98,
+    "average_chain_length": 50.0,
+    "additional_metrics": {
+      "total_packets_sent": 10000,
+      "total_packets_received": 9800
+    },
+    "config": {
+      "num_nodes": 50,
+      "initial_energy": 2.0,
+      "area_size": "100.0x100.0",
+      "packet_size": 1024
+    }
+  },
+  "HEED": {
+    "protocol": "HEED",
+    "network_lifetime": 200,
+    "total_energy_consumed": 44.76863523315301,
+    "packets_transmitted": 9977,
+    "packets_received": 9977,
+    "packet_delivery_ratio": 1.0,
+    "energy_efficiency": 222.85691641123833,
+    "final_alive_nodes": 48,
+    "average_cluster_heads_per_round": 11.075,
+    "additional_metrics": {
+      "total_packets_sent": 9977,
+      "total_packets_received": 9977
+    }
+  },
+  "AETHER": {
+    "protocol": "Integrated_Enhanced_EEHFR",
+    "network_lifetime": 200,
+    "total_energy_consumed": 41.76370114979258,
+    "final_alive_nodes": 50,
+    "energy_efficiency": 223.3757962815595,
+    "packet_delivery_ratio": 0.9309450154675182,
+    "execution_time": 21.97742009162903,
+    "environment_type": "outdoor_open",
+    "round_statistics": [
+      {
+        "round": 0,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 99.7314166365168,
+        "packets_sent": 51,
+        "packets_received": 47,
+        "energy_consumed": 0.2685833634832187,
+        "pdr": 0.9215686274509803
+      },
+      {
+        "round": 1,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 99.53146946234358,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.1999471741731827,
+        "pdr": 0.98
+      },
+      {
+        "round": 2,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 99.31588019966671,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21558926267690298,
+        "pdr": 0.94
+      },
+      {
+        "round": 3,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 99.1096266207827,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20625357888398047,
+        "pdr": 0.94
+      },
+      {
+        "round": 4,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 98.89261471584577,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21701190493696518,
+        "pdr": 0.92
+      },
+      {
+        "round": 5,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 98.69203922628482,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20057548956094856,
+        "pdr": 0.96
+      },
+      {
+        "round": 6,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 98.48593629025412,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.2061029360306951,
+        "pdr": 0.92
+      },
+      {
+        "round": 7,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 98.273091293137,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.2128449971171263,
+        "pdr": 0.86
+      },
+      {
+        "round": 8,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 98.05308195846247,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2200093346744975,
+        "pdr": 0.96
+      },
+      {
+        "round": 9,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 97.8511250140329,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.201956944429601,
+        "pdr": 0.98
+      },
+      {
+        "round": 10,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 97.64802794600287,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.2030970680300342,
+        "pdr": 0.88
+      },
+      {
+        "round": 11,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 97.45273046175704,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.1952974842458112,
+        "pdr": 0.96
+      },
+      {
+        "round": 12,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 97.25374889480118,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.1989815669558617,
+        "pdr": 0.94
+      },
+      {
+        "round": 13,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 97.05232588913925,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20142300566195592,
+        "pdr": 0.94
+      },
+      {
+        "round": 14,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 96.85560331696097,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.1967225721782479,
+        "pdr": 0.9
+      },
+      {
+        "round": 15,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 96.64988354593888,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2057197710221001,
+        "pdr": 0.96
+      },
+      {
+        "round": 16,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 96.43344416853377,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.2164393774050984,
+        "pdr": 0.94
+      },
+      {
+        "round": 17,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 96.21654338509826,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.216900783435514,
+        "pdr": 0.98
+      },
+      {
+        "round": 18,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 95.99790755469004,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.21863583040821608,
+        "pdr": 0.98
+      },
+      {
+        "round": 19,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 95.79558405974424,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2023234949458337,
+        "pdr": 0.9
+      },
+      {
+        "round": 20,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 95.58505043969859,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.21053362004565618,
+        "pdr": 0.98
+      },
+      {
+        "round": 21,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 95.37496290565342,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21008753404514988,
+        "pdr": 0.92
+      },
+      {
+        "round": 22,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 95.16102989257247,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2139330130809404,
+        "pdr": 0.9
+      },
+      {
+        "round": 23,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 94.95171785241394,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20931204015853858,
+        "pdr": 0.94
+      },
+      {
+        "round": 24,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 94.74593537265996,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2057824797539893,
+        "pdr": 0.9
+      },
+      {
+        "round": 25,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 94.53183662787389,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.214098744786055,
+        "pdr": 0.96
+      },
+      {
+        "round": 26,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 94.31238128918501,
+        "packets_sent": 50,
+        "packets_received": 50,
+        "energy_consumed": 0.21945533868886585,
+        "pdr": 1.0
+      },
+      {
+        "round": 27,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 94.10776514379377,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20461614539121872,
+        "pdr": 0.96
+      },
+      {
+        "round": 28,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 93.89183729165637,
+        "packets_sent": 50,
+        "packets_received": 50,
+        "energy_consumed": 0.21592785213742294,
+        "pdr": 1.0
+      },
+      {
+        "round": 29,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 93.68165309776457,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.21018419389178178,
+        "pdr": 0.96
+      },
+      {
+        "round": 30,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 93.45845979879587,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.22319329896869677,
+        "pdr": 0.98
+      },
+      {
+        "round": 31,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 93.24467715176958,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.2137826470263201,
+        "pdr": 0.86
+      },
+      {
+        "round": 32,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 93.02886293326989,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21581421849969498,
+        "pdr": 0.92
+      },
+      {
+        "round": 33,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 92.82986779663494,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.1989951366349437,
+        "pdr": 0.98
+      },
+      {
+        "round": 34,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 92.61339343241484,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.2164743642201205,
+        "pdr": 0.88
+      },
+      {
+        "round": 35,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 92.41529979146931,
+        "packets_sent": 50,
+        "packets_received": 50,
+        "energy_consumed": 0.1980936409454841,
+        "pdr": 1.0
+      },
+      {
+        "round": 36,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 92.2122094441475,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20309034732180914,
+        "pdr": 0.96
+      },
+      {
+        "round": 37,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 91.9987902800551,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2134191640924017,
+        "pdr": 0.9
+      },
+      {
+        "round": 38,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 91.79131612907847,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.20747415097662825,
+        "pdr": 0.86
+      },
+      {
+        "round": 39,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 91.5817785165601,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.20953761251839667,
+        "pdr": 0.9
+      },
+      {
+        "round": 40,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 91.3718196494656,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20995886709447098,
+        "pdr": 0.92
+      },
+      {
+        "round": 41,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 91.16693584076934,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.20488380869626474,
+        "pdr": 0.86
+      },
+      {
+        "round": 42,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 90.95576573246741,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.21117010830194616,
+        "pdr": 0.86
+      },
+      {
+        "round": 43,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 90.73692596518522,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21883976728221566,
+        "pdr": 0.94
+      },
+      {
+        "round": 44,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 90.53746726841536,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.1994586967698454,
+        "pdr": 0.92
+      },
+      {
+        "round": 45,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 90.32003995540211,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21742731301327095,
+        "pdr": 0.92
+      },
+      {
+        "round": 46,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 90.11797750195326,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.20206245344881996,
+        "pdr": 0.88
+      },
+      {
+        "round": 47,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 89.89802996348334,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.2199475384699068,
+        "pdr": 0.98
+      },
+      {
+        "round": 48,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 89.68524799930265,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.2127819641806835,
+        "pdr": 0.88
+      },
+      {
+        "round": 49,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 89.48169328119256,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.2035547181101179,
+        "pdr": 0.94
+      },
+      {
+        "round": 50,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 89.27399517289875,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.20769810829382548,
+        "pdr": 0.9
+      },
+      {
+        "round": 51,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 89.07676725350072,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.19722791939799128,
+        "pdr": 0.98
+      },
+      {
+        "round": 52,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 88.87176601683306,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20500123666770373,
+        "pdr": 0.92
+      },
+      {
+        "round": 53,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 88.65737679926335,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21438921756966034,
+        "pdr": 0.94
+      },
+      {
+        "round": 54,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 88.44417983601069,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.21319696325269402,
+        "pdr": 0.96
+      },
+      {
+        "round": 55,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 88.23221425615249,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.2119655798581898,
+        "pdr": 0.94
+      },
+      {
+        "round": 56,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 88.03077724731932,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20143700883313356,
+        "pdr": 0.92
+      },
+      {
+        "round": 57,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 87.8163597807227,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.21441746659662234,
+        "pdr": 0.98
+      },
+      {
+        "round": 58,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 87.61043598842396,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.2059237922987771,
+        "pdr": 0.98
+      },
+      {
+        "round": 59,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 87.40339009487217,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.2070458935517808,
+        "pdr": 0.98
+      },
+      {
+        "round": 60,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 87.18346904663018,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21992104824201233,
+        "pdr": 0.92
+      },
+      {
+        "round": 61,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 86.94357418698303,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.23989485964713464,
+        "pdr": 0.96
+      },
+      {
+        "round": 62,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 86.73335649219777,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.2102176947852663,
+        "pdr": 0.92
+      },
+      {
+        "round": 63,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 86.50568448188888,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.22767201030886627,
+        "pdr": 0.92
+      },
+      {
+        "round": 64,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 86.29540628713289,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2102781947559711,
+        "pdr": 0.9
+      },
+      {
+        "round": 65,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 86.10058526763515,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.1948210194977758,
+        "pdr": 0.92
+      },
+      {
+        "round": 66,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 85.8703458484529,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.23023941918225643,
+        "pdr": 0.92
+      },
+      {
+        "round": 67,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 85.6344071380067,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2359387104461934,
+        "pdr": 0.96
+      },
+      {
+        "round": 68,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 85.41062998589402,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.22377715211267557,
+        "pdr": 0.86
+      },
+      {
+        "round": 69,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 85.1850088327865,
+        "packets_sent": 51,
+        "packets_received": 48,
+        "energy_consumed": 0.22562115310751263,
+        "pdr": 0.9411764705882353
+      },
+      {
+        "round": 70,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 84.96630597307987,
+        "packets_sent": 52,
+        "packets_received": 50,
+        "energy_consumed": 0.21870285970660033,
+        "pdr": 0.9615384615384616
+      },
+      {
+        "round": 71,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 84.74252207575276,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.22378389732716167,
+        "pdr": 0.9
+      },
+      {
+        "round": 72,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 84.53940343386274,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.20311864188999204,
+        "pdr": 0.86
+      },
+      {
+        "round": 73,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 84.30478478662003,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.23461864724271989,
+        "pdr": 0.94
+      },
+      {
+        "round": 74,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 84.09602615377317,
+        "packets_sent": 52,
+        "packets_received": 45,
+        "energy_consumed": 0.20875863284686155,
+        "pdr": 0.8653846153846154
+      },
+      {
+        "round": 75,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 83.8975780828793,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.19844807089386177,
+        "pdr": 0.94
+      },
+      {
+        "round": 76,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 83.6986219202423,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.1989561626370263,
+        "pdr": 0.96
+      },
+      {
+        "round": 77,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 83.49469516731885,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2039267529234369,
+        "pdr": 0.9
+      },
+      {
+        "round": 78,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 83.2950862304504,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.19960893686844478,
+        "pdr": 0.96
+      },
+      {
+        "round": 79,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 83.08348035682624,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2116058736241361,
+        "pdr": 0.96
+      },
+      {
+        "round": 80,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 82.88043679400069,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20304356282555222,
+        "pdr": 0.92
+      },
+      {
+        "round": 81,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 82.66149760810164,
+        "packets_sent": 50,
+        "packets_received": 42,
+        "energy_consumed": 0.21893918589908182,
+        "pdr": 0.84
+      },
+      {
+        "round": 82,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 82.41972805946335,
+        "packets_sent": 51,
+        "packets_received": 47,
+        "energy_consumed": 0.2417695486383216,
+        "pdr": 0.9215686274509803
+      },
+      {
+        "round": 83,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 82.18210815004187,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.23761990942141928,
+        "pdr": 0.88
+      },
+      {
+        "round": 84,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 81.95535326786437,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.2267548821775394,
+        "pdr": 0.86
+      },
+      {
+        "round": 85,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 81.74451914225433,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21083412561000472,
+        "pdr": 0.94
+      },
+      {
+        "round": 86,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 81.53996998008974,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.20454916216460364,
+        "pdr": 0.98
+      },
+      {
+        "round": 87,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 81.34279104822484,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.19717893186490631,
+        "pdr": 0.96
+      },
+      {
+        "round": 88,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 81.14306693982735,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.1997241083974864,
+        "pdr": 0.88
+      },
+      {
+        "round": 89,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 80.95280735648046,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.19025958334685042,
+        "pdr": 0.94
+      },
+      {
+        "round": 90,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 80.75285572396162,
+        "packets_sent": 51,
+        "packets_received": 47,
+        "energy_consumed": 0.19995163251889211,
+        "pdr": 0.9215686274509803
+      },
+      {
+        "round": 91,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 80.55310381760705,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.19975190635456527,
+        "pdr": 0.94
+      },
+      {
+        "round": 92,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 80.35255999084893,
+        "packets_sent": 51,
+        "packets_received": 49,
+        "energy_consumed": 0.2005438267581071,
+        "pdr": 0.9607843137254902
+      },
+      {
+        "round": 93,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 80.15207237815945,
+        "packets_sent": 51,
+        "packets_received": 49,
+        "energy_consumed": 0.20048761268949553,
+        "pdr": 0.9607843137254902
+      },
+      {
+        "round": 94,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 79.95182173193825,
+        "packets_sent": 51,
+        "packets_received": 45,
+        "energy_consumed": 0.20025064622118993,
+        "pdr": 0.8823529411764706
+      },
+      {
+        "round": 95,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 79.7403955741186,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21142615781964047,
+        "pdr": 0.94
+      },
+      {
+        "round": 96,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 79.50831882255942,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2320767515591931,
+        "pdr": 0.96
+      },
+      {
+        "round": 97,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 79.27917451269046,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.2291443098689566,
+        "pdr": 0.94
+      },
+      {
+        "round": 98,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 79.05002574415249,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.22914876853797128,
+        "pdr": 0.96
+      },
+      {
+        "round": 99,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 78.83271315230357,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.217312591848957,
+        "pdr": 0.96
+      },
+      {
+        "round": 100,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 78.59598220422727,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2367309480762804,
+        "pdr": 0.96
+      },
+      {
+        "round": 101,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 78.38402810783268,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.21195409639457607,
+        "pdr": 0.96
+      },
+      {
+        "round": 102,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 78.17452556683328,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2095025409993975,
+        "pdr": 0.9
+      },
+      {
+        "round": 103,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 77.9580737814282,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.21645178540509408,
+        "pdr": 0.98
+      },
+      {
+        "round": 104,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 77.74175497073243,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21631881069575845,
+        "pdr": 0.92
+      },
+      {
+        "round": 105,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 77.5273274066427,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21442756408972571,
+        "pdr": 0.94
+      },
+      {
+        "round": 106,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 77.3203149588607,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20701244778201633,
+        "pdr": 0.92
+      },
+      {
+        "round": 107,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 77.13302752490917,
+        "packets_sent": 52,
+        "packets_received": 51,
+        "energy_consumed": 0.18728743395151817,
+        "pdr": 0.9807692307692307
+      },
+      {
+        "round": 108,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 76.93135339728218,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20167412762699743,
+        "pdr": 0.96
+      },
+      {
+        "round": 109,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 76.74385133331823,
+        "packets_sent": 52,
+        "packets_received": 44,
+        "energy_consumed": 0.18750206396391986,
+        "pdr": 0.8461538461538461
+      },
+      {
+        "round": 110,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 76.55327986598395,
+        "packets_sent": 52,
+        "packets_received": 49,
+        "energy_consumed": 0.1905714673342996,
+        "pdr": 0.9423076923076923
+      },
+      {
+        "round": 111,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 76.36492352521799,
+        "packets_sent": 52,
+        "packets_received": 46,
+        "energy_consumed": 0.18835634076594868,
+        "pdr": 0.8846153846153846
+      },
+      {
+        "round": 112,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 76.1772839293176,
+        "packets_sent": 51,
+        "packets_received": 46,
+        "energy_consumed": 0.18763959590041865,
+        "pdr": 0.9019607843137255
+      },
+      {
+        "round": 113,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 75.96603438081688,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.21124954850073185,
+        "pdr": 0.88
+      },
+      {
+        "round": 114,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 75.76350837174567,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20252600907118834,
+        "pdr": 0.94
+      },
+      {
+        "round": 115,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 75.54731567983235,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.21619269191332402,
+        "pdr": 0.9
+      },
+      {
+        "round": 116,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 75.32553539290082,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.22178028693152751,
+        "pdr": 0.96
+      },
+      {
+        "round": 117,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 75.13510869422802,
+        "packets_sent": 51,
+        "packets_received": 47,
+        "energy_consumed": 0.19042669867278925,
+        "pdr": 0.9215686274509803
+      },
+      {
+        "round": 118,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 74.94180941479576,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.19329927943226924,
+        "pdr": 0.94
+      },
+      {
+        "round": 119,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 74.73385605949932,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.2079533552964384,
+        "pdr": 0.86
+      },
+      {
+        "round": 120,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 74.54087828920225,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.19297777029706947,
+        "pdr": 0.96
+      },
+      {
+        "round": 121,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 74.33452366247913,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.206354626723113,
+        "pdr": 0.96
+      },
+      {
+        "round": 122,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 74.13305710501754,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.20146655746160436,
+        "pdr": 0.98
+      },
+      {
+        "round": 123,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 73.94722832426176,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.18582878075575995,
+        "pdr": 0.96
+      },
+      {
+        "round": 124,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 73.74687177336475,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20035655089703946,
+        "pdr": 0.94
+      },
+      {
+        "round": 125,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 73.55592919862653,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.19094257473819456,
+        "pdr": 0.94
+      },
+      {
+        "round": 126,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 73.36766734516493,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.18826185346159988,
+        "pdr": 0.9
+      },
+      {
+        "round": 127,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 73.15957856328134,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.2080887818835909,
+        "pdr": 0.98
+      },
+      {
+        "round": 128,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 72.96584550166364,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.19373306161773224,
+        "pdr": 0.9
+      },
+      {
+        "round": 129,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 72.7703317572783,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.19551374438531885,
+        "pdr": 0.9
+      },
+      {
+        "round": 130,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 72.57659869566058,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.19373306161773224,
+        "pdr": 0.96
+      },
+      {
+        "round": 131,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 72.38286563404283,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.19373306161773224,
+        "pdr": 0.96
+      },
+      {
+        "round": 132,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 72.1891325724251,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.19373306161773224,
+        "pdr": 0.98
+      },
+      {
+        "round": 133,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 71.99388545453081,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.195247117894293,
+        "pdr": 0.94
+      },
+      {
+        "round": 134,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 71.79863833663654,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.195247117894293,
+        "pdr": 0.94
+      },
+      {
+        "round": 135,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 71.60393804468973,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.1947002919467891,
+        "pdr": 0.92
+      },
+      {
+        "round": 136,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 71.40949957396627,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.19443847072345122,
+        "pdr": 0.92
+      },
+      {
+        "round": 137,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 71.20889920535564,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20060036861065905,
+        "pdr": 0.94
+      },
+      {
+        "round": 138,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 71.00490925538128,
+        "packets_sent": 50,
+        "packets_received": 50,
+        "energy_consumed": 0.2039899499743486,
+        "pdr": 1.0
+      },
+      {
+        "round": 139,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 70.80142789205125,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.20348136333001826,
+        "pdr": 0.9
+      },
+      {
+        "round": 140,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 70.59771510701184,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2037127850394215,
+        "pdr": 0.96
+      },
+      {
+        "round": 141,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 70.39498486351157,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.2027302435002588,
+        "pdr": 0.92
+      },
+      {
+        "round": 142,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 70.19282165625691,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.20216320725463469,
+        "pdr": 0.9
+      },
+      {
+        "round": 143,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 69.98949623662274,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20332541963418604,
+        "pdr": 0.94
+      },
+      {
+        "round": 144,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 69.78733302936811,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.20216320725463469,
+        "pdr": 0.88
+      },
+      {
+        "round": 145,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 69.58804029196513,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.199292737402983,
+        "pdr": 0.88
+      },
+      {
+        "round": 146,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 69.38610526573537,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20193502622979245,
+        "pdr": 0.92
+      },
+      {
+        "round": 147,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 69.18175664715774,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20434861857761732,
+        "pdr": 0.94
+      },
+      {
+        "round": 148,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 68.98164269561636,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20011395154134476,
+        "pdr": 0.94
+      },
+      {
+        "round": 149,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 68.77765274564203,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.2039899499743486,
+        "pdr": 0.94
+      },
+      {
+        "round": 150,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 68.57635406699315,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20129867864888298,
+        "pdr": 0.92
+      },
+      {
+        "round": 151,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 68.36755613261246,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.20879793438068187,
+        "pdr": 0.88
+      },
+      {
+        "round": 152,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 68.16433296416749,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.20322316844498958,
+        "pdr": 0.88
+      },
+      {
+        "round": 153,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 67.95708460757159,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20724835659589497,
+        "pdr": 0.94
+      },
+      {
+        "round": 154,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 67.75465024073476,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.202434366836801,
+        "pdr": 0.94
+      },
+      {
+        "round": 155,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 67.54776055274215,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20688968799262628,
+        "pdr": 0.96
+      },
+      {
+        "round": 156,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 67.34197941175508,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.20578114098709693,
+        "pdr": 0.98
+      },
+      {
+        "round": 157,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 67.1393168638934,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20266254786164323,
+        "pdr": 0.96
+      },
+      {
+        "round": 158,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 66.9324271759008,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20688968799262628,
+        "pdr": 0.94
+      },
+      {
+        "round": 159,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 66.72999280906397,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.202434366836801,
+        "pdr": 0.92
+      },
+      {
+        "round": 160,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 66.52100181547799,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20899099358601314,
+        "pdr": 0.96
+      },
+      {
+        "round": 161,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 66.30984575813802,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21115605733995468,
+        "pdr": 0.94
+      },
+      {
+        "round": 162,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 66.10548359715047,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.2043621609875698,
+        "pdr": 0.92
+      },
+      {
+        "round": 163,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 65.90075345892055,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20473013822990804,
+        "pdr": 0.96
+      },
+      {
+        "round": 164,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 65.69212281115126,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20863064776927953,
+        "pdr": 0.92
+      },
+      {
+        "round": 165,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 65.48989566890815,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20222714224311825,
+        "pdr": 0.92
+      },
+      {
+        "round": 166,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 65.28090467532213,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.20899099358601314,
+        "pdr": 0.9
+      },
+      {
+        "round": 167,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 65.08143601918212,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.19946865614002138,
+        "pdr": 0.96
+      },
+      {
+        "round": 168,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 64.86827017881528,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.2131658403668268,
+        "pdr": 0.92
+      },
+      {
+        "round": 169,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 64.67008125392702,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.19818892488825163,
+        "pdr": 0.94
+      },
+      {
+        "round": 170,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 64.46489123484413,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20519001908290643,
+        "pdr": 0.94
+      },
+      {
+        "round": 171,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 64.2566870337319,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20820420111223825,
+        "pdr": 0.94
+      },
+      {
+        "round": 172,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 64.04329215829272,
+        "packets_sent": 50,
+        "packets_received": 43,
+        "energy_consumed": 0.21339487543915578,
+        "pdr": 0.86
+      },
+      {
+        "round": 173,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 63.836337695246236,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.2069544630465163,
+        "pdr": 0.96
+      },
+      {
+        "round": 174,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 63.62091176721519,
+        "packets_sent": 50,
+        "packets_received": 50,
+        "energy_consumed": 0.21542592803102353,
+        "pdr": 1.0
+      },
+      {
+        "round": 175,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 63.41535140759535,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20556035961984814,
+        "pdr": 0.94
+      },
+      {
+        "round": 176,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 63.20720775737661,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.20814365021873787,
+        "pdr": 0.96
+      },
+      {
+        "round": 177,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 62.999983610541506,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.20722414683509432,
+        "pdr": 0.9
+      },
+      {
+        "round": 178,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 62.7795208005723,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.2204628099692166,
+        "pdr": 0.88
+      },
+      {
+        "round": 179,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 62.57553272912589,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20398807144640094,
+        "pdr": 0.94
+      },
+      {
+        "round": 180,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 62.36145730167577,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.2140754274501301,
+        "pdr": 0.94
+      },
+      {
+        "round": 181,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 62.157195971971895,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.20426132970386465,
+        "pdr": 0.94
+      },
+      {
+        "round": 182,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 61.950257179414585,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.20693879255733202,
+        "pdr": 0.92
+      },
+      {
+        "round": 183,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 61.73263883274242,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.21761834667214303,
+        "pdr": 0.88
+      },
+      {
+        "round": 184,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 61.51988812055887,
+        "packets_sent": 50,
+        "packets_received": 49,
+        "energy_consumed": 0.21275071218355762,
+        "pdr": 0.98
+      },
+      {
+        "round": 185,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 61.30416094012823,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.21572718043064693,
+        "pdr": 0.96
+      },
+      {
+        "round": 186,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 61.08720745522278,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.21695348490543753,
+        "pdr": 0.9
+      },
+      {
+        "round": 187,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 60.87065907298441,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.21654838223837702,
+        "pdr": 0.94
+      },
+      {
+        "round": 188,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 60.65373307933373,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.21692599365068352,
+        "pdr": 0.96
+      },
+      {
+        "round": 189,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 60.43632575212242,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.2174073272112926,
+        "pdr": 0.92
+      },
+      {
+        "round": 190,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 60.21832006159074,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.21800569053169555,
+        "pdr": 0.9
+      },
+      {
+        "round": 191,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 59.995510911064954,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.22280915052577502,
+        "pdr": 0.88
+      },
+      {
+        "round": 192,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 59.77563343902831,
+        "packets_sent": 50,
+        "packets_received": 44,
+        "energy_consumed": 0.21987747203664865,
+        "pdr": 0.88
+      },
+      {
+        "round": 193,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 59.55755810889995,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.218075330128383,
+        "pdr": 0.94
+      },
+      {
+        "round": 194,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 59.336029821532726,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.22152828736719707,
+        "pdr": 0.92
+      },
+      {
+        "round": 195,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 59.1142573172108,
+        "packets_sent": 50,
+        "packets_received": 47,
+        "energy_consumed": 0.22177250432193063,
+        "pdr": 0.94
+      },
+      {
+        "round": 196,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 58.8930978126299,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.2211595045809145,
+        "pdr": 0.9
+      },
+      {
+        "round": 197,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 58.67322034059325,
+        "packets_sent": 50,
+        "packets_received": 48,
+        "energy_consumed": 0.21987747203664865,
+        "pdr": 0.96
+      },
+      {
+        "round": 198,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 58.45617632224409,
+        "packets_sent": 50,
+        "packets_received": 46,
+        "energy_consumed": 0.21704401834913978,
+        "pdr": 0.92
+      },
+      {
+        "round": 199,
+        "alive_nodes": 50,
+        "cluster_heads": 5,
+        "remaining_energy": 58.23629885020745,
+        "packets_sent": 50,
+        "packets_received": 45,
+        "energy_consumed": 0.21987747203664865,
+        "pdr": 0.9
+      }
+    ],
+    "config": {
+      "num_nodes": 50,
+      "initial_energy": 2.0,
+      "area_size": "100.0x100.0",
+      "packet_size": 1024
+    },
+    "additional_metrics": {
+      "total_packets_sent": 10021,
+      "total_packets_received": 9329,
+      "average_cluster_heads": 5.0
+    }
+  }
+}

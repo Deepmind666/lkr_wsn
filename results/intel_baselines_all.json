@@ -1,0 +1,26 @@
+{
+  "LEACH": {
+    "total_energy_consumed": 4.01129625,
+    "packet_delivery_ratio_end2end": 0.28818621897208774,
+    "network_lifetime": 200,
+    "alive_nodes": 54,
+    "dead_nodes": 0
+  },
+  "HEED": {
+    "total_energy_consumed": 8.783881430000017,
+    "packet_delivery_ratio_end2end": 1.0,
+    "network_lifetime": 200,
+    "alive_nodes": 54,
+    "dead_nodes": 0
+  },
+  "PEGASIS": {
+    "total_energy_consumed": 4.516906,
+    "packet_delivery_ratio_end2end": 1.0,
+    "network_lifetime": 200,
+    "alive_nodes": 54,
+    "dead_nodes": 0
+  },
+  "geometry": {
+    "num_nodes": 54
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "AETHER_energy": {
+    "total_energy_consumed": 39.61148374939904,
+    "packet_delivery_ratio": 0.9215345174876396,
+    "packet_delivery_ratio_end2end": 0.425,
+    "final_alive_nodes": 54
+  },
+  "AETHER_robust": {
+    "total_energy_consumed": 40.14179516059802,
+    "packet_delivery_ratio": 0.91649077727815,
+    "packet_delivery_ratio_end2end": 0.75,
+    "final_alive_nodes": 54
+  },
+  "tcn": {
+    "device": "cuda",
+    "seq_len": 64,
+    "epochs": 8
+  }
+}

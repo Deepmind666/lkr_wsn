@@ -1,0 +1,38 @@
+[
+  {
+    "redundant": false,
+    "power_bump": false,
+    "total_energy_consumed": 64.79605261345705,
+    "pdr_end2end_mean": 0.7962412401783818,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9011467402845614,
+    "lifetime": 200
+  },
+  {
+    "redundant": false,
+    "power_bump": true,
+    "total_energy_consumed": 60.36561664709181,
+    "pdr_end2end_mean": 0.8407278675117563,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.909732161112247,
+    "lifetime": 200
+  },
+  {
+    "redundant": true,
+    "power_bump": false,
+    "total_energy_consumed": 63.972853546907295,
+    "pdr_end2end_mean": 0.9514634659928406,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9052510219054607,
+    "lifetime": 200
+  },
+  {
+    "redundant": true,
+    "power_bump": true,
+    "total_energy_consumed": 65.30923260072763,
+    "pdr_end2end_mean": 0.9851563322454995,
+    "pdr_end2end_p05": 1.0,
+    "pdr_hop": 0.9036321646021415,
+    "lifetime": 200
+  }
+]

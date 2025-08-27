@@ -1,0 +1,110 @@
+[
+  {
+    "scenario": "corridor31_50x200",
+    "metric": "total_energy_consumed",
+    "p": 0.0,
+    "t": -18.257606463759583,
+    "df": 4.121323836921497,
+    "holm_threshold": 0.004166666666666667,
+    "reject_null": true
+  },
+  {
+    "scenario": "corridor31_50x200",
+    "metric": "pdr_end2end_mean",
+    "p": 0.0,
+    "t": -13.39833261671683,
+    "df": 5.457497547668779,
+    "holm_threshold": 0.004545454545454546,
+    "reject_null": true
+  },
+  {
+    "scenario": "uniform_50x200",
+    "metric": "total_energy_consumed",
+    "p": 0.0,
+    "t": -8.633573020630243,
+    "df": 4.967077743655326,
+    "holm_threshold": 0.005,
+    "reject_null": true
+  },
+  {
+    "scenario": "uniform_50x200",
+    "metric": "pdr_end2end_mean",
+    "p": 0.0,
+    "t": -26.348383026963763,
+    "df": 7.942954934398175,
+    "holm_threshold": 0.005555555555555556,
+    "reject_null": true
+  },
+  {
+    "scenario": "corridor41_50x200",
+    "metric": "pdr_end2end_mean",
+    "p": 0.0,
+    "t": -12.493708503965669,
+    "df": 5.286217072901733,
+    "holm_threshold": 0.00625,
+    "reject_null": true
+  },
+  {
+    "scenario": "corridor31_50x200",
+    "metric": "pdr_end2end_p05",
+    "p": 7.744216431015971e-06,
+    "t": -4.47213595499958,
+    "df": 4.0,
+    "holm_threshold": 0.0071428571428571435,
+    "reject_null": true
+  },
+  {
+    "scenario": "corridor41_50x200",
+    "metric": "pdr_end2end_p05",
+    "p": 0.0061698993205441255,
+    "t": -2.7386127875258306,
+    "df": 4.0,
+    "holm_threshold": 0.008333333333333333,
+    "reject_null": true
+  },
+  {
+    "scenario": "corridor41_50x200",
+    "metric": "total_energy_consumed",
+    "p": 0.30614646884598784,
+    "t": 1.0233413722523643,
+    "df": 6.66075712319325,
+    "holm_threshold": 0.01,
+    "reject_null": false
+  },
+  {
+    "scenario": "corridor31_50x200",
+    "metric": "lifetime",
+    "p": 1.0,
+    "t": 0.0,
+    "df": Infinity,
+    "holm_threshold": 0.0125,
+    "reject_null": false
+  },
+  {
+    "scenario": "uniform_50x200",
+    "metric": "pdr_end2end_p05",
+    "p": 1.0,
+    "t": 0.0,
+    "df": Infinity,
+    "holm_threshold": 0.016666666666666666,
+    "reject_null": false
+  },
+  {
+    "scenario": "uniform_50x200",
+    "metric": "lifetime",
+    "p": 1.0,
+    "t": 0.0,
+    "df": Infinity,
+    "holm_threshold": 0.025,
+    "reject_null": false
+  },
+  {
+    "scenario": "corridor41_50x200",
+    "metric": "lifetime",
+    "p": 1.0,
+    "t": 0.0,
+    "df": Infinity,
+    "holm_threshold": 0.05,
+    "reject_null": false
+  }
+]

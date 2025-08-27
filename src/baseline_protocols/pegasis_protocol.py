@@ -83,14 +83,17 @@ class PEGASISProtocol:
         self.total_energy_consumed = 0.0
         self.packets_sent = 0
         self.packets_received = 0
+        # 端到端统计（统一为源→BS口径）
+        self.total_source_packets = 0
+        self.total_bs_delivered = 0
         self.dead_nodes = 0
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
-        
+
         # 初始化链结构
         self.construct_chain()
-        
+
         print(f"🔧 PEGASIS协议初始化完成")
         print(f"   节点数: {len(self.nodes)}")
         print(f"   基站位置: {self.base_station}")
@@ -243,21 +246,24 @@ class PEGASISProtocol:
         
         # 2. 数据聚合
         if leader.is_alive:
-            aggregation_energy = self.E_DA * self.packet_size * len([n for n in self.chain if n.is_alive])
+            alive_count = len([n for n in self.chain if n.is_alive])
+            aggregation_energy = self.E_DA * self.packet_size * alive_count
             leader.consume_energy(aggregation_energy)
             round_energy_consumption += aggregation_energy
-        
-        # 3. 领导者向基站传输聚合数据
+
+        # 3. 领导者向基站传输聚合数据（计入端到端送达）
         if leader.is_alive:
-            bs_distance = math.sqrt((leader.x - self.base_station[0])**2 + 
+            bs_distance = math.sqrt((leader.x - self.base_station[0])**2 +
                                   (leader.y - self.base_station[1])**2)
             tx_energy = self.calculate_transmission_energy(bs_distance, self.packet_size)
             leader.consume_energy(tx_energy)
             round_energy_consumption += tx_energy
-            
+
             self.packets_sent += 1
-            self.packets_received += 1  # 假设基站总是能接收到
-        
+            # 统一端到端口径：领导者聚合后的上行视为将 alive_count 条源包送达BS
+            self.total_bs_delivered += alive_count
+            self.total_source_packets += alive_count
+
         self.total_energy_consumed += round_energy_consumption
         self.energy_consumption_per_round.append(round_energy_consumption)
     
@@ -321,6 +327,9 @@ class PEGASISProtocol:
             'packets_sent': self.packets_sent,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': self.packets_received / max(self.packets_sent, 1),
+                'packet_delivery_ratio_end2end': self.total_bs_delivered / max(self.total_source_packets, 1),
+                'bs_delivered': self.total_bs_delivered,
+                'source_packets': self.total_source_packets,
             'dead_nodes': self.dead_nodes,
             'alive_nodes': len(self.nodes) - self.dead_nodes,
             'energy_consumption_per_round': self.energy_consumption_per_round,

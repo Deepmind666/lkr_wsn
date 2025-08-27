@@ -1,0 +1,83 @@
+[
+  {
+    "k": 2,
+    "d_ratio": 0.1,
+    "q_far": 0.7,
+    "total_energy_consumed": 60.739496531332385,
+    "pdr_end2end": 0.6025,
+    "pdr_hop": 0.8978558665872544,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.1,
+    "q_far": 0.75,
+    "total_energy_consumed": 68.63265232964176,
+    "pdr_end2end": 0.514649424126086,
+    "pdr_hop": 0.8941529235382308,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.1,
+    "q_far": 0.8,
+    "total_energy_consumed": 73.22980417032565,
+    "pdr_end2end": 0.5673744590922813,
+    "pdr_hop": 0.8950888400878418,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.15,
+    "q_far": 0.7,
+    "total_energy_consumed": 67.2874371226244,
+    "pdr_end2end": 0.5124024804960993,
+    "pdr_hop": 0.8942613185067514,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.15,
+    "q_far": 0.75,
+    "total_energy_consumed": 53.6696934606354,
+    "pdr_end2end": 0.5948,
+    "pdr_hop": 0.913887506222001,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.15,
+    "q_far": 0.8,
+    "total_energy_consumed": 60.02515646664562,
+    "pdr_end2end": 0.6122061030515258,
+    "pdr_hop": 0.9007920792079208,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.2,
+    "q_far": 0.7,
+    "total_energy_consumed": 66.49356438231725,
+    "pdr_end2end": 0.5647,
+    "pdr_hop": 0.8923842707814833,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.2,
+    "q_far": 0.75,
+    "total_energy_consumed": 61.2777164160673,
+    "pdr_end2end": 0.5099,
+    "pdr_hop": 0.8921471172962226,
+    "lifetime": 200
+  },
+  {
+    "k": 2,
+    "d_ratio": 0.2,
+    "q_far": 0.8,
+    "total_energy_consumed": 64.05927407427346,
+    "pdr_end2end": 0.6051627159501808,
+    "pdr_hop": 0.9013804747244016,
+    "lifetime": 200
+  }
+]

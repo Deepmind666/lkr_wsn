@@ -1,0 +1,42 @@
+[
+  {
+    "redundant_prob": 1.0,
+    "delta_dbm": 1.0,
+    "extra_max": 1,
+    "total_energy_consumed": 40.175735756828196,
+    "pdr_end2end_mean": 0.755,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9182868672046955,
+    "lifetime": 200
+  },
+  {
+    "redundant_prob": 1.0,
+    "delta_dbm": 1.0,
+    "extra_max": 2,
+    "total_energy_consumed": 40.07428561173641,
+    "pdr_end2end_mean": 0.785,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9192985677561513,
+    "lifetime": 200
+  },
+  {
+    "redundant_prob": 1.0,
+    "delta_dbm": 2.0,
+    "extra_max": 1,
+    "total_energy_consumed": 40.42674146406888,
+    "pdr_end2end_mean": 0.8,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9234656376332231,
+    "lifetime": 200
+  },
+  {
+    "redundant_prob": 1.0,
+    "delta_dbm": 2.0,
+    "extra_max": 2,
+    "total_energy_consumed": 40.63785123661245,
+    "pdr_end2end_mean": 0.7,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9197762904556707,
+    "lifetime": 200
+  }
+]

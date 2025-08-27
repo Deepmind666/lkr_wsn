@@ -89,11 +89,14 @@ class LEACHProtocol:
         self.total_energy_consumed = 0.0
         self.packets_sent = 0
         self.packets_received = 0
+        # 端到端统计（统一为“源→基站”口径）
+        self.total_source_packets = 0
+        self.total_bs_delivered = 0
         self.dead_nodes = 0
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
-        
+
         print(f"🔧 LEACH协议初始化完成")
         print(f"   节点数: {len(self.nodes)}")
         print(f"   基站位置: {self.base_station}")
@@ -213,16 +216,16 @@ class LEACHProtocol:
                             ch.consume_energy(rx_energy)
                             round_energy_consumption += tx_energy + rx_energy
 
+                            # 统一端到端统计口径：簇内仅视为中继，不计入源→BS送达
                             self.packets_sent += 1
-                            self.packets_received += 1
+                            # 不增加 self.packets_received
+                            self.total_source_packets += 1  # 本轮产生一个源数据包
 
-            # 2. 直接向基站发送数据（权威LEACH的关键逻辑）
-            # 只有cluster_head_id为None的节点才直接向基站发送
+            # 2. 直接向基站发送数据（cluster_head_id为None）
             for node in self.nodes:
                 if not node.is_alive or node.is_cluster_head:
                     continue
 
-                # 权威LEACH的关键条件：cluster_head_id为None表示直接连基站
                 if node.cluster_head_id is None:
                     bs_distance = math.sqrt((node.x - self.base_station[0])**2 +
                                           (node.y - self.base_station[1])**2)
@@ -233,7 +236,9 @@ class LEACHProtocol:
                         round_energy_consumption += tx_energy
 
                         self.packets_sent += 1
-                        self.packets_received += 1
+                        # 直接到达基站：计入端到端送达
+                        self.total_source_packets += 1
+                        self.total_bs_delivered += 1
 
             # 3. 簇头向基站传输聚合数据
             if cluster_heads:
@@ -256,7 +261,8 @@ class LEACHProtocol:
                         round_energy_consumption += total_ch_energy
 
                         self.packets_sent += 1
-                        self.packets_received += 1
+                        # 视为聚合后的端到端一次送达
+                        self.total_bs_delivered += 1
 
             # 权威LEACH每轮只进行一次有效传输
             break
@@ -321,6 +327,9 @@ class LEACHProtocol:
             'packets_sent': self.packets_sent,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': self.packets_received / max(self.packets_sent, 1),
+                'packet_delivery_ratio_end2end': self.total_bs_delivered / max(self.total_source_packets, 1),
+                'bs_delivered': self.total_bs_delivered,
+                'source_packets': self.total_source_packets,
             'dead_nodes': self.dead_nodes,
             'alive_nodes': len(self.nodes) - self.dead_nodes,
             'energy_consumption_per_round': self.energy_consumption_per_round,

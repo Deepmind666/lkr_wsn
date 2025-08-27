@@ -330,6 +330,17 @@ class EnvironmentalFactors:
         return absorption_coeff
 
 class RealisticChannelModel:
+    # 可选的环境→参数映射（按轮次动态调整）；若为None则使用构造时的默认参数
+    def set_env_mapping(self, shadowing_std: float | None = None, noise_floor_dbm: float | None = None,
+                        path_loss_exp: float | None = None, rssi_std: float | None = None):
+        if shadowing_std is not None:
+            self.path_loss_model.params.shadowing_std = float(shadowing_std)
+        if noise_floor_dbm is not None:
+            self.interference.noise_floor = float(noise_floor_dbm)
+        if path_loss_exp is not None:
+            self.path_loss_model.params.path_loss_exponent = float(path_loss_exp)
+        if rssi_std is not None:
+            self.link_quality.rssi_measurement_std = float(rssi_std)
     """
     综合的真实信道模型
     整合路径损耗、链路质量、干扰和环境因素
@@ -386,7 +397,7 @@ class RealisticChannelModel:
         
         return {
             'received_power_dbm': received_power,
-            'rssi_dbm': rssi,
+            'rssi': rssi,
             'lqi': lqi,
             'sinr_db': sinr,
             'pdr': pdr,

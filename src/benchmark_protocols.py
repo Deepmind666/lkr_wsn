@@ -65,8 +65,8 @@ class NetworkConfig:
     
 class LEACHProtocol:
     """
-    LEACH协议标准实现
-    基于Heinzelman et al. (HICSS 2000)原始论文
+    LEACH协议标准实现 (已重构和修正)
+    基于Heinzelman et al. (HICSS 2000)原始论文的科学重构版本
     """
     
     def __init__(self, config: NetworkConfig, energy_model: ImprovedEnergyModel):
@@ -78,15 +78,12 @@ class LEACHProtocol:
         self.clusters = {}
         
         # LEACH参数 (基于原始论文)
-        self.desired_cluster_head_percentage = 0.1   # 10%的节点作为簇头 (权威LEACH参数)
+        self.desired_cluster_head_percentage = 0.1
         self.cluster_head_rotation_rounds = int(1 / self.desired_cluster_head_percentage)
-
-        # 权威LEACH的能量参数 (严格匹配)
-        self.E_elec = 50e-9      # 50 nJ/bit
-        self.E_fs = 10e-12       # 10 pJ/bit/m²
-        self.E_mp = 0.0013e-12   # 0.0013 pJ/bit/m⁴
-        self.d_crossover = math.sqrt(self.E_fs / self.E_mp)  # 距离阈值
         
+        # 新增：数据传输概率，用于模拟更真实的场景
+        self.data_transmission_probability = 0.95  # 95%的概率进行数据传输
+
         # 性能统计
         self.stats = {
             'network_lifetime': 0,
@@ -123,407 +120,179 @@ class LEACHProtocol:
         return math.sqrt((node.x - self.config.base_station_x)**2 +
                         (node.y - self.config.base_station_y)**2)
 
-    def _calculate_leach_energy(self, packet_size_bits: int, distance: float) -> float:
-        """权威LEACH的能量计算方法（增强版 - 匹配权威LEACH的快速能耗）"""
-        # 基础电子能耗
-        base_energy = self.E_elec * packet_size_bits
-
-        # 放大器能耗（基于距离）
-        if distance > self.d_crossover:
-            # 多径衰落模型
-            amp_energy = self.E_mp * packet_size_bits * (distance ** 4)
-        else:
-            # 自由空间模型
-            amp_energy = self.E_fs * packet_size_bits * (distance ** 2)
-
-        # 权威LEACH的关键：增加额外的协议开销和硬件损耗
-        total_energy = base_energy + amp_energy
-
-        # 增加100000倍的能耗以匹配权威LEACH的节点死亡模式
-        # 权威LEACH中节点在前几轮就开始死亡，说明真实能耗极高
-        # 每次传输应该消耗0.1-0.5J能量才能匹配权威LEACH的行为
-        # 权威LEACH: 2J初始能量，前几轮节点就死亡，说明每轮消耗0.2-0.5J
-        realistic_energy = total_energy * 100000.0
-
-        return realistic_energy
-    
     def _select_cluster_heads(self) -> List[Node]:
         """
-        LEACH簇头选择算法
+        LEACH簇头选择算法 (重构)
         基于概率阈值和轮换机制
         """
         cluster_heads = []
         
-        # 计算阈值 T(n) - 权威LEACH公式
-        # T(n) = P / (1 - P * (r mod (1/P))) if n ∈ G, else 0
         P = self.desired_cluster_head_percentage
         r = self.round_number
-
-        # 权威LEACH的阈值计算（确保有合理的簇头选择概率）
-        if (r % self.cluster_head_rotation_rounds) == 0:
-            threshold = P  # 新轮换周期开始，使用基础概率
-        else:
-            denominator = 1 - P * (r % self.cluster_head_rotation_rounds)
-            if denominator > 0:
-                threshold = P / denominator
-            else:
-                threshold = 1.0  # 确保有簇头被选出
         
-        # 调试信息：记录选择过程
-        selection_attempts = 0
+        # 计算阈值 T(n)
+        # 简化但有效的阈值计算，确保簇头比例稳定
+        threshold = P / (1 - P * (r % self.cluster_head_rotation_rounds))
+        
         successful_selections = 0
-
         for node in self.nodes:
             if not node.is_alive:
                 continue
 
-            # 检查节点是否在候选集合G中 (未在最近1/P轮中担任簇头)
-            if (r % self.cluster_head_rotation_rounds) == 0:
-                # 新的轮换周期开始，所有节点都可以成为簇头
-                in_candidate_set = True
-            else:
-                # 简化实现：假设所有活跃节点都在候选集合中
-                in_candidate_set = True
-
-            if in_candidate_set:
-                random_value = random.random()
-                selection_attempts += 1
-
-                if random_value < threshold:
-                    node.is_cluster_head = True
-                    cluster_heads.append(node)
-                    successful_selections += 1
-                else:
-                    node.is_cluster_head = False
+            # 节点根据阈值独立决定是否成为簇头
+            if random.random() < threshold:
+                node.is_cluster_head = True
+                cluster_heads.append(node)
+                successful_selections += 1
             else:
                 node.is_cluster_head = False
 
-        # 调试输出（仅在前几轮）
+        # 调试输出
         if r < 5:
-            print(f"[调试] 轮{r}: 阈值={threshold:.4f}, 尝试={selection_attempts}, 成功={successful_selections}")
-        
-        # 权威LEACH允许没有簇头的轮次 - 移除强制簇头选择
-        # 这是权威LEACH行为的关键特征
+            print(f"[调试] 轮{r}: 阈值={threshold:.4f}, 尝试={sum(1 for n in self.nodes if n.is_alive)}, 成功={successful_selections}")
 
-        # 权威LEACH的协议开销：簇头广播Hello消息
-        self._broadcast_cluster_heads(cluster_heads)
+        # 如果没有选出簇头，则强制选择一个（避免网络完全停滞）
+        if not cluster_heads and any(n.is_alive for n in self.nodes):
+            alive_nodes = [n for n in self.nodes if n.is_alive]
+            chosen_one = random.choice(alive_nodes)
+            chosen_one.is_cluster_head = True
+            cluster_heads.append(chosen_one)
+            if r < 5:
+                print(f"[调试] 轮{r}: 未选出簇头，强制选择节点 {chosen_one.id}")
 
         return cluster_heads
 
-    def _broadcast_cluster_heads(self, cluster_heads: List[Node]):
-        """簇头广播Hello消息的协议开销（极简版本）"""
-        hello_packet_size = 50  # bits (减少到50 bits以降低开销)
-
-        for ch in cluster_heads:
-            if not ch.is_alive:
-                continue
-
-            # 极小的广播范围以降低协议开销
-            radio_range = 0.1 * self.config.area_width * math.sqrt(2)
-
-            # 只向最近的1-2个节点广播（极简协议开销）
-            nearby_nodes = []
-            for node in self.nodes:
-                if node.id == ch.id or not node.is_alive:
-                    continue
-
-                distance = self._calculate_distance(ch, node)
-                if distance <= radio_range:
-                    nearby_nodes.append((node, distance))
-
-            # 只向最近的1个节点广播
-            nearby_nodes.sort(key=lambda x: x[1])
-            max_broadcast_targets = min(1, len(nearby_nodes))  # 最多向1个节点广播
-
-            for node, distance in nearby_nodes[:max_broadcast_targets]:
-                # 簇头发送Hello消息（极小能耗）
-                tx_energy = self._calculate_leach_energy(hello_packet_size, distance)
-                ch.current_energy -= tx_energy * 0.1  # 减少到10%的协议开销
-
-                # 节点接收Hello消息（极小能耗）
-                rx_energy = self.E_elec * hello_packet_size
-                node.current_energy -= rx_energy * 0.1  # 减少到10%的协议开销
-
-                # 检查节点是否耗尽能量
-                if ch.current_energy <= 0:
-                    ch.is_alive = False
-                    ch.current_energy = 0
-                    ch.is_cluster_head = False  # 死亡的簇头不再是簇头
-                    break  # 簇头死亡，停止广播
-                if node.current_energy <= 0:
-                    node.is_alive = False
-                    node.current_energy = 0
-    
     def _form_clusters(self, cluster_heads: List[Node]):
-        """形成簇结构"""
-        self.clusters = {}
+        """
+        形成簇结构 (重构)
+        非簇头节点加入最近的簇头
+        """
+        self.clusters = {ch.id: {'head': ch, 'members': []} for ch in cluster_heads}
         
-        # 初始化簇
-        for ch in cluster_heads:
-            self.clusters[ch.id] = {
-                'head': ch,
-                'members': [],
-                'total_distance': 0.0
-            }
-        
-        # 权威LEACH的簇形成逻辑
-        radio_range = 0.5 * self.config.area_width * math.sqrt(2)  # 权威LEACH参数
-        sink_id = self.config.num_nodes  # 基站ID = 节点总数
-
         for node in self.nodes:
             if not node.is_alive or node.is_cluster_head:
                 continue
 
-            # 权威LEACH的关键：默认不连接任何设备（cluster_id = None）
-            node.cluster_id = None
+            if not cluster_heads:
+                node.cluster_id = -1
+                continue
 
-            if cluster_heads:
-                # 找到最近的簇头
-                min_distance = float('inf')
-                nearest_ch = None
+            # 找到最近的簇头
+            min_distance = float('inf')
+            nearest_ch = None
+            for ch in cluster_heads:
+                distance = self._calculate_distance(node, ch)
+                if distance < min_distance:
+                    min_distance = distance
+                    nearest_ch = ch
+            
+            # 将节点分配给最近的簇头
+            if nearest_ch:
+                node.cluster_id = nearest_ch.id
+                self.clusters[nearest_ch.id]['members'].append(node)
 
-                for ch in cluster_heads:
-                    distance = self._calculate_distance(node, ch)
-                    if distance < min_distance:
-                        min_distance = distance
-                        nearest_ch = ch
-
-                # 权威LEACH的关键条件判断
-                if nearest_ch:
-                    distance_to_bs = self._calculate_distance_to_bs(node)
-
-                    # 条件1: 在无线电范围内 AND 条件2: 比到基站更近
-                    if min_distance <= radio_range and min_distance < distance_to_bs:
-                        node.cluster_id = nearest_ch.id
-                        self.clusters[nearest_ch.id]['members'].append(node)
-                        self.clusters[nearest_ch.id]['total_distance'] += min_distance
-                    else:
-                        # 权威LEACH的关键：只有满足特殊条件的节点才直接连基站
-                        # 大部分节点保持cluster_id=None，不发送数据
-                        if self._should_connect_to_sink(node):
-                            node.cluster_id = sink_id
-            else:
-                # 没有簇头时，只有少数节点直接连基站
-                if self._should_connect_to_sink(node):
-                    node.cluster_id = sink_id
-
-    def _should_connect_to_sink(self, node: Node) -> bool:
-        """判断节点是否应该直接连接基站（权威LEACH逻辑）"""
-        # 权威LEACH中，只有极少数节点直接连基站
-        # 基于权威LEACH的观察：200轮中平均只有1个节点直接连基站
-
-        distance_to_bs = self._calculate_distance_to_bs(node)
-
-        # 超严格的条件：只有距离基站非常近且能量非常充足的节点才直接连基站
-        max_direct_distance = 0.1 * self.config.area_width  # 10%的区域范围
-        min_energy_threshold = 0.8  # 至少80%的初始能量
-
-        # 极低的随机概率：即使满足条件，也只有5%的概率直接连基站
-        meets_basic_conditions = (distance_to_bs <= max_direct_distance and
-                                 node.current_energy >= min_energy_threshold)
-
-        return meets_basic_conditions and random.random() < 0.05
-    
     def _steady_state_communication(self):
-        """稳态通信阶段 - 严格按照权威LEACH"""
+        """
+        稳态通信阶段 (重构)
+        实现成员->簇头->基站的数据传输和能耗计算
+        """
         total_energy_consumed = 0.0
         packets_transmitted = 0
         packets_received = 0
 
-        # 权威LEACH的关键：每轮只有很少的数据传输
-        successful_transmissions_this_round = 0
-        max_transmissions_per_round = 1  # 权威LEACH每轮最多1次成功传输
-
-        # 权威LEACH的关键：随着轮数增加，传输概率大幅降低
-        base_transmission_probability = 0.05  # 基础传输概率5%（大幅降低）
-        round_decay = min(0.9, self.round_number * 0.1)  # 每轮衰减10%（加快衰减）
-        transmission_probability = base_transmission_probability * (1 - round_decay)
-
-        # 调试传输概率
-        if self.round_number <= 5:
-            print(f"[调试] 轮{self.round_number}: 传输概率={transmission_probability:.3f}")
-
-        # 权威LEACH的关键：大部分轮次没有数据传输
-        if random.random() > transmission_probability:
-            # 本轮没有数据传输（模拟权威LEACH的行为）
-            if self.round_number <= 5:
-                print(f"[调试] 轮{self.round_number}: 跳过数据传输")
-            return
-
-        for attempt in range(1):  # 简化为1次尝试
-            # 权威LEACH的关键：大部分尝试都没有数据传输
-            if successful_transmissions_this_round >= max_transmissions_per_round:
-                break  # 已达到本轮最大传输次数
-
-            # 1. 直接向基站发送数据（权威LEACH的关键逻辑）
-            direct_transmission_count = 0
-            sink_id = self.config.num_nodes  # 基站ID
-
-            # 权威LEACH的关键：每次尝试只选择一个节点发送数据
-            direct_candidates = []
-            for node in self.nodes:
-                if (node.is_alive and not node.is_cluster_head and
-                    node.cluster_id == sink_id and node.current_energy > 0):
-                    direct_candidates.append(node)
-
-            # 从候选节点中随机选择一个（如果有的话）
-            if direct_candidates:
-                selected_node = random.choice(direct_candidates)
-
-                distance_to_bs = self._calculate_distance_to_bs(selected_node)
-                tx_energy = self._calculate_leach_energy(
-                    self.config.packet_size * 8,  # 转换为bits
-                    distance_to_bs
-                )
-
-                # 权威LEACH的能量消耗逻辑：先消耗能量，再检查是否成功
-                selected_node.current_energy -= tx_energy
-                total_energy_consumed += tx_energy
-
-                # 只有传输后能量仍>0才算成功发送
-                if selected_node.current_energy > 0:
-                    packets_transmitted += 1
-                    packets_received += 1
-                    direct_transmission_count += 1
-                    successful_transmissions_this_round += 1
-                else:
-                    # 能量耗尽，节点死亡
-                    selected_node.is_alive = False
-                    selected_node.current_energy = 0
-
-            # 2. 簇内通信：成员节点向簇头发送数据
-            cluster_transmission_count = 0
-            for cluster_id, cluster_info in self.clusters.items():
-                ch = cluster_info['head']
-                members = cluster_info['members']
-
-                if not ch.is_alive:
-                    continue
-
-                # 权威LEACH逻辑：每次只选择一个成员节点发送数据
-                active_members = [m for m in members if m.is_alive and m.current_energy > 0]
-
-                if active_members:
-                    selected_member = random.choice(active_members)
-
-                    # 计算传输距离
-                    distance = self._calculate_distance(selected_member, ch)
-
-                    # 权威LEACH的能量计算
-                    tx_energy = self._calculate_leach_energy(
-                        self.config.packet_size * 8,  # 转换为bits
-                        distance
-                    )
-
-                    # 接收能耗（权威LEACH方式）
-                    rx_energy = self.E_elec * self.config.packet_size * 8
-
-                    # 权威LEACH逻辑：先消耗能量
-                    selected_member.current_energy -= tx_energy
-                    ch.current_energy -= rx_energy
-                    total_energy_consumed += (tx_energy + rx_energy)
-
-                    # 检查传输是否成功（发送方和接收方都有能量）
-                    if selected_member.current_energy > 0 and ch.current_energy > 0:
-                        packets_transmitted += 1
-                        packets_received += 1
-                        cluster_transmission_count += 1
-                        successful_transmissions_this_round += 1
-
-                    # 检查节点是否耗尽能量
-                    if selected_member.current_energy <= 0:
-                        selected_member.is_alive = False
-                        selected_member.current_energy = 0
-                    if ch.current_energy <= 0:
-                        ch.is_alive = False
-                        ch.current_energy = 0
-
-            # 权威LEACH的关键：如果没有任何传输，跳出循环
-            if direct_transmission_count == 0 and cluster_transmission_count == 0:
-                break
-        
-        # 簇头向基站发送聚合数据
+        # 1. 成员节点向簇头发送数据
         for cluster_id, cluster_info in self.clusters.items():
             ch = cluster_info['head']
-            
             if not ch.is_alive:
                 continue
-            
-            # 计算到基站的距离
+
+            for member in cluster_info['members']:
+                if not member.is_alive:
+                    continue
+
+                distance = self._calculate_distance(member, ch)
+                tx_energy = self.energy_model.calculate_transmission_energy(self.config.packet_size * 8, distance)
+                rx_energy = self.energy_model.calculate_reception_energy(self.config.packet_size * 8)
+
+                if member.current_energy > tx_energy and ch.current_energy > rx_energy:
+                    member.current_energy -= tx_energy
+                    ch.current_energy -= rx_energy
+                    total_energy_consumed += tx_energy + rx_energy
+                    packets_transmitted += 1
+                    packets_received += 1
+                else:
+                    if member.current_energy <= tx_energy: member.is_alive = False; member.current_energy = 0
+                    if ch.current_energy <= rx_energy: ch.is_alive = False; ch.current_energy = 0
+
+        # 2. 簇头向基站发送聚合数据
+        for ch in self.cluster_heads:
+            if not ch.is_alive:
+                continue
+
             distance_to_bs = self._calculate_distance_to_bs(ch)
+            num_members = len(self.clusters.get(ch.id, {}).get('members', []))
             
-            # 计算传输能耗 (聚合后的数据包)
-            tx_energy = self.energy_model.calculate_transmission_energy(
-                self.config.packet_size * 8,
-                distance_to_bs,
-                tx_power_dbm=5.0  # 向基站传输使用更高功率
-            )
+            # 聚合能耗
+            aggregation_energy = self.energy_model.calculate_processing_energy(self.config.packet_size * 8 * (num_members + 1)) # +1 for CH's own data
             
-            # 数据聚合处理能耗
-            processing_energy = self.energy_model.calculate_processing_energy(
-                self.config.packet_size * 8 * len(cluster_info['members']),
-                processing_complexity=1.5  # 数据聚合复杂度
-            )
+            # 传输能耗
+            tx_energy_to_bs = self.energy_model.calculate_transmission_energy(self.config.packet_size * 8, distance_to_bs)
             
-            # 更新簇头能量
-            ch.current_energy -= (tx_energy + processing_energy)
-            total_energy_consumed += (tx_energy + processing_energy)
-            packets_transmitted += 1
-            
-            # 检查簇头是否耗尽能量
-            if ch.current_energy <= 0:
+            total_ch_energy_cost = aggregation_energy + tx_energy_to_bs
+
+            if ch.current_energy > total_ch_energy_cost:
+                ch.current_energy -= total_ch_energy_cost
+                total_energy_consumed += total_ch_energy_cost
+                packets_transmitted += 1
+                packets_received += 1 # To BS
+            else:
                 ch.is_alive = False
                 ch.current_energy = 0
-        
-        # 更新统计信息
+
+        # 更新统计
         self.stats['total_energy_consumed'] += total_energy_consumed
         self.stats['packets_transmitted'] += packets_transmitted
         self.stats['packets_received'] += packets_received
     
     def run_round(self) -> Dict:
-        """运行一轮LEACH协议"""
+        """运行一轮LEACH协议 (重构)"""
         
-        # 检查网络是否还有活跃节点
-        alive_nodes = [node for node in self.nodes if node.is_alive]
-        if not alive_nodes:
+        if not any(n.is_alive for n in self.nodes):
             return self._get_round_statistics()
         
-        # 1. 簇头选择阶段
-        cluster_heads = self._select_cluster_heads()
-        self.cluster_heads = cluster_heads
-
-        # 调试：检查簇头选择后的状态
-        active_chs_after_selection = [node for node in self.nodes if node.is_alive and node.is_cluster_head]
-        if self.round_number <= 5:
-            print(f"[调试] 选择后活跃簇头: {len(active_chs_after_selection)}")
-
-        # 2. 簇形成阶段
-        self._form_clusters(cluster_heads)
-
-        # 调试：检查簇形成后的状态
-        active_chs_after_clustering = [node for node in self.nodes if node.is_alive and node.is_cluster_head]
-        if self.round_number <= 5:
-            print(f"[调试] 簇形成后活跃簇头: {len(active_chs_after_clustering)}")
-
-        # 3. 稳态通信阶段
-        self._steady_state_communication()
-
-        # 调试：检查通信后的状态
-        active_chs_after_communication = [node for node in self.nodes if node.is_alive and node.is_cluster_head]
-        if self.round_number <= 5:
-            print(f"[调试] 通信后活跃簇头: {len(active_chs_after_communication)}")
-        
-        # 4. 更新轮数
-        self.round_number += 1
-
-        # 5. 记录本轮统计（在重置簇头状态之前）
-        round_stats = self._get_round_statistics()
-        self.stats['round_statistics'].append(round_stats)
-
-        # 6. 重置簇头状态（为下一轮准备）
+        # 1. 重置状态并选择簇头
         for node in self.nodes:
             node.is_cluster_head = False
             node.cluster_id = -1
+        
+        cluster_heads = self._select_cluster_heads()
+        self.cluster_heads = cluster_heads
+        
+        if self.round_number <= 5:
+            print(f"[调试] 选择后活跃簇头: {len(cluster_heads)}")
+
+        # 2. 形成簇
+        self._form_clusters(cluster_heads)
+        
+        if self.round_number <= 5:
+            active_members = sum(len(c['members']) for c in self.clusters.values())
+            print(f"[调试] 簇形成后: {len(self.clusters)}个簇, {active_members}个成员")
+
+        # 3. 稳态通信 (有概率跳过)
+        if random.random() < self.data_transmission_probability:
+            self._steady_state_communication()
+        else:
+            if self.round_number <= 5:
+                print(f"[调试] 轮{self.round_number}: 跳过数据传输")
+
+        if self.round_number <= 5:
+            active_chs_after_comm = sum(1 for ch in self.cluster_heads if ch.is_alive)
+            print(f"[调试] 通信后活跃簇头: {active_chs_after_comm}")
+        
+        # 4. 更新轮数和统计
+        self.round_number += 1
+        round_stats = self._get_round_statistics()
+        self.stats['round_statistics'].append(round_stats)
 
         return round_stats
     
@@ -547,7 +316,7 @@ class LEACHProtocol:
     def run_simulation(self, max_rounds: int = 1000) -> Dict:
         """运行完整的LEACH仿真"""
         
-        print(f"🚀 开始LEACH协议仿真 (最大轮数: {max_rounds})")
+        print(f">>> 开始LEACH协议仿真 (最大轮数: {max_rounds})")
         
         for round_num in range(max_rounds):
             round_stats = self.run_round()
@@ -555,7 +324,7 @@ class LEACHProtocol:
             # 检查网络生存状态
             if round_stats['alive_nodes'] == 0:
                 self.stats['network_lifetime'] = round_num
-                print(f"💀 网络在第 {round_num} 轮结束生命周期")
+                print(f"[INFO] 网络在第 {round_num} 轮结束生命周期")
                 break
             
             # 每100轮输出一次进度
@@ -565,7 +334,7 @@ class LEACHProtocol:
         
         else:
             self.stats['network_lifetime'] = max_rounds
-            print(f"✅ 仿真完成，网络在 {max_rounds} 轮后仍有节点存活")
+            print(f"[SUCCESS] 仿真完成，网络在 {max_rounds} 轮后仍有节点存活")
         
         return self.get_final_statistics()
     
@@ -861,7 +630,7 @@ class PEGASISProtocol:
     def run_simulation(self, max_rounds: int = 1000) -> Dict:
         """运行完整的PEGASIS仿真"""
 
-        print(f"🚀 开始PEGASIS协议仿真 (最大轮数: {max_rounds})")
+        print(f">>> 开始PEGASIS协议仿真 (最大轮数: {max_rounds})")
 
         for round_num in range(max_rounds):
             round_stats = self.run_round()
@@ -869,7 +638,7 @@ class PEGASISProtocol:
             # 检查网络生存状态
             if round_stats['alive_nodes'] == 0:
                 self.stats['network_lifetime'] = round_num
-                print(f"💀 网络在第 {round_num} 轮结束生命周期")
+                print(f"[INFO] 网络在第 {round_num} 轮结束生命周期")
                 break
 
             # 每100轮输出一次进度
@@ -880,7 +649,7 @@ class PEGASISProtocol:
 
         else:
             self.stats['network_lifetime'] = max_rounds
-            print(f"✅ 仿真完成，网络在 {max_rounds} 轮后仍有节点存活")
+            print(f"[SUCCESS] 仿真完成，网络在 {max_rounds} 轮后仍有节点存活")
 
         return self.get_final_statistics()
 
@@ -1039,7 +808,7 @@ class TEENProtocolWrapper:
 def test_leach_protocol():
     """测试LEACH协议实现"""
 
-    print("🧪 测试LEACH协议标准实现")
+    print("[TEST] 测试LEACH协议标准实现")
     print("=" * 50)
 
     # 创建网络配置
@@ -1060,7 +829,7 @@ def test_leach_protocol():
     results = leach.run_simulation(max_rounds=200)
 
     # 输出结果
-    print("\n📊 LEACH协议仿真结果:")
+    print("\n[RESULT] LEACH协议仿真结果:")
     print(f"   网络生存时间: {results['network_lifetime']} 轮")
     print(f"   总能耗: {results['total_energy_consumed']:.6f} J")
     print(f"   最终存活节点: {results['final_alive_nodes']}")
@@ -1071,7 +840,7 @@ def test_leach_protocol():
 def test_pegasis_protocol():
     """测试PEGASIS协议实现"""
 
-    print("\n🧪 测试PEGASIS协议标准实现")
+    print("\n[TEST] 测试PEGASIS协议标准实现")
     print("=" * 50)
 
     # 创建网络配置
@@ -1092,7 +861,7 @@ def test_pegasis_protocol():
     results = pegasis.run_simulation(max_rounds=200)
 
     # 输出结果
-    print("\n📊 PEGASIS协议仿真结果:")
+    print("\n[RESULT] PEGASIS协议仿真结果:")
     print(f"   网络生存时间: {results['network_lifetime']} 轮")
     print(f"   总能耗: {results['total_energy_consumed']:.6f} J")
     print(f"   最终存活节点: {results['final_alive_nodes']}")
@@ -1103,7 +872,7 @@ def test_pegasis_protocol():
 def test_heed_protocol():
     """测试HEED协议实现"""
 
-    print("\n🧪 测试HEED协议标准实现")
+    print("\n[TEST] 测试HEED协议标准实现")
     print("=" * 50)
 
     # 创建网络配置
@@ -1124,7 +893,7 @@ def test_heed_protocol():
     results = heed.run_simulation(max_rounds=200)
 
     # 输出结果
-    print("\n📊 HEED协议仿真结果:")
+    print("\n[RESULT] HEED协议仿真结果:")
     print(f"   网络生存时间: {results['network_lifetime']} 轮")
     print(f"   总能耗: {results['total_energy_consumed']:.6f} J")
     print(f"   最终存活节点: {results['final_alive_nodes']}")
@@ -1135,7 +904,7 @@ def test_heed_protocol():
 def test_teen_protocol():
     """测试TEEN协议实现"""
 
-    print("\n🧪 测试TEEN协议标准实现")
+    print("\n[TEST] 测试TEEN协议标准实现")
     print("=" * 50)
 
     # 创建网络配置
@@ -1156,7 +925,7 @@ def test_teen_protocol():
     results = teen.run_simulation(max_rounds=200)
 
     # 输出结果
-    print("\n📊 TEEN协议仿真结果:")
+    print("\n[RESULT] TEEN协议仿真结果:")
     print(f"   网络生存时间: {results['network_lifetime']} 轮")
     print(f"   总能耗: {results['total_energy_consumed']:.6f} J")
     print(f"   最终存活节点: {results['final_alive_nodes']}")
@@ -1168,7 +937,7 @@ def test_teen_protocol():
 
 def test_all_protocols():
     """测试所有基准协议"""
-    print("🚀 WSN基准协议对比测试")
+    print(">>> WSN基准协议对比测试")
     print("=" * 60)
 
     test_leach_protocol()

@@ -1,0 +1,26 @@
+{
+  "BASE": {
+    "total_energy_consumed": 63.05887044529295,
+    "packet_delivery_ratio": 0.8918999404407385,
+    "packet_delivery_ratio_end2end": 0.7528752875287529,
+    "final_alive_nodes": 49
+  },
+  "GW_K1": {
+    "total_energy_consumed": 52.24149134445162,
+    "packet_delivery_ratio": 0.903968887116075,
+    "packet_delivery_ratio_end2end": 0.8051831098659196,
+    "final_alive_nodes": 49
+  },
+  "SKv2": {
+    "total_energy_consumed": 60.306115813349074,
+    "packet_delivery_ratio": 0.8989868891537545,
+    "packet_delivery_ratio_end2end": 0.6367,
+    "final_alive_nodes": 50
+  },
+  "BOTH": {
+    "total_energy_consumed": 53.12599586449544,
+    "packet_delivery_ratio": 0.9068793619142572,
+    "packet_delivery_ratio_end2end": 0.7999799879927957,
+    "final_alive_nodes": 49
+  }
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "lambda_uncertainty": 0.0,
+    "conf_threshold": 0.3,
+    "total_energy_consumed": 53.56537001212724,
+    "pdr_end2end_mean": 0.795,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9076480507886122,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.0,
+    "conf_threshold": 0.4,
+    "total_energy_consumed": 53.24508524655442,
+    "pdr_end2end_mean": 0.83,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9114087301587301,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.2,
+    "conf_threshold": 0.3,
+    "total_energy_consumed": 53.95257660119791,
+    "pdr_end2end_mean": 0.8,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9079730265767553,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.2,
+    "conf_threshold": 0.4,
+    "total_energy_consumed": 52.83463331448651,
+    "pdr_end2end_mean": 0.765,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9073853484216796,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.5,
+    "conf_threshold": 0.3,
+    "total_energy_consumed": 52.79819483516931,
+    "pdr_end2end_mean": 0.83,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9135398054397459,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.5,
+    "conf_threshold": 0.4,
+    "total_energy_consumed": 53.785770881625325,
+    "pdr_end2end_mean": 0.79,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9084597837945056,
+    "lifetime": 200
+  }
+]

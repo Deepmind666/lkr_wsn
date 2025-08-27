@@ -1,0 +1,10 @@
+{
+  "PEGASIS": {
+    "total_energy_consumed": 4.516906,
+    "packet_delivery_ratio": 0.9814814814814815,
+    "packet_delivery_ratio_end2end": 1.0,
+    "network_lifetime": 200,
+    "alive_nodes": 54,
+    "dead_nodes": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "GW_K1": {
+    "total_energy_consumed": 79.50285356373162,
+    "packet_delivery_ratio": 0.8732344213649852,
+    "packet_delivery_ratio_end2end": 0.8160615532579947,
+    "final_alive_nodes": 24
+  },
+  "BOTH_conditional": {
+    "total_energy_consumed": 79.73225174037874,
+    "packet_delivery_ratio": 0.871222076215506,
+    "packet_delivery_ratio_end2end": 0.8063422900024207,
+    "final_alive_nodes": 24
+  }
+}

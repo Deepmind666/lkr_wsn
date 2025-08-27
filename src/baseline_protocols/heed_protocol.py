@@ -90,11 +90,14 @@ class HEEDProtocol:
         self.total_energy_consumed = 0.0
         self.packets_sent = 0
         self.packets_received = 0
+        # 端到端统计（统一为源→BS口径）
+        self.total_source_packets = 0
+        self.total_bs_delivered = 0
         self.dead_nodes = 0
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
-        
+
         # 初始化邻居关系
         self.initialize_neighbors()
         
@@ -270,22 +273,26 @@ class HEEDProtocol:
         for ch in cluster_heads:
             if not ch.is_alive:
                 continue
-            
+
             # 数据聚合能耗
             aggregation_energy = self.E_DA * self.packet_size * len(ch.cluster_members)
             ch.consume_energy(aggregation_energy)
             round_energy_consumption += aggregation_energy
-            
+
             # 向基站传输
-            bs_distance = math.sqrt((ch.x - self.base_station[0])**2 + 
+            bs_distance = math.sqrt((ch.x - self.base_station[0])**2 +
                                   (ch.y - self.base_station[1])**2)
             tx_energy = self.calculate_transmission_energy(bs_distance, self.packet_size)
             ch.consume_energy(tx_energy)
             round_energy_consumption += tx_energy
-            
+
             self.packets_sent += 1
-            self.packets_received += 1  # 假设基站总是能接收到
-        
+            # 统一端到端口径：聚合成功则按簇成员数+CH自身计一次端到端送达
+            delivered = 1 + len([m for m in ch.cluster_members if m.is_alive])
+            self.total_bs_delivered += delivered
+            # 源包总数累加（本轮所有簇域内成员 + CH 自身）
+            self.total_source_packets += delivered
+
         self.total_energy_consumed += round_energy_consumption
         self.energy_consumption_per_round.append(round_energy_consumption)
     
@@ -343,6 +350,9 @@ class HEEDProtocol:
             'packets_sent': self.packets_sent,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': self.packets_received / max(self.packets_sent, 1),
+                'packet_delivery_ratio_end2end': self.total_bs_delivered / max(self.total_source_packets, 1),
+                'bs_delivered': self.total_bs_delivered,
+                'source_packets': self.total_source_packets,
             'dead_nodes': self.dead_nodes,
             'alive_nodes': len(self.nodes) - self.dead_nodes,
             'energy_consumption_per_round': self.energy_consumption_per_round,

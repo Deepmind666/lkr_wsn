@@ -1,0 +1,20 @@
+name: aether-wsn
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  - scipy
+  - scikit-learn
+  - networkx
+  - tqdm
+  - requests
+  - pip
+  - pip:
+      - scikit-fuzzy
+      # PyTorch will be installed after GPU/CUDA detection (see setup_conda_env.ps1)
+

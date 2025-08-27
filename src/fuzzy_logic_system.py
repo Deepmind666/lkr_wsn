@@ -103,8 +103,24 @@ class FuzzyLogicSystem:
                       self.cluster_head_chance['high']),
             
             # 规则10：如果到基站距离远且能量低，则簇头机会很低
-            ctrl.Rule(self.distance_to_bs['far'] & self.residual_energy['low'], 
-                      self.cluster_head_chance['very_low'])
+            ctrl.Rule(self.distance_to_bs['far'] & self.residual_energy['low'],
+                      self.cluster_head_chance['very_low']),
+
+            # 新增规则：结合链路质量
+            # 规则11: 如果链路质量好且能量高，则簇头机会非常高
+            ctrl.Rule(self.link_quality['good'] & self.residual_energy['high'],
+                      self.cluster_head_chance['very_high']),
+            
+            # 规则12: 如果链路质量好但能量中等，则簇头机会高
+            ctrl.Rule(self.link_quality['good'] & self.residual_energy['medium'],
+                      self.cluster_head_chance['high']),
+
+            # 规则13: 如果链路质量差，则显著降低簇头机会
+            ctrl.Rule(self.link_quality['poor'], self.cluster_head_chance['very_low']),
+
+            # 规则14: 如果链路质量好，且邻居多，则是一个非常理想的簇头
+            ctrl.Rule(self.link_quality['good'] & self.node_degree['many'],
+                      self.cluster_head_chance['very_high'])
         ]
         
         # 定义模糊规则 - 下一跳选择规则
@@ -148,7 +164,7 @@ class FuzzyLogicSystem:
         self.ch_simulator = ctrl.ControlSystemSimulation(self.ch_ctrl)
         self.nh_simulator = ctrl.ControlSystemSimulation(self.nh_ctrl)
     
-    def calculate_cluster_head_chance(self, residual_energy, node_centrality, node_degree, distance_to_bs):
+    def calculate_cluster_head_chance(self, residual_energy, node_centrality, node_degree, distance_to_bs, link_quality):
         """计算节点成为簇头的机会
         
         参数:
@@ -156,6 +172,7 @@ class FuzzyLogicSystem:
             node_centrality (float): 节点中心性 [0,1]
             node_degree (int): 节点度（邻居数量）
             distance_to_bs (float): 到基站的距离
+            link_quality (float): 链路质量指数 [0,1]
             
         返回:
             float: 节点成为簇头的机会 [0,1]
@@ -165,6 +182,7 @@ class FuzzyLogicSystem:
         self.ch_simulator.input['node_centrality'] = node_centrality
         self.ch_simulator.input['node_degree'] = min(node_degree, 20)  # 限制在定义范围内
         self.ch_simulator.input['distance_to_bs'] = min(distance_to_bs, 300)  # 限制在定义范围内
+        self.ch_simulator.input['link_quality'] = link_quality
         
         # 计算
         try:

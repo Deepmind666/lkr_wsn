@@ -1,0 +1,44 @@
+{
+  "figures": [
+    {
+      "id": "F1",
+      "caption": "Intel – AETHER Energy (200 rounds)",
+      "file": "results/plots_curated/paper_intel_energy.png"
+    },
+    {
+      "id": "F2",
+      "caption": "Intel – AETHER PDR End-to-End (200 rounds)",
+      "file": "results/plots_curated/paper_intel_pdr.png"
+    },
+    {
+      "id": "F3",
+      "caption": "Intel – AETHER vs Baselines: Energy",
+      "file": "results/plots_curated/paper_intel_baselines_energy.png"
+    },
+    {
+      "id": "F4",
+      "caption": "Intel – AETHER vs Baselines: PDR End-to-End",
+      "file": "results/plots_curated/paper_intel_baselines_pdr.png"
+    },
+    {
+      "id": "F5",
+      "caption": "Intel – Predicted env (LSTM/TCN) vs Conservative: Energy",
+      "file": "results/plots_curated/paper_intel_predenv_energy.png"
+    },
+    {
+      "id": "F6",
+      "caption": "Intel – Predicted env (LSTM/TCN) vs Conservative: PDR End-to-End",
+      "file": "results/plots_curated/paper_intel_predenv_pdr.png"
+    },
+    {
+      "id": "F7",
+      "caption": "Intel – PDR with 95% CI (n=50)",
+      "file": "results/plots_curated/paper_intel_sig_pdr.png"
+    },
+    {
+      "id": "F8",
+      "caption": "Intel – Energy with 95% CI (n=50)",
+      "file": "results/plots_curated/paper_intel_sig_energy.png"
+    }
+  ]
+}

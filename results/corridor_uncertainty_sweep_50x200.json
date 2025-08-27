@@ -1,0 +1,23 @@
+[
+  {
+    "lambda_uncertainty": 0.0,
+    "total_energy_consumed": 53.373920317894296,
+    "pdr_end2end": 0.8049489080344621,
+    "pdr_hop": 0.910828025477707,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.2,
+    "total_energy_consumed": 59.77655631757776,
+    "pdr_end2end": 0.7539219629927595,
+    "pdr_hop": 0.8997126152016649,
+    "lifetime": 200
+  },
+  {
+    "lambda_uncertainty": 0.5,
+    "total_energy_consumed": 61.04228276772828,
+    "pdr_end2end": 0.7991194839766561,
+    "pdr_hop": 0.9059846340477153,
+    "lifetime": 200
+  }
+]

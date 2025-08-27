@@ -1,0 +1,38 @@
+[
+  {
+    "T": 1,
+    "theta": 0.1,
+    "total_energy_consumed": 64.48051331949436,
+    "pdr_end2end_mean": 0.8092256313921937,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9010644959298685,
+    "lifetime": 200
+  },
+  {
+    "T": 1,
+    "theta": 0.2,
+    "total_energy_consumed": 64.68168531428648,
+    "pdr_end2end_mean": 0.8122845502977123,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9026428496813956,
+    "lifetime": 200
+  },
+  {
+    "T": 2,
+    "theta": 0.1,
+    "total_energy_consumed": 66.00840072118211,
+    "pdr_end2end_mean": 0.7458841137481291,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9021808851828095,
+    "lifetime": 200
+  },
+  {
+    "T": 2,
+    "theta": 0.2,
+    "total_energy_consumed": 65.66880978471228,
+    "pdr_end2end_mean": 0.773030142781597,
+    "pdr_end2end_p05": 0.0,
+    "pdr_hop": 0.9011105235325225,
+    "lifetime": 200
+  }
+]

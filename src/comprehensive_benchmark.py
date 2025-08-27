@@ -91,7 +91,7 @@ class ComprehensiveBenchmark:
         seed = int(hashlib.md5(seed_string.encode()).hexdigest()[:8], 16)
         random.seed(seed)
 
-        print(f"      🎲 实验 {experiment_id} 使用随机种子: {seed}")
+        print(f"      [INFO] 实验 {experiment_id} 使用随机种子: {seed}")
 
         # 创建协议实例
         if protocol_class == IntegratedEnhancedEEHFRProtocol:
@@ -133,7 +133,7 @@ class ComprehensiveBenchmark:
                               config_name: str) -> Dict:
         """运行协议对比实验"""
         
-        print(f"\n🔬 运行实验配置: {config_name}")
+        print(f"\n[INFO] 运行实验配置: {config_name}")
         print(f"   节点数: {network_config.num_nodes}, "
               f"区域: {network_config.area_width}x{network_config.area_height}, "
               f"初始能量: {network_config.initial_energy}J")
@@ -147,7 +147,7 @@ class ComprehensiveBenchmark:
         comparison_results = {}
         
         for protocol_name, protocol_class in protocols:
-            print(f"   🧪 测试 {protocol_name} 协议...")
+            print(f"   [TEST] 测试 {protocol_name} 协议...")
             
             protocol_results = []
             
@@ -167,7 +167,7 @@ class ComprehensiveBenchmark:
                               f"能效: {result.energy_efficiency:.1f}")
                 
                 except Exception as e:
-                    print(f"      ❌ 实验失败: {e}")
+                    print(f"      [ERROR] 实验失败: {e}")
                     continue
             
             if protocol_results:
@@ -209,7 +209,7 @@ class ComprehensiveBenchmark:
     def run_comprehensive_benchmark(self) -> Dict:
         """运行综合基准测试"""
         
-        print("🚀 开始WSN协议综合基准测试")
+        print(">>> 开始WSN协议综合基准测试")
         print("=" * 60)
         print(f"硬件平台: {self.config.hardware_platform.value}")
         print(f"重复次数: {self.config.repeat_times}")
@@ -249,10 +249,19 @@ class ComprehensiveBenchmark:
         """保存实验结果"""
         
         timestamp = time.strftime("%Y%m%d_%H%M%S")
+
+        # --- 鲁棒路径修复 ---
+        # 获取当前脚本所在的目录
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        # 构建到项目根目录的绝对路径 (src -> project root)
+        project_root = os.path.abspath(os.path.join(script_dir, '..'))
+        # 构建绝对的结果目录路径
+        results_dir_abs = os.path.join(project_root, 'results', 'benchmark_experiments')
+        os.makedirs(results_dir_abs, exist_ok=True)
         
         # 保存详细结果 (JSON格式)
         detailed_file = os.path.join(
-            self.config.results_directory, 
+            results_dir_abs,
             f"detailed_results_{timestamp}.json"
         )
         
@@ -269,16 +278,16 @@ class ComprehensiveBenchmark:
         with open(detailed_file, 'w', encoding='utf-8') as f:
             json.dump(serializable_results, f, indent=2, ensure_ascii=False)
         
-        print(f"\n💾 详细结果已保存: {detailed_file}")
+        print(f"\n[SAVE] 详细结果已保存: {detailed_file}")
         
         # 保存汇总结果 (Markdown格式)
         summary_file = os.path.join(
-            self.config.results_directory,
+            results_dir_abs,
             f"benchmark_summary_{timestamp}.md"
         )
         
         self._generate_summary_report(results, summary_file)
-        print(f"📊 汇总报告已保存: {summary_file}")
+        print(f"[SAVE] 汇总报告已保存: {summary_file}")
     
     def _generate_summary_report(self, results: Dict, output_file: str):
         """生成汇总报告"""
@@ -345,8 +354,8 @@ def main():
     # 运行综合基准测试
     results = benchmark.run_comprehensive_benchmark()
     
-    print("\n✅ 综合基准测试完成！")
-    print("📁 结果文件保存在: ../results/benchmark_experiments/")
+    print("\n[SUCCESS] 综合基准测试完成！")
+    print("[INFO] 结果文件保存在: ../results/benchmark_experiments/")
 
 if __name__ == "__main__":
     main()

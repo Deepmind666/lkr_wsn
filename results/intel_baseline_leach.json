@@ -1,0 +1,12 @@
+{
+  "LEACH": {
+    "total_energy_consumed": 4.012350239999997,
+    "packet_delivery_ratio": 0.0,
+    "network_lifetime": 200,
+    "alive_nodes": 54,
+    "dead_nodes": 0
+  },
+  "geometry": {
+    "num_nodes": 54
+  }
+}
