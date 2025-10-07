@@ -1,14 +1,14 @@
-# 📁 Enhanced EEHFR WSN Protocol 项目结构记录
+# 📁 Enhanced AERIS WSN Protocol 项目结构记录
 
 ## 🏗️ **完整项目目录结构**
 
 ```
-D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\
+D:\lkr_wsn\Enhanced-AERIS-WSN-Protocol\
 ├── 📁 src/                           # 核心源代码
-│   ├── 🐍 EEHFR_protocol.py         # Enhanced EEHFR协议核心实现
+│   ├── 🐍 AERIS_protocol.py         # Enhanced AERIS协议核心实现
 │   ├── 🐍 intel_dataset_loader.py   # Intel Lab数据集加载器
 │   ├── 🐍 realistic_channel_model.py # 真实信道建模框架 ⭐
-│   ├── 🐍 enhanced_eehfr_realistic.py # 环境感知EEHFR协议 ⭐
+│   ├── 🐍 enhanced_eehfr_realistic.py # 环境感知AERIS协议 ⭐
 │   ├── 🐍 baseline_protocols.py     # 基准协议实现 (LEACH, PEGASIS, HEED)
 │   └── 🐍 wsn_node.py              # WSN节点基础类
 │
@@ -81,7 +81,7 @@ D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\
 **状态**: ✅ 已完成并验证
 **重要性**: ⭐⭐⭐⭐⭐ (项目核心)
 
-#### **2. `src/enhanced_eehfr_realistic.py`** - 环境感知EEHFR协议
+#### **2. `src/enhanced_eehfr_realistic.py`** - 环境感知AERIS协议
 ```python
 # 核心功能
 - 实时RSSI/LQI监测与分析
@@ -89,7 +89,7 @@ D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\
 - 温湿度感知的能耗建模
 - 干扰感知的重传机制
 ```
-**功能**: 将真实环境建模集成到Enhanced EEHFR协议
+**功能**: 将真实环境建模集成到Enhanced AERIS协议
 **状态**: ✅ 初步完成，需要深度优化
 **重要性**: ⭐⭐⭐⭐⭐ (协议创新核心)
 
@@ -154,7 +154,7 @@ D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\
 
 ### **📈 实验结果数据**
 1. **最新协议对比结果** (`results/latest_results.json`)
-   - EEHFR能耗: 26.89J (改进7.9%)
+   - AERIS能耗: 26.89J (改进7.9%)
    - LEACH能耗: 29.19J
    - PEGASIS能耗: 29.19J  
    - HEED能耗: 100.18J
@@ -224,7 +224,7 @@ pyyaml>=5.4.0
 ## 🚨 **重要提醒**
 
 ### **文件路径规范**
-- **绝对路径**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\`
+- **绝对路径**: `D:\lkr_wsn\Enhanced-AERIS-WSN-Protocol\`
 - **相对路径**: 基于项目根目录
 - **避免路径**: `d:\lkr_yolo\` (YOLO项目专用)
 
@@ -247,3 +247,6 @@ pyyaml>=5.4.0
 **维护责任人**: Augment Agent  
 **更新频率**: 结构变化时更新  
 **版本**: 1.0
+
+
+**Branding Update**: ��Ŀ���Ʊ��Ϊ AERIS������������������·�����ּ��ݣ������Ա���Ǩ�ơ�
