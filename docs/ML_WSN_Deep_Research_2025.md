@@ -3,7 +3,7 @@
 ## 📋 调研目标
 - 深度分析机器学习在WSN路由中的最新应用
 - 识别真正有价值的ML+WSN研究方向
-- 为Enhanced EEHFR的ML集成提供科学依据
+- 为Enhanced AERIS的ML集成提供科学依据
 - 避免概念炒作，专注实际技术价值
 
 ---
@@ -228,13 +228,13 @@ ESP32: 可以运行小型神经网络 (权重数<10K)
 
 ---
 
-## 💡 **针对Enhanced EEHFR的ML集成方案**
+## 💡 **针对Enhanced AERIS的ML集成方案**
 
 ### **方案1: 强化学习路由决策 (推荐指数: ⭐⭐⭐⭐⭐)**
 
 #### **技术架构**:
 ```python
-class RLEnhancedEEHFR:
+class RLEnhancedAERIS:
     def __init__(self):
         # Q-Learning参数
         self.q_table = {}
@@ -373,7 +373,7 @@ class LSTMEnergyPredictor:
 ```python
 class PredictiveRLRouting:
     def __init__(self):
-        self.rl_agent = RLEnhancedEEHFR()
+        self.rl_agent = RLEnhancedAERIS()
         self.energy_predictor = LSTMEnergyPredictor()
     
     def enhanced_state_representation(self, node):
@@ -529,8 +529,8 @@ class CooperationProtocol:
 #### **基准协议**:
 - LEACH (经典分簇)
 - PEGASIS (链式路由)
-- Enhanced EEHFR (现有实现)
-- **ML-Enhanced EEHFR (新提出)**
+- Enhanced AERIS (现有实现)
+- **ML-Enhanced AERIS (新提出)**
 
 #### **实验场景**:
 ```python
@@ -566,13 +566,13 @@ evaluation_metrics = {
 #### **基于文献调研的性能预期**:
 ```python
 performance_expectations = {
-    'RL_Enhanced_EEHFR': {
+    'RL_Enhanced_AERIS': {
         'network_lifetime': '+15-20%',  # 基于TMC 2024论文
         'energy_efficiency': '+12-18%', # 基于Computer Networks 2024
         'adaptability': '+25-30%',      # 基于INFOCOM 2024
         'implementation_complexity': 'Medium'
     },
-    'LSTM_RL_EEHFR': {
+    'LSTM_RL_AERIS': {
         'network_lifetime': '+20-25%',  # 预测能力带来的提升
         'energy_efficiency': '+15-22%',
         'prediction_accuracy': '85-90%',
@@ -592,7 +592,7 @@ performance_expectations = {
 ## 🎯 **推荐的技术路线**
 
 ### **阶段1: RL增强版本 (2-3周)**
-- **目标**: 实现Q-Learning增强的Enhanced EEHFR
+- **目标**: 实现Q-Learning增强的Enhanced AERIS
 - **技术难度**: ⭐⭐⭐
 - **预期提升**: 15-20%
 - **学术价值**: 符合当前ML+WSN研究热点
@@ -631,7 +631,7 @@ performance_expectations = {
 - ❌ **大型深度网络**: 需要边缘计算支持
 
 ### **立即行动计划**:
-1. **本周**: 实现Q-Learning增强的Enhanced EEHFR
+1. **本周**: 实现Q-Learning增强的Enhanced AERIS
 2. **下周**: 设计奖励函数和状态空间
 3. **第3周**: 完成实验验证和性能对比
 4. **第4周**: 撰写论文初稿
@@ -642,4 +642,4 @@ performance_expectations = {
 
 ---
 
-**这份调研报告为Enhanced EEHFR的ML集成提供了科学依据，避免了概念炒作，专注于真正有价值的技术创新。**
+**这份调研报告为Enhanced AERIS的ML集成提供了科学依据，避免了概念炒作，专注于真正有价值的技术创新。**

@@ -1,4 +1,4 @@
-# 📊 Enhanced EEHFR项目当前进展总结
+# 📊 AERIS 项目当前进展总结
 
 ## 🎯 **项目目标确认**
 - **期刊定位**: SCI Q3 (Ad Hoc Networks, Wireless Networks, Computer Networks)
@@ -47,7 +47,7 @@
 #### ✅ **核心实验数据** (基于latest_results.json)
 ```
 协议性能对比 (50节点, 500轮):
-- Enhanced EEHFR: 10.432J (基准)
+- AERIS: 10.432J (基准)
 - PEGASIS: 11.329J (+7.9%能耗)
 - LEACH: 24.160J (+131.6%能耗)  
 - HEED: 48.468J (+364.6%能耗)
@@ -55,16 +55,16 @@
 关键指标：
 ✅ 网络生存时间: 500轮 (100%节点存活)
 ✅ 包投递率: 100%
-✅ 能效比: Enhanced EEHFR最优 (2,396.4 packets/J)
+✅ 能效比: AERIS 最优 (2,396.4 packets/J)
 ```
 
 #### ✅ **补充实验数据** (新完成)
 **不同网络规模实验结果**:
 ```
-25节点: Enhanced EEHFR 5.263J vs PEGASIS 5.660J (7.0%改进, p<0.001)
-50节点: Enhanced EEHFR 10.379J vs PEGASIS 11.331J (8.4%改进, p<0.001)
-75节点: Enhanced EEHFR 15.680J vs PEGASIS 16.991J (7.7%改进, p<0.001)
-100节点: Enhanced EEHFR 20.893J vs PEGASIS 22.651J (7.8%改进, p<0.001)
+25节点: AERIS 5.263J vs PEGASIS 5.660J (7.0%改进, p<0.001)
+50节点: AERIS 10.379J vs PEGASIS 11.331J (8.4%改进, p<0.001)
+75节点: AERIS 15.680J vs PEGASIS 16.991J (7.7%改进, p<0.001)
+100节点: AERIS 20.893J vs PEGASIS 22.651J (7.8%改进, p<0.001)
 ```
 
 **统计显著性验证**:
@@ -301,7 +301,7 @@ experiments/
 
 ## 📞 **总结**
 
-我们的Enhanced EEHFR项目已经完成了**核心技术开发**和**主要实验验证**，论文写作进度达到**40%**。基于真实的Intel Berkeley Lab数据集，我们证实了**7.0%-8.4%的能耗改进**，并通过严格的统计检验确保了结果的可靠性。
+我们的 AERIS 项目已经完成了**核心技术开发**和**主要实验验证**，论文写作进度达到**40%**。基于真实的Intel Berkeley Lab数据集，我们证实了**7.0%-8.4%的能耗改进**，并通过严格的统计检验确保了结果的可靠性。
 
 **下一步的重点**是完成剩余的论文章节写作，特别是Introduction、Related Work和System Model部分。按照当前的进度，我们有信心在**6-8周内**完成高质量的SCI Q3论文并成功投稿。
 

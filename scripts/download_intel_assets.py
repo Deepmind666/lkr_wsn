@@ -4,7 +4,8 @@ import os, sys, requests
 
 URLS = {
     'mote_locs.txt': 'https://db.csail.mit.edu/labdata/mote_locs.txt',
-    # Note: connectivity probabilities file is not directly linked with a stable name; leave for manual placement if needed
+    'connectivity.txt': 'https://db.csail.mit.edu/labdata/connectivity.txt',
+    'data.txt.gz': 'https://db.csail.mit.edu/labdata/data.txt.gz',
 }
 
 if __name__ == '__main__':
@@ -14,7 +15,7 @@ if __name__ == '__main__':
         out = os.path.join(base, name)
         try:
             print('Downloading', url, '->', out)
-            r = requests.get(url, timeout=30)
+            r = requests.get(url, timeout=60)
             r.raise_for_status()
             with open(out, 'wb') as f:
                 f.write(r.content)

@@ -3,8 +3,10 @@
 import os, sys, json, math, random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 import numpy as np
+BASE_SEED = int(os.environ.get('AERIS_SEED', '40001'))
+
 from benchmark_protocols import NetworkConfig
-from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
+from aeris_protocol import AerisProtocol
 from intel_dataset_loader import IntelLabDataLoader
 
 # 95% CI helper
@@ -55,16 +57,18 @@ if __name__ == '__main__':
     cfg = NetworkConfig(num_nodes=n, area_width=width, area_height=height, initial_energy=2.0, packet_size=1024)
 
     summary = {}
-    for name, opts in VARIANTS.items():
+    seed_registry = {k: [] for k in VARIANTS}
+    for idx, (name, opts) in enumerate(VARIANTS.items()):
         energies = []
         pdrs = []
         for r in range(repeats):
-            seed = 1000 + r
+            seed = BASE_SEED + idx * repeats + r
             random.seed(seed); np.random.seed(seed)
-            proto = IntegratedEnhancedEEHFRProtocol(cfg,
+            proto = AerisProtocol(cfg,
                 enable_cas=opts['enable_cas'], enable_fairness=opts['enable_fairness'],
                 enable_gateway=opts['enable_gateway'], enable_skeleton=False,
-                profile=opts['safety'], verbose=False)
+                profile=opts['safety'], verbose=False, seed=seed)
+            seed_registry[name].append(seed)
             # place nodes to real geometry normalized to [0,width],[0,height]
             for i,(x,y) in enumerate(zip(xs, ys)):
                 proto.nodes[i].x = float(x) - minx
@@ -76,12 +80,13 @@ if __name__ == '__main__':
         mean_e, ci_e = _def(energies)
         mean_p, ci_p = _def(pdrs)
         summary[name] = {
-            'energy': {'mean': mean_e, 'ci95': ci_e},
-            'pdr_end2end': {'mean': mean_p, 'ci95': ci_p},
-            'repeats': repeats
+            'energy': {'mean': mean_e, 'ci95': ci_e, 'values': energies},
+            'pdr_end2end': {'mean': mean_p, 'ci95': ci_p, 'values': pdrs},
+            'runtime': {'seed_list': seed_registry[name], 'repeats': repeats}
         }
         print(f"[ABLT] {name}: energy={mean_e:.3f}±{ci_e:.3f}, pdr={mean_p:.3f}±{ci_p:.3f}")
 
+    summary['meta'] = {'base_seed': BASE_SEED, 'repeats': repeats}
     out_path = os.path.join(os.path.dirname(__file__), '..', 'results', 'intel_ablation.json')
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, 'w', encoding='utf-8') as f:

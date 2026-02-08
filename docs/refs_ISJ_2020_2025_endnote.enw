@@ -1,0 +1,51 @@
+%0 Journal Article
+%F Ren2024_IoTJ_MeFi
+%M Ren2024_IoTJ_MeFi
+%T MeFi: Mean Field Reinforcement Learning for Cooperative Routing in Wireless Sensor Networks
+%J IEEE Internet of Things Journal
+%V 11
+%N 1
+%P 995-1011
+%D 2024
+%U https://ieeexplore.ieee.org/document/10164652/
+%A Ren, J.
+%A Zheng, J.
+%A Guo, X.
+%A Song, T.
+%A Wang, X.
+%A Wang, S.
+%A Zhang, W.
+%K Wireless Sensor Networks; mean-field reinforcement learning; cooperative routing; energy efficiency; network lifetime
+%X MeFi proposes a cooperative routing framework for large-scale WSNs using mean-field reinforcement learning to approximate multi-agent interactions, improving energy efficiency and balance while maintaining delivery performance to prolong network lifetime.
+
+%0 Journal Article
+%F Okine2024_TNSM
+%M Okine2024_TNSM
+%T Multi-Agent Deep Reinforcement Learning for Packet Routing in Tactical Mobile Sensor Networks
+%J IEEE Transactions on Network and Service Management
+%V 21
+%N 2
+%P 2155-2169
+%D 2024
+%U https://doi.org/10.1109/TNSM.2024.3352014
+%A Okine, Andrews A.
+%A Adam, Nadir
+%A Naeem, Faisal
+%A Kaddoum, Georges
+%K Wireless Sensor Networks; tactical; jamming; multi-agent deep reinforcement learning; routing; multi-sink
+%X Proposes a distributed MADRL-based routing scheme for multi-sink tactical mobile sensor networks under link-layer jamming; reward considers hop count to nearest sink, one-hop delay, next-hop PLR, and forwarding energy cost; outperforms baselines in PDR, latency, and energy efficiency.
+
+%0 Journal Article
+%F Kaur2021_JIOT
+%T Energy-Efficient Intelligent Routing Scheme for IoT-Enabled WSNs
+%J IEEE Internet of Things Journal
+%V 8
+%N 14
+%P 11440-11449
+%D 2021
+%U https://doi.org/10.1109/JIOT.2021.9324772
+%A Kaur, Gagandeep
+%A Chanak, Prasenjit
+%A Bhattacharya, Mahua
+%K Wireless Sensor Networks; deep reinforcement learning; unequal clustering; IoT; energy efficiency; delay
+%X A DRL-based intelligent routing approach with unequal clustering guided by current data load reduces delay and extends network lifetime; ns-3 experiments show gains in alive nodes, packet delivery, energy efficiency, and communication delay versus state-of-the-art.

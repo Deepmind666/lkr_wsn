@@ -1,7 +1,7 @@
 # 诚实的现实检查报告
 
 **日期**: 2025年1月30日  
-**检查人**: Enhanced EEHFR Research Team  
+**检查人**: Enhanced AERIS Research Team  
 **目的**: 诚实评估项目进展，避免夸大和吹牛
 
 ---
@@ -141,7 +141,7 @@ def run_single_experiment(self, protocol_class, network_config, experiment_id):
 3. 📊 更新所有相关文档和声明
 
 ### **中期行动** (下周)
-1. 🧪 Enhanced EEHFR协议集成和测试
+1. 🧪 Enhanced AERIS协议集成和测试
 2. 🧪 三协议全面对比
 3. 📝 基于真实数据撰写论文
 

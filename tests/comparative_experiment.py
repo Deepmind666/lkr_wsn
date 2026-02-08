@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 """
 WSN路由协议对比实验框架
-使用Intel Lab真实数据集对比EEHFR与经典协议的性能
+使用Intel Lab真实数据集对比AERIS与经典协议的性能
 
 对比协议:
 - LEACH (Low-Energy Adaptive Clustering Hierarchy)
 - PEGASIS (Power-Efficient Gathering in Sensor Information Systems)  
 - HEED (Hybrid Energy-Efficient Distributed clustering)
-- EEHFR (Energy-Efficient Hybrid Fuzzy Routing) - 我们的协议
+- AERIS (Energy-Efficient Hybrid Fuzzy Routing) - 我们的协议
 
-项目路径: EEHFR：融合模糊逻辑与混合元启发式优化的WSN智能节能路由协议/EEHFR_Optimized_v1/
+项目路径: AERIS：融合模糊逻辑与混合元启发式优化的WSN智能节能路由协议/AERIS_Optimized_v1/
 数据源: Intel Berkeley Research Lab数据集 (https://db.csail.mit.edu/labdata/labdata.html)
 """
 
@@ -98,7 +98,7 @@ class ComparativeExperiment:
         生成网络拓扑
         
         参数:
-            protocol_type: 协议类型 ('LEACH', 'PEGASIS', 'HEED', 'EEHFR')
+            protocol_type: 协议类型 ('LEACH', 'PEGASIS', 'HEED', 'AERIS')
         
         返回:
             节点列表

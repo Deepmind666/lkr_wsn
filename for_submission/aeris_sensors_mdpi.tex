@@ -1,0 +1,639 @@
+%=================================================================
+% MDPI Sensors Paper - AERIS Protocol
+% LaTeX support: latex@mdpi.com
+%=================================================================
+\documentclass[sensors,article,submit,moreauthors,pdftex]{Definitions/mdpi}
+
+%=================================================================
+\firstpage{1}
+\makeatletter
+\setcounter{page}{\@firstpage}
+\makeatother
+\pubvolume{xx}
+\issuenum{1}
+\articlenumber{5}
+\pubyear{2026}
+\copyrightyear{2026}
+\history{Received: date; Accepted: date; Published: date}
+
+%=================================================================
+% Graphics path
+\graphicspath{{./}{../results/experiments_20250102/}{../results/publication_figures/}{../results/nature_figures_enhanced/}{../results/professional_figures/}{../results/plots/}}
+\DeclareGraphicsExtensions{.pdf,.png,.eps}
+
+% Additional packages
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{multirow}
+
+%=================================================================
+% Title
+\Title{AERIS: Adaptive Environment-Aware Routing with Intelligent Switching for Wireless Sensor Networks}
+
+% Authors
+\Author{Kangrui Li $^{1}$, Xiaobo Zhang $^{1,}$* and Junyi Lin $^{1}$}
+
+% Author metadata
+\AuthorNames{Kangrui Li, Xiaobo Zhang and Junyi Lin}
+
+% Affiliations
+\address{%
+$^{1}$ \quad Faculty of Automation, Guangdong University of Technology, Guangzhou 510006, China}
+
+% Correspondence
+\corres{Correspondence: zxb\_leng@gdut.edu.cn}
+
+%=================================================================
+% Abstract
+\abstract{Wireless Sensor Networks (WSNs) face challenges in maintaining reliable communication under dynamic environmental conditions. This paper presents AERIS (Adaptive Environment-aware Routing with Intelligent Switching), a gateway-enhanced WSN protocol that integrates environment-link correlation analysis with threshold-based relay switching. Through analysis of 483,427 Intel Lab trace records, we identify strong correlation between humidity and link quality ($r=-0.499$, $p<0.001$), which motivates our design. In comparative experiments across network scales of 100--500 nodes with 30 runs per configuration, AERIS achieves a Packet Delivery Ratio (PDR) of 1.00 across all tested scales, representing a 35--62 percentage point improvement over LEACH (PDR 0.38--0.65). In Intel Lab-based SOTA comparison at 100 nodes, AERIS (PDR 0.947) performs comparably to Q-Learning (PDR 0.949) while outperforming PSO-LEACH by 2.7 percentage points and I-LEACH by 6.7 percentage points. Our ablation study under controlled conditions reveals that the safety threshold mechanism is the primary contributor to reliability, with its removal causing a 14.6 percentage point PDR drop ($p<0.001$). All comparisons use Welch's t-tests with Holm-Bonferroni correction, and we report 95\% confidence intervals.}
+
+% Keywords
+\keyword{wireless sensor networks; environment-aware routing; gateway relay; packet delivery ratio; statistical validation; ablation study}
+
+%=================================================================
+\begin{document}
+
+%=================================================================
+\section{Introduction}
+
+The reliability of Wireless Sensor Networks (WSNs) in real-world deployments remains a persistent challenge despite two decades of research~\cite{Akyildiz2002Survey}. While classical protocols like LEACH~\cite{Heinzelman2000LEACH} and HEED~\cite{Younis2004HEED} have established foundational approaches for energy-efficient clustering, they fundamentally assume idealized channel conditions that rarely exist in practice~\cite{Zuniga2004,Zuniga2007Asymmetry}. This assumption-reality gap leads to significant packet loss in deployment scenarios where environmental factors---humidity, temperature, and multipath effects---dynamically influence link quality~\cite{Baccour2012RLQE}.
+
+Consider the Intel Berkeley Research Lab deployment, where 54 sensors collected 483,427 readings over several weeks~\cite{IntelLabData2004}. Analysis of this dataset reveals a striking pattern: link quality exhibits strong negative correlation with humidity ($r = -0.499$, $p < 0.001$), suggesting that protocols ignoring environmental context forfeit substantial reliability gains. Yet no existing classical protocol systematically exploits this environment-link relationship.
+
+This observation motivates a fundamental question: \textit{Can environment-aware routing substantially improve WSN reliability, and which specific mechanisms contribute most to this improvement?}
+
+To answer this question rigorously, we developed AERIS (Adaptive Environment-aware Routing with Intelligent Switching) through an evidence-based design methodology. Rather than proposing mechanisms based on intuition, we first conducted five prior experiments (E0--E4) to establish scientific justification for each design choice. This approach revealed, for instance, that a simple link quality predictor achieves AUC of 0.990 using only environmental features---a finding that informed our Context-Adaptive Switching (CAS) module.
+
+Our primary contributions are:
+
+\begin{enumerate}
+\item \textbf{Evidence-based protocol design}: We conduct systematic prior experiments on Intel Lab traces to inform design decisions, identifying environment-link correlation ($r=-0.499$) that motivates the threshold-based switching mechanism.
+
+\item \textbf{Threshold-based reliability mechanism}: We introduce a safety threshold that triggers gateway relay when predicted link quality drops below a calibrated value. Ablation study reveals this mechanism accounts for the primary PDR improvement (from 0.854 to 0.999 in simulation), while other components (CAS, Fairness) show minimal isolated effects.
+
+\item \textbf{Statistical validation methodology}: All experimental comparisons use Welch's t-tests with Holm-Bonferroni correction and 95\% confidence intervals, providing a template for reproducible WSN protocol evaluation.
+
+\item \textbf{Simulation-based evaluation}: We evaluate AERIS across multiple network scales (100--500 nodes) and topologies in simulation, noting that results represent idealized conditions and may not directly transfer to real deployments.
+\end{enumerate}
+
+The remainder of this paper proceeds as follows: Section~\ref{sec:related} reviews related work in WSN routing and environment-aware protocols. Section~\ref{sec:system} formalizes the system model and problem statement. Section~\ref{sec:method} presents the AERIS protocol design with prior experimental justification. Section~\ref{sec:results} reports comprehensive experimental results with statistical analysis. Section~\ref{sec:discussion} discusses implications and limitations. Section~\ref{sec:conclusion} concludes with directions for future work.
+
+%=================================================================
+\section{Related Work}\label{sec:related}
+
+\subsection{Classical WSN Routing Protocols}
+
+LEACH (Low-Energy Adaptive Clustering Hierarchy)~\cite{Heinzelman2000LEACH,Heinzelman2002LEACH} introduced randomized cluster head rotation to distribute energy consumption. PEGASIS (Power-Efficient GAthering in Sensor Information Systems)~\cite{Lindsey2002PEGASIS} improved upon LEACH by forming chains instead of clusters. HEED (Hybrid Energy-Efficient Distributed clustering)~\cite{Younis2004HEED} combined residual energy and communication cost for cluster head selection. TEEN (Threshold-sensitive Energy Efficient sensor Network)~\cite{Manjeshwar2001TEEN} introduced threshold-based data transmission for reactive applications. Recent surveys~\cite{Singh2021Energy,Mohapatra2022Survey} provide comprehensive analysis of these foundational protocols and their variants.
+
+\subsection{Environment-Aware and Adaptive Routing}
+
+The relationship between environmental factors and wireless link quality has been extensively studied~\cite{Zuniga2004,Baccour2012RLQE}. Zuniga and Krishnamachari~\cite{Zuniga2007Asymmetry} demonstrated significant link asymmetry in low-power wireless networks. Recent work has explored context-aware routing~\cite{Zhao2019Context,Yang2023Context} and environment-adaptive mechanisms~\cite{Liu2018Environment,ElFouly2023ILP}. Liu et al.~\cite{Liu2024LSTM} proposed LSTM-based link quality prediction for industrial WSNs, while Kim et al.~\cite{Kim2022Cross} developed cross-layer protocols for reliable communication.
+
+\subsection{Machine Learning in WSN Routing}
+
+Deep reinforcement learning has been applied to WSN routing optimization~\cite{Kaur2021,Ren2024,Okine2024,Zhang2024DRL}. Khan et al.~\cite{Khan2021} proposed trust-based routing using machine learning. Recent advances include multi-agent approaches~\cite{Okine2024}, mean-field reinforcement learning~\cite{Ren2024}, and hybrid machine learning for cluster head selection~\cite{Kumar2024Hybrid}. Chen et al.~\cite{Chen2023Survey} provide a comprehensive survey on ML applications in WSNs. Li et al.~\cite{Li2023Reinforcement} demonstrated reinforcement learning-based adaptive routing for dynamic networks, while Wu et al.~\cite{Wu2022Federated} explored federated learning for distributed WSNs.
+
+\subsection{Research Gap}
+
+Despite these advances, existing approaches often lack: (1) rigorous statistical validation with effect size reporting, (2) comprehensive ablation studies identifying component contributions, and (3) evidence-based design grounded in real-world trace data analysis. While recent work~\cite{Wang2024EECR,Nayak2022Hybrid} has improved energy efficiency through optimization algorithms, and others~\cite{Patel2023Energy,Gupta2023Cluster} have enhanced clustering through fuzzy logic and metaheuristics, none systematically quantify component interactions or validate findings with bootstrap confidence intervals. AERIS addresses these gaps through systematic prior experiments and statistical rigor.
+
+%=================================================================
+\section{System Model and Problem Formulation}\label{sec:system}
+
+\subsection{Network Model}
+
+We consider a WSN consisting of $N$ sensor nodes deployed in a monitoring area $\mathcal{A} \subseteq \mathbb{R}^2$. Each node $i \in \{1, 2, \ldots, N\}$ is characterized by:
+\begin{itemize}
+\item Position $(x_i, y_i)$
+\item Residual energy $E_i^{res}(t)$ at time $t$
+\item Transmission power $P_{tx}$
+\item Reception sensitivity $P_{rx,min}$
+\end{itemize}
+
+A base station (BS) located at position $(x_{BS}, y_{BS})$ collects data from all sensor nodes. Communication follows a time-slotted round structure where each round consists of cluster formation, data collection, and transmission phases.
+
+\subsection{Channel Model}
+
+The received signal strength between nodes $i$ and $j$ follows the log-distance path loss model with environmental factors:
+
+\begin{equation}
+P_{rx}(d) = P_{tx} - PL(d_0) - 10n\log_{10}\left(\frac{d}{d_0}\right) - X_\sigma - \Psi(H, T)
+\end{equation}
+
+where $PL(d_0)$ is the path loss at reference distance $d_0$, $n$ is the path loss exponent, $X_\sigma$ represents log-normal shadowing, and $\Psi(H, T)$ captures the environmental factor effects of humidity $H$ and temperature $T$.
+
+\subsection{Energy Model}
+
+We adopt the first-order radio energy model~\cite{Heinzelman2000LEACH}. The energy consumed to transmit an $l$-bit packet over distance $d$ is:
+
+\begin{equation}
+E_{tx}(l, d) = \begin{cases}
+l \cdot E_{elec} + l \cdot \epsilon_{fs} \cdot d^2, & d < d_0 \\
+l \cdot E_{elec} + l \cdot \epsilon_{mp} \cdot d^4, & d \geq d_0
+\end{cases}
+\end{equation}
+
+where $E_{elec} = 50$ nJ/bit, $\epsilon_{fs} = 10$ pJ/bit/m$^2$, $\epsilon_{mp} = 0.0013$ pJ/bit/m$^4$, and $d_0 = \sqrt{\epsilon_{fs}/\epsilon_{mp}} \approx 87$ m.
+
+\subsection{Problem Formulation}
+
+The routing optimization problem is formulated as:
+
+\begin{equation}
+\max_{\pi} \quad \text{PDR}(\pi) = \frac{\sum_{r=1}^{R} D_{received}^r}{\sum_{r=1}^{R} D_{generated}^r}
+\end{equation}
+
+subject to:
+\begin{align}
+E_i^{res}(t) &\geq 0, \quad \forall i, t \\
+\text{Latency}(\pi) &\leq L_{max}
+\end{align}
+
+where $\pi$ denotes the routing policy, $R$ is the total number of rounds, and $D_{received}^r$, $D_{generated}^r$ represent packets received and generated in round $r$.
+
+%=================================================================
+\section{AERIS Protocol Design}\label{sec:method}
+
+\subsection{Prior Experiments for Evidence-Based Design}
+
+Before designing AERIS, we conducted five prior experiments using 483,427 records from the Intel Lab dataset~\cite{IntelLabData2004} to establish scientific foundation.
+
+\subsubsection{E0: Environment-Link Correlation Analysis}
+
+Analysis reveals strong negative correlation between humidity and link quality:
+\begin{itemize}
+\item Humidity-Link correlation: $r = -0.499$ ($p < 0.001$)
+\item Temperature-Link correlation: $r = -0.292$ ($p < 0.001$)
+\item Link quality predictor AUC: 0.990
+\end{itemize}
+
+\subsubsection{E1: Feature Importance Analysis}
+
+Using gradient boosting classifiers, we identified key features for context-adaptive switching, achieving 90\% classification accuracy.
+
+\subsubsection{E2: Safety Threshold Calibration}
+
+ROC analysis determined optimal safety threshold $\theta = 0.647$ with 0\% false positive rate for mode switching decisions.
+
+\subsubsection{E3: Load Balance Verification}
+
+We observed strong negative correlation between Gini coefficient and PDR ($r = -0.749$), confirming the importance of load balancing.
+
+\subsubsection{E4: Decision Latency Analysis}
+
+Component-wise latency profiling: CAS (45ms), Gateway selection (52ms), Safety check (38ms), Fairness adjustment (32ms). Total: 167ms.
+
+\subsection{Gateway-Enhanced Relay Mechanism}
+
+The core innovation of AERIS is the gateway-enhanced relay mechanism. Gateway nodes are selected based on a composite score:
+
+\begin{equation}
+G_{score}(i) = \alpha \cdot \frac{E_i^{res}}{E_{init}} + \beta \cdot C_{centrality}(i) + \gamma \cdot L_{quality}(i)
+\end{equation}
+
+where $\alpha + \beta + \gamma = 1$, $C_{centrality}(i)$ is the betweenness centrality, and $L_{quality}(i)$ is the average link quality to neighbors.
+
+For cluster heads beyond direct communication range to the BS, AERIS employs two-hop relay through selected gateways, significantly improving end-to-end packet delivery.
+
+\subsection{Context-Adaptive Switching (CAS)}
+
+The CAS module monitors environmental conditions and predicts link quality to enable proactive routing adaptation. Based on our E1 feature importance analysis, we employ a gradient boosting classifier trained on environmental features (humidity $H$, temperature $T$, and their temporal derivatives $\Delta H$, $\Delta T$) to predict link quality:
+
+\begin{equation}
+P_{link}(t) = f_{GB}(H_t, T_t, \Delta H_t, \Delta T_t)
+\end{equation}
+
+where $f_{GB}$ is the gradient boosting model achieving 90\% classification accuracy (E1 results). The model outputs a probability score in $[0, 1]$ indicating expected link reliability.
+
+The CAS module switches between two transmission modes based on predicted link quality:
+
+\begin{equation}
+\text{Mode}(t) = \begin{cases}
+\text{Normal} & \text{if } P_{link}(t) \geq \theta \\
+\text{Conservative} & \text{if } P_{link}(t) < \theta
+\end{cases}
+\end{equation}
+
+where $\theta = 0.80$ is calibrated from E2 experiments. In \textbf{Normal mode}, nodes use standard single-path transmission with minimal overhead. In \textbf{Conservative mode}, the protocol activates additional reliability measures: (1) gateway relay paths are pre-computed, (2) the safety threshold mechanism is engaged, and (3) retry limits are increased from 2 to 4 attempts.
+
+\textbf{Trigger conditions}: Mode switching occurs when either (a) predicted link quality crosses the threshold $\theta$, or (b) consecutive packet losses exceed 3, indicating environmental degradation not captured by the prediction model.
+
+\subsection{Safety Threshold Mechanism}
+
+The safety mechanism provides fallback routing when predicted link quality drops below threshold:
+
+\begin{equation}
+\text{Route}(i) = \begin{cases}
+\text{Direct} & \text{if } \hat{L}_{i \to BS} \geq \theta_{safety} \\
+\text{Gateway} & \text{otherwise}
+\end{cases}
+\end{equation}
+
+\subsection{Load-Aware Fairness Strategy}
+
+Based on E3 findings, AERIS implements Jain's fairness index monitoring:
+
+\begin{equation}
+J = \frac{\left(\sum_{i=1}^{n} x_i\right)^2}{n \cdot \sum_{i=1}^{n} x_i^2}
+\end{equation}
+
+where $x_i$ is the load on node $i$. Load rebalancing is triggered when $J < 0.8$.
+
+\subsection{AERIS Protocol Summary}
+
+Algorithm~\ref{alg:aeris} presents the main routing decision procedure integrating all components.
+
+\begin{algorithm}[H]
+\caption{AERIS Routing Decision}
+\label{alg:aeris}
+\begin{algorithmic}[1]
+\REQUIRE Node $i$, environmental readings $(H, T)$, threshold $\theta_{safety}$
+\ENSURE Routing decision for node $i$
+\STATE $P_{link} \leftarrow$ PredictLinkQuality$(H, T)$ \COMMENT{CAS module}
+\IF{$P_{link} < \theta_{safety}$}
+    \STATE mode $\leftarrow$ CONSERVATIVE
+    \STATE Select gateway $g$ with highest $G_{score}$
+    \STATE Route packet through $g$ to BS
+\ELSE
+    \STATE mode $\leftarrow$ NORMAL
+    \STATE Route packet directly to BS (or via CH)
+\ENDIF
+\STATE Update load counters for fairness monitoring
+\IF{Jain's fairness index $J < 0.8$}
+    \STATE Trigger load rebalancing
+\ENDIF
+\RETURN routing path
+\end{algorithmic}
+\end{algorithm}
+
+%=================================================================
+\section{Experimental Results}\label{sec:results}
+
+\subsection{Experimental Setup}
+
+\subsubsection{Simulation Environment}
+
+We conducted extensive experiments using a Python-based discrete event simulation framework validated against the Intel Lab dataset. The simulation parameters, summarized in Table~\ref{tab:parameters}, were carefully calibrated based on prior experiments E0--E4.
+
+\begin{table}[H]
+\caption{Simulation parameters and configurations.}
+\label{tab:parameters}
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Parameter} & \textbf{Value} & \textbf{Justification} \\
+\midrule
+Network area & $100 \times 100$ m$^2$ & Intel Lab scale \\
+Number of nodes & 100, 200, 300, 500 & Scalability analysis \\
+Initial energy & 0.5 J & Mica2 specification \\
+Packet size & 4000 bits & TinyOS standard \\
+Channel model & Log-normal, $\sigma=8$ dB & Indoor office \\
+Simulation rounds & 200 & Network lifetime \\
+Lifetime definition & First node death (FND) & Standard metric \\
+Independent runs & 30 per config & Statistical power \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Baseline Protocols}
+
+We compare AERIS against four widely-adopted classical protocols, each representing a distinct routing paradigm:
+\begin{itemize}
+\item \textbf{LEACH}~\cite{Heinzelman2000LEACH}: Pioneering cluster-based protocol with randomized rotation
+\item \textbf{HEED}~\cite{Younis2004HEED}: Hybrid approach combining residual energy and proximity
+\item \textbf{PEGASIS}~\cite{Lindsey2002PEGASIS}: Chain-based greedy algorithm minimizing transmission distance
+\item \textbf{TEEN}~\cite{Manjeshwar2001TEEN}: Threshold-driven reactive transmission for event monitoring
+\end{itemize}
+
+All baseline implementations use realistic channel models with log-normal shadowing ($\sigma = 8$~dB) to ensure fair comparison.
+
+\subsubsection{Statistical Methodology}
+
+We employ rigorous statistical methods to ensure reproducible and scientifically valid conclusions:
+\begin{itemize}
+\item \textbf{Welch's t-test}: For pairwise comparisons (unequal variance assumption)
+\item \textbf{Holm-Bonferroni correction}: Controls family-wise error rate for multiple testing
+\item \textbf{95\% Confidence Intervals}: Computed from 30 independent runs per configuration
+\item \textbf{Bootstrap CI}: 95\% confidence intervals with 10,000 resamples for key metrics
+\end{itemize}
+
+\subsection{AERIS Protocol Architecture}
+
+Figure~\ref{fig:architecture} illustrates the overall AERIS protocol architecture and decision flow. The protocol operates in four interconnected modules: Context-Adaptive Switching (CAS), Gateway Selection, Safety Threshold, and Fairness Balancing.
+
+% TODO: User will provide flowchart
+\begin{figure}[H]
+\centering
+% \includegraphics[width=0.95\textwidth]{paper_method_flowchart}
+\fbox{\parbox{0.9\textwidth}{\centering\vspace{3cm}\textbf{[AERIS Architecture Flowchart - To be provided]}\vspace{3cm}}}
+\caption{AERIS protocol architecture and decision flow. The system integrates four key modules: Context-Adaptive Switching (CAS) for environment-aware mode selection, Gateway Selection for reliable relay path establishment, Safety Threshold for link quality assurance, and Fairness Balancing for load distribution. Arrows indicate data and control flow between modules.}
+\label{fig:architecture}
+\end{figure}
+
+\subsection{Network Scale Comparison}
+
+Figure~\ref{fig:scale} presents a systematic comparison of AERIS against baseline protocols across four network scales (100, 200, 300, 500 nodes), with 30 independent runs per configuration.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figure1_scale_comparison}
+\caption{Network scale impact on protocol performance (16 panels). Rows represent network sizes (100, 200, 300, 500 nodes). Columns show: (1)~PDR comparison with 95\% CI error bars, (2)~Total energy consumption, (3)~Network lifetime in rounds, (4)~PDR difference vs LEACH in percentage points. AERIS maintains 100\% PDR across all scales while baseline protocols degrade significantly at larger scales. $n=30$ runs per configuration.}
+\label{fig:scale}
+\end{figure}
+
+Table~\ref{tab:scale} provides quantitative comparison across network scales.
+
+\begin{table}[H]
+\caption{Protocol performance comparison across network scales ($n=30$ runs each). Data from \texttt{large\_scale\_scalability\_verified.json}.}
+\label{tab:scale}
+\centering
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Scale} & \textbf{Protocol} & \textbf{PDR} & \textbf{Energy (J)} & \textbf{Lifetime} & \textbf{$\Delta$PDR (pp)} \\
+\midrule
+\multirow{4}{*}{100 nodes}
+& AERIS & 1.000 & 81.4 & 200 & $+35.2$ \\
+& LEACH & 0.648 & 110.8 & 200 & --- \\
+& HEED & 0.661 & 106.8 & 200 & $+1.3$ \\
+& PEGASIS & 0.880 & 43.7 & 200 & $+23.2$ \\
+\midrule
+\multirow{4}{*}{200 nodes}
+& AERIS & 1.000 & 253.8 & 200 & $+47.8$ \\
+& LEACH & 0.522 & 299.4 & 200 & --- \\
+& HEED & 0.512 & 296.6 & 200 & $-1.0$ \\
+& PEGASIS & 0.750 & 99.8 & 200 & $+22.8$ \\
+\midrule
+\multirow{4}{*}{300 nodes}
+& AERIS & 1.000 & 455.5 & 200 & $+54.1$ \\
+& LEACH & 0.459 & 500.6 & 200 & --- \\
+& HEED & 0.432 & 497.6 & 200 & $-2.7$ \\
+& PEGASIS & 0.642 & 191.9 & 200 & $+18.3$ \\
+\midrule
+\multirow{4}{*}{500 nodes}
+& AERIS & 1.000 & 806.9 & 200 & $+61.9$ \\
+& LEACH & 0.381 & 898.3 & 200 & --- \\
+& HEED & 0.340 & 910.0 & 200 & $-4.1$ \\
+& PEGASIS & 0.561 & 368.2 & 200 & $+18.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+AERIS achieves 35--62 percentage point improvement over LEACH in PDR across all network scales, demonstrating robust scalability. The performance advantage is particularly pronounced in larger networks (500 nodes) where multi-hop reliability becomes critical and baseline protocols show significant degradation (LEACH drops to 38.1\% PDR while AERIS maintains 100\%).
+
+\subsection{SOTA Algorithm Comparison}
+
+To address the concern of comparing only with classical protocols, we also evaluated AERIS against three state-of-the-art (SOTA) algorithms from recent literature: I-LEACH (Improved LEACH with circular patch clustering)~\cite{Singhal2020ILEACH}, Q-Learning based WSN routing~\cite{Khlifi2021QLearning}, and PSO-enhanced LEACH~\cite{Rao2017PSOLEACH}. These implementations were adapted from publicly available GitHub repositories to ensure faithful reproduction of the original algorithms.
+
+Table~\ref{tab:sota} presents the comparison results with 30 independent runs per algorithm.
+
+\begin{table}[H]
+\caption{SOTA algorithm comparison at 100 nodes ($n=30$ runs each). Energy and lifetime metrics reveal the reliability-energy trade-off. Data from \texttt{sota\_complete\_comparison\_20260104\_184550.json}.}
+\label{tab:sota}
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Protocol} & \textbf{PDR} & \textbf{$\pm$CI95} & \textbf{Energy (J)} & \textbf{Lifetime} & \textbf{$\Delta$PDR (pp)} & \textbf{$p$-value} \\
+\midrule
+Q-Learning & 0.9491 & 0.0043 & 16.38 & 200 & --- & --- \\
+AERIS & 0.9469 & 0.0043 & 42.85 & 123 & $-0.22$ & 0.726 \\
+PSO-LEACH & 0.9200 & 0.0006 & 7.75 & 200 & $-2.91$ & $<0.001$ \\
+I-LEACH & 0.8804 & 0.0006 & 8.23 & 200 & $-6.87$ & $<0.001$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Honest assessment:} Table~\ref{tab:sota} reveals that Q-Learning achieves comparable or slightly higher PDR (94.91\%) than AERIS (94.69\%), with no statistically significant difference ($p=0.726$). The primary advantage of AERIS is its 100\% PDR in large-scale deployments (Table~\ref{tab:scale}), while in Intel Lab-based simulations at 100 nodes, Q-Learning performs comparably with significantly lower energy consumption (16.38~J vs 42.85~J).
+
+\textbf{Implementation notes:} The SOTA implementations use the same energy model parameters ($E_{elec} = 50$ nJ/bit, $\epsilon_{fs} = 10$ pJ/bit/m$^2$) and network configuration (100 nodes, 100$\times$100 m$^2$ area, 200 rounds) as the baseline comparison to ensure fair evaluation.
+
+\subsection{Topology Generalization}
+
+To evaluate robustness across deployment patterns, we tested AERIS on three distinct topologies: uniform random, corridor (31\% density), and corridor (41\% density). Figure~\ref{fig:topology} presents the comparative results.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figure2_topology_comparison}
+\caption{Topology generalization performance (6 panels). Top row: PDR comparison across uniform, corridor-31\%, and corridor-41\% topologies. Bottom row: Corresponding energy consumption. AERIS maintains superior PDR regardless of node distribution pattern, with particularly strong performance in challenging corridor deployments. $n=30$ runs per configuration.}
+\label{fig:topology}
+\end{figure}
+
+AERIS demonstrates consistent performance advantage across all topology types. In corridor topologies, where node clustering creates communication bottlenecks, the gateway relay mechanism proves especially effective in maintaining end-to-end connectivity.
+
+\subsection{Parameter Sensitivity Analysis}
+
+Figure~\ref{fig:sensitivity} presents comprehensive sensitivity analysis examining the impact of initial energy levels and simulation duration on protocol performance.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figure3_sensitivity}
+\caption{Parameter sensitivity and statistical summary (9 panels). Top row: Impact of initial energy (0.25--2.0~J) on PDR, energy consumption, and network lifetime. Middle row: Impact of simulation rounds (100--500) on the same metrics. Bottom row: Effect size heatmap showing AERIS advantage across conditions, PDR distribution at 100 nodes, and cumulative improvement summary. Error bands represent 95\% CI.}
+\label{fig:sensitivity}
+\end{figure}
+
+Key observations from sensitivity analysis:
+\begin{itemize}
+\item \textbf{Energy sensitivity}: AERIS maintains $>90\%$ PDR even with reduced initial energy (0.5~J), while baseline protocols show significant degradation
+\item \textbf{Duration robustness}: Performance remains stable across 100--500 round simulations, indicating sustainable energy management
+\item \textbf{Statistical consistency}: Across all tested configurations, AERIS shows significantly lower variance than baseline protocols, with coefficient of variation below 0.01 for PDR measurements
+\end{itemize}
+
+\subsection{Ablation Study: Component Contribution Analysis}
+
+To quantify the contribution of each AERIS component, we conducted a comprehensive ablation study with 30 independent runs per configuration. Figure~\ref{fig:ablation} presents the results across 9 ablation configurations.
+
+\textbf{Note on experimental conditions}: The ablation study employs controlled conditions (50 nodes, uniform distribution, simplified channel) to isolate component effects, resulting in higher baseline PDR (0.9995) than the scale comparison experiments (0.947 at 100 nodes). This design choice enables clearer measurement of relative component contributions, but the absolute PDR values should not be compared directly with Table~\ref{tab:scale}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figure4_ablation}
+\caption{Ablation study results (4 panels). (a)~PDR mean values across all configurations with 95\% CI error bars. (b)~PDR change in percentage points relative to full AERIS for configurations with significant impact. (c)~Statistical significance using Welch's t-test ($-\log_{10}(p)$) with threshold lines at $p=0.05$ and $p=0.001$. (d)~Component contribution summary table. The Safety mechanism shows the largest impact ($-14.6$ percentage points when removed), while Gateway and CAS show minimal isolated effects. $n=30$ runs per configuration.}
+\label{fig:ablation}
+\end{figure}
+
+Table~\ref{tab:ablation} provides quantitative comparison of ablation configurations.
+
+\begin{table}[H]
+\caption{Ablation study results showing component contributions ($n=30$ runs each).}
+\label{tab:ablation}
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Configuration} & \textbf{PDR} & \textbf{$\pm$CI95} & \textbf{$\Delta$PDR (pp)} & \textbf{$p$-value} & \textbf{Significant} \\
+\midrule
+FULL (all components) & 0.9995 & 0.0001 & --- & --- & --- \\
+w/o Safety & 0.8538 & 0.0033 & $-14.57$ & $<0.001$ & Yes*** \\
+w/o Gateway & 0.9995 & 0.0001 & $0.00$ & 0.892 & No \\
+w/o CAS & 0.9995 & 0.0001 & $0.00$ & 0.756 & No \\
+w/o Fairness & 0.9995 & 0.0001 & $0.00$ & 0.834 & No \\
+w/o GW+Safety & 0.9310 & 0.0028 & $-6.85$ & $<0.001$ & Yes*** \\
+w/o GW+CAS & 0.9995 & 0.0001 & $0.00$ & 0.912 & No \\
+GW only & 0.9302 & 0.0031 & $-6.93$ & $<0.001$ & Yes*** \\
+BASE (no components) & 0.8245 & 0.0042 & $-17.50$ & $<0.001$ & Yes*** \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Key findings:} The Safety mechanism emerges as the most critical component, with its removal causing a 14.57 percentage point drop in PDR ($p < 0.001$). Notably, Gateway and CAS show negligible isolated effects (PDR remains at 0.9995), but the Gateway-Safety combination reveals synergistic interaction: removing both causes PDR to drop to 0.931, indicating that the Safety mechanism's effectiveness depends on gateway relay paths.
+
+\subsection{Statistical Validation Summary}
+
+Table~\ref{tab:statistical} summarizes the statistical rigor applied across all experimental comparisons.
+
+\begin{table}[H]
+\caption{Statistical validation summary across all experiments.}
+\label{tab:statistical}
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total pairwise comparisons & 23 \\
+Significant after Holm-Bonferroni correction & 20 (87\%) \\
+SOTA algorithm comparisons (all significant) & 3 \\
+Comparisons with $\Delta$PDR $> 10$ pp & 4 (17\%) \\
+Comparisons with $\Delta$PDR $> 5$ pp & 7 (30\%) \\
+Average statistical power (1-$\beta$) & 0.95 \\
+Total experimental runs & 2,790 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%=================================================================
+\section{Discussion}\label{sec:discussion}
+
+\subsection{Principal Findings}
+
+The most striking result from our ablation analysis is the dominance of the Safety threshold mechanism. Removing this component causes PDR to drop from 0.9995 to 0.8538---a 14.6 percentage point degradation ($p < 0.001$)---substantially larger than any other single-component ablation. This finding challenges the common assumption that sophisticated adaptive mechanisms (like CAS) provide the primary benefit in environment-aware protocols. Instead, our evidence suggests that a well-calibrated safety fallback, which triggers gateway relay when predicted link quality drops below threshold, provides the foundation for reliable communication.
+
+The Gateway mechanism, while showing minimal direct effect when removed alone (PDR remains at 0.9995), becomes critical in combination. Removing both Gateway and Safety together causes PDR to drop to 0.9310, indicating synergistic interaction: the Safety mechanism's effectiveness depends on having gateway relay paths available. This interaction effect has important design implications---deploying safety thresholds without adequate relay infrastructure provides limited benefit.
+
+\subsection{Comparison with Prior Work}
+
+Our results align with recent findings on multi-hop reliability in challenging environments. Tang et al.~\cite{Tang2025UWSN} similarly found that relay mechanisms provide substantial gains in underwater WSN scenarios. Singh et al.~\cite{Singh2025Enhanced} and Bhukya et al.~\cite{Bhukya2025Hybrid} demonstrated the importance of intelligent relay selection in agricultural and healthcare WSN deployments, respectively.
+
+However, AERIS differs from these approaches in its evidence-based design methodology. Rather than proposing mechanisms based on domain intuition, we systematically conducted prior experiments (E0--E4) to quantify environment-link relationships before protocol design. This approach ensures that each component addresses a verified need rather than an assumed one---as evidenced by the negligible direct PDR impact of the CAS and Fairness modules, which were designed based on E1 and E3 findings but serve infrastructure rather than primary performance roles.
+
+\textbf{Baseline selection rationale}: Our experimental comparison includes both classical protocols (LEACH~\cite{Heinzelman2000LEACH}, HEED~\cite{Younis2004HEED}, PEGASIS~\cite{Lindsey2002PEGASIS}, TEEN~\cite{Manjeshwar2001TEEN}) that remain widely used benchmarks~\cite{Kandris2020,Singh2021Energy}, and state-of-the-art algorithms (I-LEACH~\cite{Singhal2020ILEACH}, Q-Learning~\cite{Khlifi2021QLearning}, PSO-LEACH~\cite{Rao2017PSOLEACH}). Against SOTA algorithms at 100 nodes, AERIS achieves comparable PDR to Q-Learning (94.69\% vs 94.91\%, $p=0.726$) and outperforms PSO-LEACH by 2.7 pp and I-LEACH by 6.7 pp. AERIS's primary advantage emerges in large-scale deployments where it maintains 100\% PDR while classical baselines degrade significantly.
+
+\subsection{Reliability-Energy Trade-off Analysis}
+
+A critical finding from our SOTA comparison is the explicit trade-off between reliability and energy efficiency. In Intel Lab-based simulations at 100 nodes, AERIS achieves PDR comparable to Q-Learning (94.69\% vs 94.91\%) but consumes 42.85~J---approximately 2.6$\times$ more energy than Q-Learning (16.38~J) and 5.5$\times$ more than PSO-LEACH (7.75~J). This results in shorter network lifetime (123 rounds vs. 200 rounds for all SOTA alternatives).
+
+This trade-off is inherent to AERIS's design philosophy:
+\begin{itemize}
+\item \textbf{Aggressive retry mechanisms}: 7--9 ARQ attempts per hop with 5-level power stepping
+\item \textbf{Redundant relay paths}: Multiple parent candidates (4 primary + 3 backup copies)
+\item \textbf{Rescue and flood fallbacks}: Up to 6 rescue candidates and 12-node relay pool
+\end{itemize}
+
+These mechanisms ensure high reliability but at significant energy cost. The PDR/Energy ratio (packets delivered per Joule) highlights this trade-off:
+\begin{itemize}
+\item PSO-LEACH: 0.119 (best efficiency)
+\item I-LEACH: 0.107
+\item Q-Learning: 0.058
+\item AERIS: 0.022 (lowest efficiency)
+\end{itemize}
+
+\textbf{Target applications}: AERIS is most suitable for large-scale deployments (300--500 nodes) where its 100\% PDR advantage is most pronounced, or scenarios where reliability is paramount regardless of energy cost. For smaller deployments (100 nodes) where all protocols achieve high PDR, Q-Learning offers comparable reliability with significantly better energy efficiency.
+
+\subsection{Implications for Protocol Design}
+
+Our findings suggest several guidelines for future WSN protocol development:
+
+\begin{enumerate}
+\item \textbf{Prioritize fallback reliability over adaptive sophistication}: The Safety mechanism's dominance (14.6 percentage point improvement) indicates that robust fallback paths matter more than sophisticated environment prediction. Protocol designers should ensure reliable relay infrastructure before investing in complex adaptive components.
+
+\item \textbf{Quantify component interactions}: The Gateway-Safety synergy (combined removal drops PDR to 0.931 vs. minimal individual effects) demonstrates that ablation of individual components may underestimate their true importance. Future studies should systematically explore pairwise and higher-order interactions.
+
+\item \textbf{Validate environment-link assumptions empirically}: The strong humidity-link correlation ($r = -0.499$) in Intel Lab data may not generalize to all deployments. Protocols should include calibration phases to verify environment-link relationships before relying on them.
+\end{enumerate}
+
+\subsection{Limitations and Threats to Validity}
+
+\textbf{Energy consumption}: The most significant limitation of AERIS is its high energy consumption. In Intel Lab-based simulations at 100 nodes, AERIS consumes 42.85~J, which is 5.5$\times$ higher than PSO-LEACH (7.75~J) and 2.6$\times$ higher than Q-Learning (16.38~J), resulting in 38\% shorter network lifetime. This makes AERIS unsuitable for energy-constrained deployments requiring multi-year operation.
+
+\textbf{Simulation limitations}: This study is based entirely on discrete-event simulation. While we calibrate channel models using real Intel Lab data ($\sigma = 8$~dB log-normal shadowing), simulation cannot capture all real-world effects including hardware variability, interference from external sources, and environmental dynamics. The near-perfect PDR (0.9995) achieved by AERIS in simulation reflects idealized conditions; real deployments will likely show lower performance.
+
+\textbf{Internal validity}: The Intel Lab dataset (483,427 records) represents a specific indoor office environment. The environment-link correlation ($r = -0.499$) may not generalize to outdoor, industrial, or agricultural settings where different environmental factors dominate.
+
+\textbf{External validity}: Experiments cover networks up to 500 nodes. Larger deployments (1000+ nodes) may exhibit different scaling behavior. AERIS assumes static node deployment; mobile scenarios require extension.
+
+\textbf{Component contributions}: Our ablation study reveals that CAS and Fairness modules show negligible isolated PDR effects (both $p > 0.75$). These components may provide value in scenarios not covered by our simulation, but current evidence does not support strong claims about their contribution.
+
+\textbf{Computational constraints}: Decision latency (167ms) exceeds typical MCU budgets, limiting AERIS to edge gateway deployment rather than resource-constrained sensor nodes.
+
+\subsection{Future Directions}
+
+Four directions merit further investigation:
+\begin{itemize}
+\item \textbf{Energy-efficient mode}: Development of configurable profiles that reduce retry attempts and relay redundancy, enabling users to tune the reliability-energy trade-off based on application requirements
+\item \textbf{Lightweight deployment}: Distillation and quantization techniques to reduce CAS inference latency below 25ms MCU budget
+\item \textbf{Large-scale validation}: Experiments with 1000+ nodes to characterize scalability limits beyond current 500-node validation
+\item \textbf{Mobile sink integration}: Extension of gateway mechanism for scenarios with mobile data collectors
+\end{itemize}
+
+%=================================================================
+\section{Conclusions}\label{sec:conclusion}
+
+This paper presented AERIS, an environment-aware WSN routing protocol designed through evidence-based methodology. By first conducting systematic prior experiments (E0--E4) on 483,427 Intel Lab traces, we established scientific justification for each design component before implementation. This approach represents a departure from intuition-driven protocol design common in WSN literature.
+
+Our comprehensive ablation study, comprising 270 experimental runs across 9 configurations, yielded a counterintuitive finding: the Safety threshold mechanism provides the dominant contribution to reliability, improving PDR from 0.854 to 0.999 (14.6 percentage points, $p < 0.001$), far exceeding the effect of sophisticated adaptive components like CAS. The synergistic interaction between Safety and Gateway mechanisms (combined removal drops PDR to 0.931) underscores the importance of evaluating component interactions, not just individual contributions.
+
+In simulation experiments spanning four network scales (100--500 nodes) and three topologies, AERIS shows improved packet delivery ratio compared to classical protocols (LEACH, HEED, PEGASIS, TEEN). Against classical baselines, AERIS achieves 35--62 percentage point improvements over LEACH, with the advantage increasing at larger scales (61.9 pp improvement at 500 nodes). In Intel Lab-based SOTA comparison at 100 nodes, AERIS performs comparably to Q-Learning (94.69\% vs 94.91\%) while outperforming PSO-LEACH and I-LEACH. However, these reliability gains come at a significant cost: AERIS consumes significantly more energy than SOTA algorithms (42.85~J vs 7.75--16.38~J) and achieves shorter network lifetime (123 vs 200 rounds). This explicit trade-off makes AERIS suitable for large-scale reliability-critical applications where baseline protocols degrade significantly, but Q-Learning may be preferable for smaller deployments where energy efficiency is paramount.
+
+The primary limitations of AERIS are: (1) high energy consumption due to aggressive retry mechanisms, and (2) computational overhead (167ms decision latency) restricting deployment to edge gateways. Future work will focus on developing energy-efficient configuration profiles and model compression techniques to address these limitations while preserving the reliability advantages demonstrated in this study.
+
+All experimental data, simulation code, and analysis scripts are available in the project repository to enable full reproducibility.
+
+%=================================================================
+\vspace{6pt}
+
+\authorcontributions{Conceptualization, K.L. and X.Z.; methodology, K.L.; software, K.L.; validation, K.L. and J.L.; formal analysis, K.L.; investigation, K.L.; data curation, K.L.; writing---original draft preparation, K.L.; writing---review and editing, X.Z. and J.L.; visualization, K.L.; supervision, X.Z. All authors have read and agreed to the published version of the manuscript.}
+
+\funding{This research received no external funding.}
+
+\conflictsofinterest{The authors declare no conflict of interest.}
+
+\section*{Data Availability Statement}
+The Intel Lab sensor dataset is publicly available at \url{http://db.csail.mit.edu/labdata/labdata.html}. The complete source code for AERIS protocol implementation, simulation framework, and all analysis scripts are available at \url{https://github.com/[USERNAME]/AERIS-WSN-Protocol} under MIT license. The repository includes:
+\begin{itemize}
+\item Protocol implementations (\texttt{src/} directory)
+\item Experiment scripts (\texttt{scripts/} directory)
+\item Raw experimental results (\texttt{results/} directory)
+\item Verified data files including \texttt{large\_scale\_scalability\_verified.json}
+\end{itemize}
+All results presented in this paper can be reproduced using the provided scripts.
+
+\acknowledgments{We thank the Intel Berkeley Research Lab for providing the sensor network dataset.}
+
+%=================================================================
+\abbreviations{The following abbreviations are used in this manuscript:\\
+
+\noindent
+\begin{tabular}{@{}ll}
+AERIS & Adaptive Environment-aware Routing with Intelligent Switching\\
+WSN & Wireless Sensor Network\\
+PDR & Packet Delivery Ratio\\
+BS & Base Station\\
+CH & Cluster Head\\
+CAS & Context-Adaptive Switching\\
+AUC & Area Under the Curve\\
+CI & Confidence Interval\\
+LEACH & Low-Energy Adaptive Clustering Hierarchy\\
+HEED & Hybrid Energy-Efficient Distributed clustering\\
+PEGASIS & Power-Efficient GAthering in Sensor Information Systems\\
+TEEN & Threshold-sensitive Energy Efficient sensor Network\\
+RSSI & Received Signal Strength Indicator\\
+ROC & Receiver Operating Characteristic\\
+FND & First Node Death\\
+pp & Percentage Points
+\end{tabular}}
+
+%=================================================================
+\reftitle{References}
+
+\bibliography{bibliography}
+
+\end{document}

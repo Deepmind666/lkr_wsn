@@ -6,15 +6,12 @@ WSN协议综合基准测试框架
 基于严谨的实验设计，对比分析多种WSN路由协议:
 - LEACH (Low-Energy Adaptive Clustering Hierarchy)
 - PEGASIS (Power-Efficient Gathering in Sensor Information Systems)
-- Enhanced EEHFR (Environment-aware Enhanced Energy-Efficient Hybrid Fuzzy Routing)
+- AERIS (Environment-aware Enhanced Energy-Efficient Hybrid Fuzzy Routing)
 
 实验特点:
-- 统一的网络配置和能耗模型
-- 多次重复实验确保统计可靠性
-- 详细的性能指标分析
-- 符合SCI期刊标准的实验方法
-
-作者: Enhanced EEHFR Research Team
+- 统一的网络配置和能耗模�?- 多次重复实验确保统计可靠�?- 详细的性能指标分析
+- 符合SCI期刊标准的实验方�?
+作�? AERIS Research Team
 日期: 2025-01-30
 版本: 1.0 (综合基准测试)
 """
@@ -29,7 +26,7 @@ import os
 
 from benchmark_protocols import LEACHProtocol, PEGASISProtocol, NetworkConfig
 from improved_energy_model import ImprovedEnergyModel, HardwarePlatform
-from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
+from aeris_protocol import AerisProtocol
 
 @dataclass
 class ExperimentConfig:
@@ -86,16 +83,16 @@ class ComprehensiveBenchmark:
         import random
         import hashlib
 
-        # 使用实验ID和当前时间生成唯一的随机种子
+        # Use experiment ID and current time to generate a unique random seed
         seed_string = f"{experiment_id}_{int(time.time() * 1000000)}"
         seed = int(hashlib.md5(seed_string.encode()).hexdigest()[:8], 16)
         random.seed(seed)
 
-        print(f"      [INFO] 实验 {experiment_id} 使用随机种子: {seed}")
+        print(f"      [INFO] Experiment {experiment_id} uses random seed: {seed}")
 
         # 创建协议实例
-        if protocol_class == IntegratedEnhancedEEHFRProtocol:
-            # Enhanced EEHFR只需要network_config
+        if protocol_class == AerisProtocol:
+            # AERIS只需要network_config
             protocol = protocol_class(network_config)
         else:
             # LEACH和PEGASIS需要network_config和energy_model
@@ -133,41 +130,41 @@ class ComprehensiveBenchmark:
                               config_name: str) -> Dict:
         """运行协议对比实验"""
         
-        print(f"\n[INFO] 运行实验配置: {config_name}")
-        print(f"   节点数: {network_config.num_nodes}, "
-              f"区域: {network_config.area_width}x{network_config.area_height}, "
-              f"初始能量: {network_config.initial_energy}J")
+        print(f"\n[INFO] Running config: {config_name}")
+        print(f"   Nodes: {network_config.num_nodes}, "
+              f"Area: {network_config.area_width}x{network_config.area_height}, "
+              f"Initial energy: {network_config.initial_energy}J")
         
         protocols = [
             ('LEACH', LEACHProtocol),
             ('PEGASIS', PEGASISProtocol),
-            ('Enhanced_EEHFR', IntegratedEnhancedEEHFRProtocol),
+            ('AERIS', AerisProtocol),
         ]
         
         comparison_results = {}
         
         for protocol_name, protocol_class in protocols:
-            print(f"   [TEST] 测试 {protocol_name} 协议...")
+            print(f"   [TEST] Protocol {protocol_name}...")
             
             protocol_results = []
             
             # 重复实验
             for repeat in range(self.config.repeat_times):
                 experiment_id = f"{config_name}_{protocol_name}_repeat_{repeat}"
-                
                 try:
                     result = self.run_single_experiment(
                         protocol_class, network_config, experiment_id
                     )
                     protocol_results.append(result)
-                    
-                    if repeat == 0:  # 只显示第一次结果
-                        print(f"      生存时间: {result.network_lifetime}轮, "
-                              f"能耗: {result.total_energy_consumed:.3f}J, "
-                              f"能效: {result.energy_efficiency:.1f}")
-                
+
+                    if repeat == 0:
+                        print(
+                            f"      Lifetime: {result.network_lifetime} rounds, "
+                            f"Energy: {result.total_energy_consumed:.3f}J, "
+                            f"Efficiency: {result.energy_efficiency:.1f}"
+                        )
                 except Exception as e:
-                    print(f"      [ERROR] 实验失败: {e}")
+                    print(f"      [ERROR] Experiment failed: {e}")
                     continue
             
             if protocol_results:
@@ -209,15 +206,15 @@ class ComprehensiveBenchmark:
     def run_comprehensive_benchmark(self) -> Dict:
         """运行综合基准测试"""
         
-        print(">>> 开始WSN协议综合基准测试")
+        print(">>> Starting WSN protocol comprehensive benchmark")
         print("=" * 60)
-        print(f"硬件平台: {self.config.hardware_platform.value}")
-        print(f"重复次数: {self.config.repeat_times}")
-        print(f"最大轮数: {self.config.max_rounds}")
+        print(f"Hardware platform: {self.config.hardware_platform.value}")
+        print(f"Repeat times: {self.config.repeat_times}")
+        print(f"Max rounds: {self.config.max_rounds}")
         
         all_results = {}
         
-        # 遍历所有实验配置
+        # Iterate all experiment configurations
         for node_count in self.config.node_counts:
             for area_size in self.config.area_sizes:
                 for initial_energy in self.config.initial_energies:
@@ -253,19 +250,19 @@ class ComprehensiveBenchmark:
         # --- 鲁棒路径修复 ---
         # 获取当前脚本所在的目录
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        # 构建到项目根目录的绝对路径 (src -> project root)
+        # Build absolute project root from src
         project_root = os.path.abspath(os.path.join(script_dir, '..'))
-        # 构建绝对的结果目录路径
+        # Build absolute results directory
         results_dir_abs = os.path.join(project_root, 'results', 'benchmark_experiments')
         os.makedirs(results_dir_abs, exist_ok=True)
         
-        # 保存详细结果 (JSON格式)
+        # Save detailed results (JSON)
         detailed_file = os.path.join(
             results_dir_abs,
             f"detailed_results_{timestamp}.json"
         )
         
-        # 转换为可序列化格式
+        # Convert to JSON-serializable structure
         serializable_results = {}
         for config_name, config_results in results.items():
             serializable_results[config_name] = {}
@@ -274,88 +271,94 @@ class ComprehensiveBenchmark:
                     'statistics': protocol_data['statistics'],
                     'raw_results': [asdict(r) for r in protocol_data['raw_results']]
                 }
-        
+
         with open(detailed_file, 'w', encoding='utf-8') as f:
-            json.dump(serializable_results, f, indent=2, ensure_ascii=False)
-        
-        print(f"\n[SAVE] 详细结果已保存: {detailed_file}")
-        
-        # 保存汇总结果 (Markdown格式)
+            json.dump(serializable_results, f, indent=2, ensure_ascii=True)
+
+        print(f"\n[SAVE] Detailed results saved: {detailed_file}")
+
+        # Save summary report (Markdown)
         summary_file = os.path.join(
             results_dir_abs,
             f"benchmark_summary_{timestamp}.md"
         )
         
         self._generate_summary_report(results, summary_file)
-        print(f"[SAVE] 汇总报告已保存: {summary_file}")
+        print(f"[SAVE] Summary report saved: {summary_file}")
     
     def _generate_summary_report(self, results: Dict, output_file: str):
-        """生成汇总报告"""
+        """Generate a markdown summary report for the benchmark results."""
         
         with open(output_file, 'w', encoding='utf-8') as f:
-            f.write("# WSN协议基准测试汇总报告\n\n")
-            f.write(f"**测试时间**: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
-            f.write(f"**硬件平台**: {self.config.hardware_platform.value}\n")
-            f.write(f"**重复次数**: {self.config.repeat_times}\n")
-            f.write(f"**最大轮数**: {self.config.max_rounds}\n\n")
+            f.write("# WSN Protocol Benchmark Summary Report\n\n")
+            f.write(f"**Test Time**: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"**Hardware Platform**: {self.config.hardware_platform.value}\n")
+            f.write(f"**Repeat Times**: {self.config.repeat_times}\n")
+            f.write(f"**Max Rounds**: {self.config.max_rounds}\n\n")
             
             for config_name, config_results in results.items():
-                f.write(f"## 实验配置: {config_name}\n\n")
+                f.write(f"## Experiment Config: {config_name}\n\n")
                 
-                # 创建对比表格
-                f.write("| 协议 | 网络生存时间(轮) | 总能耗(J) | 能效(packets/J) | 数据包投递率 |\n")
-                f.write("|------|------------------|-----------|-----------------|-------------|\n")
+                # Create comparison table
+                f.write("| Protocol | Network lifetime (rounds) | Total energy (J) | Energy efficiency (packets/J) | PDR |\n")
+                f.write("|---------|----------------------------|------------------|-------------------------------|-----|\n")
                 
                 for protocol_name, protocol_data in config_results.items():
                     stats = protocol_data['statistics']
-                    f.write(f"| {protocol_name} | "
-                           f"{stats['network_lifetime']['mean']:.1f}±{stats['network_lifetime']['std']:.1f} | "
-                           f"{stats['total_energy_consumed']['mean']:.3f}±{stats['total_energy_consumed']['std']:.3f} | "
-                           f"{stats['energy_efficiency']['mean']:.1f}±{stats['energy_efficiency']['std']:.1f} | "
-                           f"{stats['packet_delivery_ratio']['mean']:.3f}±{stats['packet_delivery_ratio']['std']:.3f} |\n")
+                    f.write(
+                        f"| {protocol_name} | "
+                        f"{stats['network_lifetime']['mean']:.1f}±{stats['network_lifetime']['std']:.1f} | "
+                        f"{stats['total_energy_consumed']['mean']:.3f}±{stats['total_energy_consumed']['std']:.3f} | "
+                        f"{stats['energy_efficiency']['mean']:.1f}±{stats['energy_efficiency']['std']:.1f} | "
+                        f"{stats['packet_delivery_ratio']['mean']:.3f}±{stats['packet_delivery_ratio']['std']:.3f} |\n"
+                    )
                 
                 f.write("\n")
 
 def create_standard_experiment_config() -> ExperimentConfig:
-    """创建标准实验配置"""
+    """Create the standard experiment configuration."""
 
     return ExperimentConfig(
-        node_counts=[50],  # 先测试一种配置
-        area_sizes=[(100, 100)],  # 先测试一种区域
+        node_counts=[50],
+        area_sizes=[(100, 100)],
         initial_energies=[2.0],
-        max_rounds=1000,  # 延长仿真时间
-        repeat_times=3,  # 减少重复次数进行快速验证
+        max_rounds=1000,
+        repeat_times=3,
         hardware_platform=HardwarePlatform.CC2420_TELOSB,
         save_detailed_results=True
     )
 
 def create_quick_test_config() -> ExperimentConfig:
-    """创建快速测试配置"""
+    """Create a quick test configuration for smoke/regression runs."""
 
     return ExperimentConfig(
-        node_counts=[20],  # 更少节点，快速测试
+        node_counts=[20],
         area_sizes=[(50, 50)],
-        initial_energies=[1.0],  # 更少初始能量，更快看到节点死亡
-        max_rounds=2000,  # 更长仿真时间
+        initial_energies=[1.0],
+        max_rounds=2000,
         repeat_times=3,
         hardware_platform=HardwarePlatform.CC2420_TELOSB,
         save_detailed_results=True
     )
 
 def main():
-    """主函数"""
+    """Main function."""
     
-    # 创建实验配置
+    # Create experiment configuration
     experiment_config = create_standard_experiment_config()
     
-    # 创建基准测试实例
+    # Create benchmark instance
     benchmark = ComprehensiveBenchmark(experiment_config)
     
-    # 运行综合基准测试
+    # Run comprehensive benchmark
     results = benchmark.run_comprehensive_benchmark()
     
-    print("\n[SUCCESS] 综合基准测试完成！")
-    print("[INFO] 结果文件保存在: ../results/benchmark_experiments/")
+    print("\n[SUCCESS] Comprehensive benchmark completed.")
+    print("[INFO] Results saved to ../results/benchmark_experiments/")
 
 if __name__ == "__main__":
     main()
+
+
+
+

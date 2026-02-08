@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Fairness and hotspot suppression metrics for AETHER
@@ -7,7 +7,7 @@ This module provides lightweight, explainable metrics to discourage
 hotspots and improve fairness in cluster-head (CH) utilization and
 intra-cluster energy distribution.
 
-Author: Enhanced EEHFR Research Team
+Author: AERIS Research Team
 Date: 2025-08-23
 """
 from __future__ import annotations
@@ -46,4 +46,5 @@ def ch_usage_penalty(usage_count: Dict[int, int], ch_id: int, total_rounds: int,
     over = max(0.0, used - target_ratio)
     span = max(1e-9, 1.0 - target_ratio)
     return min(1.0, over / span)
+
 

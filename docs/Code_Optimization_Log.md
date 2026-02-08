@@ -173,7 +173,7 @@ if random_value < threshold:
 
 ## 📝 **记录说明**
 
-**记录人员**: Enhanced EEHFR Research Team  
+**记录人员**: Enhanced AERIS Research Team  
 **记录时间**: 2025-01-30  
 **更新频率**: 每日更新  
 **版本控制**: Git提交记录  

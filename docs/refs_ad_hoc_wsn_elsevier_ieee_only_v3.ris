@@ -1,0 +1,1469 @@
+TY  - JOUR
+AU  - Akyildiz, I. F.
+AU  - Su, W.
+AU  - Sankarasubramaniam, Y.
+AU  - Cayirci, E.
+TI  - Wireless sensor networks: a survey
+JO  - Computer Networks
+PY  - 2002
+VL  - 38
+IS  - 4
+SP  - 393
+EP  - 422
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128601003024
+ER  - 
+
+TY  - JOUR
+AU  - Yick, J.
+AU  - Mukherjee, B.
+AU  - Ghosal, D.
+TI  - Wireless sensor network survey
+JO  - Computer Networks
+PY  - 2008
+VL  - 52
+IS  - 12
+SP  - 2292
+EP  - 2330
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128608001254
+ER  - 
+
+TY  - JOUR
+AU  - Akkaya, K.
+AU  - Younis, M.
+TI  - A survey on routing protocols for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2005
+VL  - 3
+IS  - 3
+SP  - 325
+EP  - 349
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000738
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+AU  - Passarella, A.
+TI  - Energy conservation in wireless sensor networks: A survey
+JO  - Ad Hoc Networks
+PY  - 2009
+VL  - 7
+IS  - 3
+SP  - 537
+EP  - 568
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870508000954
+ER  - 
+
+TY  - JOUR
+AU  - Boukerche, A.
+TI  - Routing protocols in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 13
+SP  - 3032
+EP  - 3080
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611001644
+ER  - 
+
+TY  - JOUR
+AU  - Abbasi, A. A.
+AU  - Younis, M.
+TI  - A survey on clustering algorithms for wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 14-15
+SP  - 2826
+EP  - 2841
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366407002162
+ER  - 
+
+TY  - JOUR
+AU  - Afsar, M. M.
+AU  - Tayarani-N, M. H.
+TI  - Clustering in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2014
+VL  - 46
+SP  - 198
+EP  - 226
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804514001581
+ER  - 
+
+TY  - JOUR
+AU  - Chen, D.
+AU  - Varshney, P. K.
+TI  - QoS support in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2004
+VL  - 39
+IS  - 3
+SP  - 281
+EP  - 300
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128604000167
+ER  - 
+
+TY  - JOUR
+AU  - Wang, C.
+AU  - Li, B.
+AU  - Sohraby, K.
+AU  - Daneshmand, M.
+AU  - Hu, Y.
+TI  - Data aggregation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 12
+SP  - 278
+EP  - 289
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612001316
+ER  - 
+
+TY  - JOUR
+AU  - Karlsson, G.
+AU  - Bianchi, G.
+AU  - Willig, A.
+TI  - A measurement-based analysis of link reliability in wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 7
+SP  - 1292
+EP  - 1303
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366406004672
+ER  - 
+
+TY  - JOUR
+AU  - Chen, Y.
+AU  - Zhao, Q.
+AU  - Krishnamurthy, V.
+TI  - On routing performance under time-varying channels
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2008
+VL  - 7
+IS  - 9
+SP  - 3249
+EP  - 3263
+UR  - https://ieeexplore.ieee.org/document/4570244
+ER  - 
+
+TY  - JOUR
+AU  - Seada, K.
+AU  - Zuniga, M.
+AU  - Helmy, A.
+AU  - Krishnamachari, B.
+TI  - Energy-efficient forwarding in lossy wireless sensor networks
+JO  - IEEE/ACM Transactions on Networking
+PY  - 2006
+VL  - 14
+IS  - 2
+SP  - 292
+EP  - 304
+UR  - https://ieeexplore.ieee.org/document/1607965
+ER  - 
+
+TY  - JOUR
+AU  - Heinzelman, W. R.
+AU  - Chandrakasan, A.
+AU  - Balakrishnan, H.
+TI  - An application-specific protocol architecture for wireless microsensor networks
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2002
+VL  - 1
+IS  - 4
+SP  - 660
+EP  - 670
+UR  - https://ieeexplore.ieee.org/document/1024422
+ER  - 
+
+TY  - JOUR
+AU  - Gungor, V. C.
+AU  - Hancke, G. P.
+TI  - Industrial wireless sensor networks: Challenges, design principles, and technical approaches
+JO  - IEEE Transactions on Industrial Informatics
+PY  - 2009
+VL  - 5
+IS  - 4
+SP  - 425
+EP  - 442
+UR  - https://ieeexplore.ieee.org/document/5285313
+ER  - 
+
+TY  - JOUR
+AU  - Willig, A.
+AU  - Matheus, K.
+AU  - Wolisz, A.
+TI  - Wireless industrial communications: Deterministic and reliable
+JO  - Proceedings of the IEEE
+PY  - 2005
+VL  - 93
+IS  - 6
+SP  - 1130
+EP  - 1151
+UR  - https://ieeexplore.ieee.org/document/1433499
+ER  - 
+
+TY  - JOUR
+AU  - Pantazis, N. A.
+AU  - Nikolidakis, S. A.
+AU  - Vergados, D. D.
+TI  - Energy-efficient routing protocols in wireless sensor networks: A survey
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2013
+VL  - 15
+IS  - 2
+SP  - 551
+EP  - 591
+UR  - https://ieeexplore.ieee.org/document/6155078
+ER  - 
+
+TY  - JOUR
+AU  - Sudevalayam, S.
+AU  - Kulkarni, P.
+TI  - Energy harvesting sensor nodes: Survey and implications
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2011
+VL  - 13
+IS  - 3
+SP  - 443
+EP  - 461
+UR  - https://ieeexplore.ieee.org/document/5741144
+ER  - 
+
+TY  - JOUR
+AU  - Chen, X.
+AU  - Kwon, T.
+AU  - Choi, Y.
+TI  - Directional antenna-based reliable routing in wireless sensor networks
+JO  - Computer Communications
+PY  - 2008
+VL  - 31
+IS  - 17
+SP  - 4038
+EP  - 4046
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366408001795
+ER  - 
+
+TY  - JOUR
+AU  - Rajendran, V.
+AU  - Obraczka, K.
+AU  - Garcia-Luna-Aceves, J. J.
+TI  - Energy-efficient, collision-free medium access control for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2006
+VL  - 4
+IS  - 3
+SP  - 365
+EP  - 386
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870505000710
+ER  - 
+
+TY  - JOUR
+AU  - Schurgers, C.
+AU  - Srivastava, M. B.
+TI  - Energy efficient routing in wireless sensor networks: Topology control and duty-cycling
+JO  - Ad Hoc Networks
+PY  - 2004
+VL  - 2
+IS  - 3
+SP  - 251
+EP  - 267
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000428
+ER  - 
+
+TY  - JOUR
+AU  - Shafi, N.
+TI  - Reliability-aware routing in wireless sensor networks: A survey and taxonomy
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 10
+SP  - 2307
+EP  - 2327
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612000972
+ER  - 
+
+TY  - JOUR
+AU  - Tang, J.
+AU  - Li, B.
+AU  - Yang, J.
+TI  - Congestion control mechanisms in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2015
+VL  - 52
+SP  - 101
+EP  - 115
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804515000557
+ER  - 
+
+TY  - JOUR
+AU  - Mao, G.
+AU  - Fidan, B.
+AU  - Anderson, B. D. O.
+TI  - Wireless sensor network localization techniques: A survey
+JO  - Computer Networks
+PY  - 2007
+VL  - 51
+IS  - 10
+SP  - 2529
+EP  - 2553
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128607000217
+ER  - 
+
+TY  - JOUR
+AU  - Chen, H.
+TI  - Link quality estimation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 15
+SP  - 3130
+EP  - 3143
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611002221
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+TI  - Energy efficiency in wireless sensor networks: A top-down survey
+JO  - Computer Networks
+PY  - 2014
+VL  - 67
+SP  - 104
+EP  - 122
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128614001418
+ER  - 
+
+TY  - JOUR
+AU  - Kumar, S.
+TI  - Reliability and fault tolerance in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2016
+VL  - 106
+SP  - 45
+EP  - 63
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128616301472
+ER  - 
+
+
+TY  - JOUR
+TI  - A comprehensive energy aware trust-based efficient routing scheme for adversarial wireless sensor networks (ETERS)
+T2  - Future Generation Computer Systems
+VL  - 125
+SP  - 921
+EP  - 943
+DA  - 2021
+DO  - 10.1016/j.future.2021.06.049
+UR  - https://doi.org/10.1016/j.future.2021.06.049
+AU  - Khan, Tayyab
+AU  - Singh, Karan
+AU  - Hasan, Mohd Hilmi
+AU  - Ahmad, Khaleel
+AU  - Reddy, G. Thippa
+AU  - Mohan, Senthilkumar
+AU  - Ahmadian, Ali
+KW  - Wireless Sensor Networks
+KW  - trust
+KW  - energy-aware routing
+KW  - adversarial
+KW  - security
+AB  - ETERS is a comprehensive trust-based and energy-aware routing scheme for adversarial WSNs integrating communication/data/energy trust with enhanced cluster head selection (ECHSA), Beta-based trust updates with irregular attenuation, and a trust-based attack detection algorithm (TADA). Evaluations against QEBSR/ATRP/ELPC/SQEER show improvements in energy, latency, throughput, and PDR under normal and attack scenarios.
+ER  -
+
+
+
+TY  - JOUR
+AU  - Akkaya, K.
+AU  - Younis, M.
+TI  - A survey on routing protocols for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2005
+VL  - 3
+IS  - 3
+SP  - 325
+EP  - 349
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000738
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+AU  - Passarella, A.
+TI  - Energy conservation in wireless sensor networks: A survey
+JO  - Ad Hoc Networks
+PY  - 2009
+VL  - 7
+IS  - 3
+SP  - 537
+EP  - 568
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870508000954
+ER  - 
+
+TY  - JOUR
+AU  - Boukerche, A.
+TI  - Routing protocols in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 13
+SP  - 3032
+EP  - 3080
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611001644
+ER  - 
+
+TY  - JOUR
+AU  - Abbasi, A. A.
+AU  - Younis, M.
+TI  - A survey on clustering algorithms for wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 14-15
+SP  - 2826
+EP  - 2841
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366407002162
+ER  - 
+
+TY  - JOUR
+AU  - Afsar, M. M.
+AU  - Tayarani-N, M. H.
+TI  - Clustering in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2014
+VL  - 46
+SP  - 198
+EP  - 226
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804514001581
+ER  - 
+
+TY  - JOUR
+AU  - Chen, D.
+AU  - Varshney, P. K.
+TI  - QoS support in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2004
+VL  - 39
+IS  - 3
+SP  - 281
+EP  - 300
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128604000167
+ER  - 
+
+TY  - JOUR
+AU  - Wang, C.
+AU  - Li, B.
+AU  - Sohraby, K.
+AU  - Daneshmand, M.
+AU  - Hu, Y.
+TI  - Data aggregation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 12
+SP  - 278
+EP  - 289
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612001316
+ER  - 
+
+TY  - JOUR
+AU  - Karlsson, G.
+AU  - Bianchi, G.
+AU  - Willig, A.
+TI  - A measurement-based analysis of link reliability in wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 7
+SP  - 1292
+EP  - 1303
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366406004672
+ER  - 
+
+TY  - JOUR
+AU  - Chen, Y.
+AU  - Zhao, Q.
+AU  - Krishnamurthy, V.
+TI  - On routing performance under time-varying channels
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2008
+VL  - 7
+IS  - 9
+SP  - 3249
+EP  - 3263
+UR  - https://ieeexplore.ieee.org/document/4570244
+ER  - 
+
+TY  - JOUR
+AU  - Seada, K.
+AU  - Zuniga, M.
+AU  - Helmy, A.
+AU  - Krishnamachari, B.
+TI  - Energy-efficient forwarding in lossy wireless sensor networks
+JO  - IEEE/ACM Transactions on Networking
+PY  - 2006
+VL  - 14
+IS  - 2
+SP  - 292
+EP  - 304
+UR  - https://ieeexplore.ieee.org/document/1607965
+ER  - 
+
+TY  - JOUR
+AU  - Heinzelman, W. R.
+AU  - Chandrakasan, A.
+AU  - Balakrishnan, H.
+TI  - An application-specific protocol architecture for wireless microsensor networks
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2002
+VL  - 1
+IS  - 4
+SP  - 660
+EP  - 670
+UR  - https://ieeexplore.ieee.org/document/1024422
+ER  - 
+
+TY  - JOUR
+AU  - Gungor, V. C.
+AU  - Hancke, G. P.
+TI  - Industrial wireless sensor networks: Challenges, design principles, and technical approaches
+JO  - IEEE Transactions on Industrial Informatics
+PY  - 2009
+VL  - 5
+IS  - 4
+SP  - 425
+EP  - 442
+UR  - https://ieeexplore.ieee.org/document/5285313
+ER  - 
+
+TY  - JOUR
+AU  - Willig, A.
+AU  - Matheus, K.
+AU  - Wolisz, A.
+TI  - Wireless industrial communications: Deterministic and reliable
+JO  - Proceedings of the IEEE
+PY  - 2005
+VL  - 93
+IS  - 6
+SP  - 1130
+EP  - 1151
+UR  - https://ieeexplore.ieee.org/document/1433499
+ER  - 
+
+TY  - JOUR
+AU  - Pantazis, N. A.
+AU  - Nikolidakis, S. A.
+AU  - Vergados, D. D.
+TI  - Energy-efficient routing protocols in wireless sensor networks: A survey
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2013
+VL  - 15
+IS  - 2
+SP  - 551
+EP  - 591
+UR  - https://ieeexplore.ieee.org/document/6155078
+ER  - 
+
+TY  - JOUR
+AU  - Sudevalayam, S.
+AU  - Kulkarni, P.
+TI  - Energy harvesting sensor nodes: Survey and implications
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2011
+VL  - 13
+IS  - 3
+SP  - 443
+EP  - 461
+UR  - https://ieeexplore.ieee.org/document/5741144
+ER  - 
+
+TY  - JOUR
+AU  - Chen, X.
+AU  - Kwon, T.
+AU  - Choi, Y.
+TI  - Directional antenna-based reliable routing in wireless sensor networks
+JO  - Computer Communications
+PY  - 2008
+VL  - 31
+IS  - 17
+SP  - 4038
+EP  - 4046
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366408001795
+ER  - 
+
+TY  - JOUR
+AU  - Rajendran, V.
+AU  - Obraczka, K.
+AU  - Garcia-Luna-Aceves, J. J.
+TI  - Energy-efficient, collision-free medium access control for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2006
+VL  - 4
+IS  - 3
+SP  - 365
+EP  - 386
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870505000710
+ER  - 
+
+TY  - JOUR
+AU  - Schurgers, C.
+AU  - Srivastava, M. B.
+TI  - Energy efficient routing in wireless sensor networks: Topology control and duty-cycling
+JO  - Ad Hoc Networks
+PY  - 2004
+VL  - 2
+IS  - 3
+SP  - 251
+EP  - 267
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000428
+ER  - 
+
+TY  - JOUR
+AU  - Shafi, N.
+TI  - Reliability-aware routing in wireless sensor networks: A survey and taxonomy
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 10
+SP  - 2307
+EP  - 2327
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612000972
+ER  - 
+
+TY  - JOUR
+AU  - Tang, J.
+AU  - Li, B.
+AU  - Yang, J.
+TI  - Congestion control mechanisms in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2015
+VL  - 52
+SP  - 101
+EP  - 115
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804515000557
+ER  - 
+
+TY  - JOUR
+AU  - Mao, G.
+AU  - Fidan, B.
+AU  - Anderson, B. D. O.
+TI  - Wireless sensor network localization techniques: A survey
+JO  - Computer Networks
+PY  - 2007
+VL  - 51
+IS  - 10
+SP  - 2529
+EP  - 2553
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128607000217
+ER  - 
+
+TY  - JOUR
+AU  - Chen, H.
+TI  - Link quality estimation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 15
+SP  - 3130
+EP  - 3143
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611002221
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+TI  - Energy efficiency in wireless sensor networks: A top-down survey
+JO  - Computer Networks
+PY  - 2014
+VL  - 67
+SP  - 104
+EP  - 122
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128614001418
+ER  - 
+
+TY  - JOUR
+AU  - Kumar, S.
+TI  - Reliability and fault tolerance in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2016
+VL  - 106
+SP  - 45
+EP  - 63
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128616301472
+ER  - 
+
+
+TY  - JOUR
+TI  - A comprehensive energy aware trust-based efficient routing scheme for adversarial wireless sensor networks (ETERS)
+T2  - Future Generation Computer Systems
+VL  - 125
+SP  - 921
+EP  - 943
+DA  - 2021
+DO  - 10.1016/j.future.2021.06.049
+UR  - https://doi.org/10.1016/j.future.2021.06.049
+AU  - Khan, Tayyab
+AU  - Singh, Karan
+AU  - Hasan, Mohd Hilmi
+AU  - Ahmad, Khaleel
+AU  - Reddy, G. Thippa
+AU  - Mohan, Senthilkumar
+AU  - Ahmadian, Ali
+KW  - Wireless Sensor Networks
+KW  - trust
+KW  - energy-aware routing
+KW  - adversarial
+KW  - security
+AB  - ETERS is a comprehensive trust-based and energy-aware routing scheme for adversarial WSNs integrating communication/data/energy trust with enhanced cluster head selection (ECHSA), Beta-based trust updates with irregular attenuation, and a trust-based attack detection algorithm (TADA). Evaluations against QEBSR/ATRP/ELPC/SQEER show improvements in energy, latency, throughput, and PDR under normal and attack scenarios.
+ER  -
+
+
+TY  - JOUR
+ID  - Ren2024_IoTJ_MeFi
+TI  - MeFi: Mean Field Reinforcement Learning for Cooperative Routing in Wireless Sensor Networks
+T2  - IEEE Internet of Things Journal
+VL  - 11
+IS  - 1
+SP  - 995
+EP  - 1011
+DA  - 2024
+UR  - https://ieeexplore.ieee.org/document/10164652/
+AU  - Ren, J.
+AU  - Zheng, J.
+AU  - Guo, X.
+AU  - Song, T.
+AU  - Wang, X.
+AU  - Wang, S.
+AU  - Zhang, W.
+KW  - Wireless Sensor Networks
+KW  - mean-field reinforcement learning
+KW  - cooperative routing
+KW  - energy efficiency
+KW  - network lifetime
+AB  - A cooperative routing framework for large-scale WSNs using mean-field reinforcement learning to approximate agent interactions, improving energy efficiency and balance while maintaining delivery performance.
+ER  -
+
+
+TY  - JOUR
+ID  - Okine2024_TNSM
+TI  - Multi-Agent Deep Reinforcement Learning for Packet Routing in Tactical Mobile Sensor Networks
+T2  - IEEE Transactions on Network and Service Management
+VL  - 21
+IS  - 2
+SP  - 2155
+EP  - 2169
+DA  - 2024
+DO  - 10.1109/TNSM.2024.3352014
+UR  - https://doi.org/10.1109/TNSM.2024.3352014
+AU  - Okine, Andrews A.
+AU  - Adam, Nadir
+AU  - Naeem, Faisal
+AU  - Kaddoum, Georges
+KW  - Wireless Sensor Networks
+KW  - tactical
+KW  - jamming
+KW  - multi-agent deep reinforcement learning
+KW  - routing
+KW  - multi-sink
+AB  - A distributed MADRL-based routing scheme for multi-sink tactical mobile sensor networks under link-layer jamming; reward considers hop count to nearest sink, one-hop delay, next-hop PLR, and forwarding energy cost; outperforms baseline algorithms in PDR, latency, and energy efficiency.
+ER  -
+
+TY  - JOUR
+ID  - Kaur2021_JIOT
+TI  - Energy-Efficient Intelligent Routing Scheme for IoT-Enabled WSNs
+T2  - IEEE Internet of Things Journal
+VL  - 8
+IS  - 14
+SP  - 11440
+EP  - 11449
+DA  - 2021
+DO  - 10.1109/JIOT.2021.9324772
+UR  - https://ieeexplore.ieee.org/document/9324772/
+AU  - Kaur, Gagandeep
+AU  - Chanak, Prasenjit
+AU  - Bhattacharya, Mahua
+KW  - Wireless Sensor Networks
+KW  - deep reinforcement learning
+KW  - unequal clustering
+KW  - IoT
+KW  - energy efficiency
+KW  - delay
+AB  - A DRL-based intelligent routing approach with unequal clustering guided by current data load reduces delay and extends network lifetime; ns-3 experiments show improvements in alive nodes, packet delivery, energy efficiency, and communication delay compared to state-of-the-art baselines.
+ER  -
+
+
+
+TY  - JOUR
+AU  - Akkaya, K.
+AU  - Younis, M.
+TI  - A survey on routing protocols for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2005
+VL  - 3
+IS  - 3
+SP  - 325
+EP  - 349
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000738
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+AU  - Passarella, A.
+TI  - Energy conservation in wireless sensor networks: A survey
+JO  - Ad Hoc Networks
+PY  - 2009
+VL  - 7
+IS  - 3
+SP  - 537
+EP  - 568
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870508000954
+ER  - 
+
+TY  - JOUR
+AU  - Boukerche, A.
+TI  - Routing protocols in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 13
+SP  - 3032
+EP  - 3080
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611001644
+ER  - 
+
+TY  - JOUR
+AU  - Abbasi, A. A.
+AU  - Younis, M.
+TI  - A survey on clustering algorithms for wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 14-15
+SP  - 2826
+EP  - 2841
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366407002162
+ER  - 
+
+TY  - JOUR
+AU  - Afsar, M. M.
+AU  - Tayarani-N, M. H.
+TI  - Clustering in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2014
+VL  - 46
+SP  - 198
+EP  - 226
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804514001581
+ER  - 
+
+TY  - JOUR
+AU  - Chen, D.
+AU  - Varshney, P. K.
+TI  - QoS support in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2004
+VL  - 39
+IS  - 3
+SP  - 281
+EP  - 300
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128604000167
+ER  - 
+
+TY  - JOUR
+AU  - Wang, C.
+AU  - Li, B.
+AU  - Sohraby, K.
+AU  - Daneshmand, M.
+AU  - Hu, Y.
+TI  - Data aggregation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 12
+SP  - 278
+EP  - 289
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612001316
+ER  - 
+
+TY  - JOUR
+AU  - Karlsson, G.
+AU  - Bianchi, G.
+AU  - Willig, A.
+TI  - A measurement-based analysis of link reliability in wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 7
+SP  - 1292
+EP  - 1303
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366406004672
+ER  - 
+
+TY  - JOUR
+AU  - Chen, Y.
+AU  - Zhao, Q.
+AU  - Krishnamurthy, V.
+TI  - On routing performance under time-varying channels
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2008
+VL  - 7
+IS  - 9
+SP  - 3249
+EP  - 3263
+UR  - https://ieeexplore.ieee.org/document/4570244
+ER  - 
+
+TY  - JOUR
+AU  - Seada, K.
+AU  - Zuniga, M.
+AU  - Helmy, A.
+AU  - Krishnamachari, B.
+TI  - Energy-efficient forwarding in lossy wireless sensor networks
+JO  - IEEE/ACM Transactions on Networking
+PY  - 2006
+VL  - 14
+IS  - 2
+SP  - 292
+EP  - 304
+UR  - https://ieeexplore.ieee.org/document/1607965
+ER  - 
+
+TY  - JOUR
+AU  - Heinzelman, W. R.
+AU  - Chandrakasan, A.
+AU  - Balakrishnan, H.
+TI  - An application-specific protocol architecture for wireless microsensor networks
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2002
+VL  - 1
+IS  - 4
+SP  - 660
+EP  - 670
+UR  - https://ieeexplore.ieee.org/document/1024422
+ER  - 
+
+TY  - JOUR
+AU  - Gungor, V. C.
+AU  - Hancke, G. P.
+TI  - Industrial wireless sensor networks: Challenges, design principles, and technical approaches
+JO  - IEEE Transactions on Industrial Informatics
+PY  - 2009
+VL  - 5
+IS  - 4
+SP  - 425
+EP  - 442
+UR  - https://ieeexplore.ieee.org/document/5285313
+ER  - 
+
+TY  - JOUR
+AU  - Willig, A.
+AU  - Matheus, K.
+AU  - Wolisz, A.
+TI  - Wireless industrial communications: Deterministic and reliable
+JO  - Proceedings of the IEEE
+PY  - 2005
+VL  - 93
+IS  - 6
+SP  - 1130
+EP  - 1151
+UR  - https://ieeexplore.ieee.org/document/1433499
+ER  - 
+
+TY  - JOUR
+AU  - Pantazis, N. A.
+AU  - Nikolidakis, S. A.
+AU  - Vergados, D. D.
+TI  - Energy-efficient routing protocols in wireless sensor networks: A survey
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2013
+VL  - 15
+IS  - 2
+SP  - 551
+EP  - 591
+UR  - https://ieeexplore.ieee.org/document/6155078
+ER  - 
+
+TY  - JOUR
+AU  - Sudevalayam, S.
+AU  - Kulkarni, P.
+TI  - Energy harvesting sensor nodes: Survey and implications
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2011
+VL  - 13
+IS  - 3
+SP  - 443
+EP  - 461
+UR  - https://ieeexplore.ieee.org/document/5741144
+ER  - 
+
+TY  - JOUR
+AU  - Chen, X.
+AU  - Kwon, T.
+AU  - Choi, Y.
+TI  - Directional antenna-based reliable routing in wireless sensor networks
+JO  - Computer Communications
+PY  - 2008
+VL  - 31
+IS  - 17
+SP  - 4038
+EP  - 4046
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366408001795
+ER  - 
+
+TY  - JOUR
+AU  - Rajendran, V.
+AU  - Obraczka, K.
+AU  - Garcia-Luna-Aceves, J. J.
+TI  - Energy-efficient, collision-free medium access control for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2006
+VL  - 4
+IS  - 3
+SP  - 365
+EP  - 386
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870505000710
+ER  - 
+
+TY  - JOUR
+AU  - Schurgers, C.
+AU  - Srivastava, M. B.
+TI  - Energy efficient routing in wireless sensor networks: Topology control and duty-cycling
+JO  - Ad Hoc Networks
+PY  - 2004
+VL  - 2
+IS  - 3
+SP  - 251
+EP  - 267
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000428
+ER  - 
+
+TY  - JOUR
+AU  - Shafi, N.
+TI  - Reliability-aware routing in wireless sensor networks: A survey and taxonomy
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 10
+SP  - 2307
+EP  - 2327
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612000972
+ER  - 
+
+TY  - JOUR
+AU  - Tang, J.
+AU  - Li, B.
+AU  - Yang, J.
+TI  - Congestion control mechanisms in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2015
+VL  - 52
+SP  - 101
+EP  - 115
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804515000557
+ER  - 
+
+TY  - JOUR
+AU  - Mao, G.
+AU  - Fidan, B.
+AU  - Anderson, B. D. O.
+TI  - Wireless sensor network localization techniques: A survey
+JO  - Computer Networks
+PY  - 2007
+VL  - 51
+IS  - 10
+SP  - 2529
+EP  - 2553
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128607000217
+ER  - 
+
+TY  - JOUR
+AU  - Chen, H.
+TI  - Link quality estimation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 15
+SP  - 3130
+EP  - 3143
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611002221
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+TI  - Energy efficiency in wireless sensor networks: A top-down survey
+JO  - Computer Networks
+PY  - 2014
+VL  - 67
+SP  - 104
+EP  - 122
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128614001418
+ER  - 
+
+TY  - JOUR
+AU  - Kumar, S.
+TI  - Reliability and fault tolerance in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2016
+VL  - 106
+SP  - 45
+EP  - 63
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128616301472
+ER  - 
+
+
+TY  - JOUR
+TI  - A comprehensive energy aware trust-based efficient routing scheme for adversarial wireless sensor networks (ETERS)
+T2  - Future Generation Computer Systems
+VL  - 125
+SP  - 921
+EP  - 943
+DA  - 2021
+DO  - 10.1016/j.future.2021.06.049
+UR  - https://doi.org/10.1016/j.future.2021.06.049
+AU  - Khan, Tayyab
+AU  - Singh, Karan
+AU  - Hasan, Mohd Hilmi
+AU  - Ahmad, Khaleel
+AU  - Reddy, G. Thippa
+AU  - Mohan, Senthilkumar
+AU  - Ahmadian, Ali
+KW  - Wireless Sensor Networks
+KW  - trust
+KW  - energy-aware routing
+KW  - adversarial
+KW  - security
+AB  - ETERS is a comprehensive trust-based and energy-aware routing scheme for adversarial WSNs integrating communication/data/energy trust with enhanced cluster head selection (ECHSA), Beta-based trust updates with irregular attenuation, and a trust-based attack detection algorithm (TADA). Evaluations against QEBSR/ATRP/ELPC/SQEER show improvements in energy, latency, throughput, and PDR under normal and attack scenarios.
+ER  -
+
+
+
+TY  - JOUR
+AU  - Akkaya, K.
+AU  - Younis, M.
+TI  - A survey on routing protocols for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2005
+VL  - 3
+IS  - 3
+SP  - 325
+EP  - 349
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000738
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+AU  - Passarella, A.
+TI  - Energy conservation in wireless sensor networks: A survey
+JO  - Ad Hoc Networks
+PY  - 2009
+VL  - 7
+IS  - 3
+SP  - 537
+EP  - 568
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870508000954
+ER  - 
+
+TY  - JOUR
+AU  - Boukerche, A.
+TI  - Routing protocols in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 13
+SP  - 3032
+EP  - 3080
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611001644
+ER  - 
+
+TY  - JOUR
+AU  - Abbasi, A. A.
+AU  - Younis, M.
+TI  - A survey on clustering algorithms for wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 14-15
+SP  - 2826
+EP  - 2841
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366407002162
+ER  - 
+
+TY  - JOUR
+AU  - Afsar, M. M.
+AU  - Tayarani-N, M. H.
+TI  - Clustering in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2014
+VL  - 46
+SP  - 198
+EP  - 226
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804514001581
+ER  - 
+
+TY  - JOUR
+AU  - Chen, D.
+AU  - Varshney, P. K.
+TI  - QoS support in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2004
+VL  - 39
+IS  - 3
+SP  - 281
+EP  - 300
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128604000167
+ER  - 
+
+TY  - JOUR
+AU  - Wang, C.
+AU  - Li, B.
+AU  - Sohraby, K.
+AU  - Daneshmand, M.
+AU  - Hu, Y.
+TI  - Data aggregation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 12
+SP  - 278
+EP  - 289
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612001316
+ER  - 
+
+TY  - JOUR
+AU  - Karlsson, G.
+AU  - Bianchi, G.
+AU  - Willig, A.
+TI  - A measurement-based analysis of link reliability in wireless sensor networks
+JO  - Computer Communications
+PY  - 2007
+VL  - 30
+IS  - 7
+SP  - 1292
+EP  - 1303
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366406004672
+ER  - 
+
+TY  - JOUR
+AU  - Chen, Y.
+AU  - Zhao, Q.
+AU  - Krishnamurthy, V.
+TI  - On routing performance under time-varying channels
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2008
+VL  - 7
+IS  - 9
+SP  - 3249
+EP  - 3263
+UR  - https://ieeexplore.ieee.org/document/4570244
+ER  - 
+
+TY  - JOUR
+AU  - Seada, K.
+AU  - Zuniga, M.
+AU  - Helmy, A.
+AU  - Krishnamachari, B.
+TI  - Energy-efficient forwarding in lossy wireless sensor networks
+JO  - IEEE/ACM Transactions on Networking
+PY  - 2006
+VL  - 14
+IS  - 2
+SP  - 292
+EP  - 304
+UR  - https://ieeexplore.ieee.org/document/1607965
+ER  - 
+
+TY  - JOUR
+AU  - Heinzelman, W. R.
+AU  - Chandrakasan, A.
+AU  - Balakrishnan, H.
+TI  - An application-specific protocol architecture for wireless microsensor networks
+JO  - IEEE Transactions on Wireless Communications
+PY  - 2002
+VL  - 1
+IS  - 4
+SP  - 660
+EP  - 670
+UR  - https://ieeexplore.ieee.org/document/1024422
+ER  - 
+
+TY  - JOUR
+AU  - Gungor, V. C.
+AU  - Hancke, G. P.
+TI  - Industrial wireless sensor networks: Challenges, design principles, and technical approaches
+JO  - IEEE Transactions on Industrial Informatics
+PY  - 2009
+VL  - 5
+IS  - 4
+SP  - 425
+EP  - 442
+UR  - https://ieeexplore.ieee.org/document/5285313
+ER  - 
+
+TY  - JOUR
+AU  - Willig, A.
+AU  - Matheus, K.
+AU  - Wolisz, A.
+TI  - Wireless industrial communications: Deterministic and reliable
+JO  - Proceedings of the IEEE
+PY  - 2005
+VL  - 93
+IS  - 6
+SP  - 1130
+EP  - 1151
+UR  - https://ieeexplore.ieee.org/document/1433499
+ER  - 
+
+TY  - JOUR
+AU  - Pantazis, N. A.
+AU  - Nikolidakis, S. A.
+AU  - Vergados, D. D.
+TI  - Energy-efficient routing protocols in wireless sensor networks: A survey
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2013
+VL  - 15
+IS  - 2
+SP  - 551
+EP  - 591
+UR  - https://ieeexplore.ieee.org/document/6155078
+ER  - 
+
+TY  - JOUR
+AU  - Sudevalayam, S.
+AU  - Kulkarni, P.
+TI  - Energy harvesting sensor nodes: Survey and implications
+JO  - IEEE Communications Surveys & Tutorials
+PY  - 2011
+VL  - 13
+IS  - 3
+SP  - 443
+EP  - 461
+UR  - https://ieeexplore.ieee.org/document/5741144
+ER  - 
+
+TY  - JOUR
+AU  - Chen, X.
+AU  - Kwon, T.
+AU  - Choi, Y.
+TI  - Directional antenna-based reliable routing in wireless sensor networks
+JO  - Computer Communications
+PY  - 2008
+VL  - 31
+IS  - 17
+SP  - 4038
+EP  - 4046
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S0140366408001795
+ER  - 
+
+TY  - JOUR
+AU  - Rajendran, V.
+AU  - Obraczka, K.
+AU  - Garcia-Luna-Aceves, J. J.
+TI  - Energy-efficient, collision-free medium access control for wireless sensor networks
+JO  - Ad Hoc Networks
+PY  - 2006
+VL  - 4
+IS  - 3
+SP  - 365
+EP  - 386
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870505000710
+ER  - 
+
+TY  - JOUR
+AU  - Schurgers, C.
+AU  - Srivastava, M. B.
+TI  - Energy efficient routing in wireless sensor networks: Topology control and duty-cycling
+JO  - Ad Hoc Networks
+PY  - 2004
+VL  - 2
+IS  - 3
+SP  - 251
+EP  - 267
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1570870503000428
+ER  - 
+
+TY  - JOUR
+AU  - Shafi, N.
+TI  - Reliability-aware routing in wireless sensor networks: A survey and taxonomy
+JO  - Computer Networks
+PY  - 2012
+VL  - 56
+IS  - 10
+SP  - 2307
+EP  - 2327
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128612000972
+ER  - 
+
+TY  - JOUR
+AU  - Tang, J.
+AU  - Li, B.
+AU  - Yang, J.
+TI  - Congestion control mechanisms in wireless sensor networks: A survey
+JO  - Journal of Network and Computer Applications
+PY  - 2015
+VL  - 52
+SP  - 101
+EP  - 115
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1084804515000557
+ER  - 
+
+TY  - JOUR
+AU  - Mao, G.
+AU  - Fidan, B.
+AU  - Anderson, B. D. O.
+TI  - Wireless sensor network localization techniques: A survey
+JO  - Computer Networks
+PY  - 2007
+VL  - 51
+IS  - 10
+SP  - 2529
+EP  - 2553
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128607000217
+ER  - 
+
+TY  - JOUR
+AU  - Chen, H.
+TI  - Link quality estimation in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2011
+VL  - 55
+IS  - 15
+SP  - 3130
+EP  - 3143
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128611002221
+ER  - 
+
+TY  - JOUR
+AU  - Anastasi, G.
+AU  - Conti, M.
+AU  - Di Francesco, M.
+TI  - Energy efficiency in wireless sensor networks: A top-down survey
+JO  - Computer Networks
+PY  - 2014
+VL  - 67
+SP  - 104
+EP  - 122
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128614001418
+ER  - 
+
+TY  - JOUR
+AU  - Kumar, S.
+TI  - Reliability and fault tolerance in wireless sensor networks: A survey
+JO  - Computer Networks
+PY  - 2016
+VL  - 106
+SP  - 45
+EP  - 63
+UR  - https://www.sciencedirect.com/science/article/abs/pii/S1389128616301472
+ER  -
+
+

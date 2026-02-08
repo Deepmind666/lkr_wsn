@@ -5,7 +5,7 @@
 - **实现日期**: 2025-01-30
 - **版本**: 1.0
 - **状态**: ✅ 完成
-- **作者**: Enhanced EEHFR Research Team
+- **作者**: Enhanced AERIS Research Team
 
 ## 📚 理论基础
 
@@ -139,12 +139,12 @@ class TEENConfig:
 - ✅ **医疗监护**: 生理参数异常检测
 - ❌ **周期性数据收集**: 不适合连续监测应用
 
-## 🎯 Enhanced EEHFR集成建议
+## 🎯 Enhanced AERIS集成建议
 
 ### 1. 阈值机制集成
 ```python
-# 在Enhanced EEHFR中集成TEEN的阈值逻辑
-class EnhancedEEHFRNode:
+# 在Enhanced AERIS中集成TEEN的阈值逻辑
+class EnhancedAERISNode:
     def adaptive_transmission_decision(self):
         # 结合模糊逻辑和阈值机制
         fuzzy_score = self.calculate_fuzzy_score()
@@ -188,13 +188,13 @@ class EnhancedEEHFRNode:
 ### Week 1目标达成
 - ✅ **TEEN协议实现**: 完整实现阈值敏感机制
 - ✅ **基准扩展**: 从3协议扩展到4协议对比
-- ✅ **性能基准**: 为Enhanced EEHFR提供新的对比基准
+- ✅ **性能基准**: 为Enhanced AERIS提供新的对比基准
 - ✅ **技术储备**: 为后续算法创新提供技术组件
 
 ### 学术价值
 - **理论完整性**: 补充了反应式路由协议基准
 - **对比公平性**: 统一测试环境确保结果可信
-- **创新启发**: 为Enhanced EEHFR提供新的设计思路
+- **创新启发**: 为Enhanced AERIS提供新的设计思路
 
 ## 🚀 下一步计划
 
@@ -204,12 +204,12 @@ class EnhancedEEHFRNode:
 - [ ] 完成5协议基准对比
 
 ### 中期目标 (Week 2-3)
-- [ ] 集成TEEN阈值机制到Enhanced EEHFR
+- [ ] 集成TEEN阈值机制到Enhanced AERIS
 - [ ] 开发混合传输策略
 - [ ] 实现自适应阈值调整
 
 ### 长期目标 (Week 4)
-- [ ] 完整的Enhanced EEHFR v2.0实现
+- [ ] 完整的Enhanced AERIS v2.0实现
 - [ ] 达到SCI Q3期刊标准
 - [ ] 准备论文投稿
 

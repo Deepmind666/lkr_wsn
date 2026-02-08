@@ -1,7 +1,7 @@
-# Enhanced EEHFR 下一步优化规划
+# Enhanced AERIS 下一步优化规划
 
 **日期**: 2025年1月30日  
-**规划人**: Enhanced EEHFR Research Team  
+**规划人**: Enhanced AERIS Research Team  
 **基于**: 诚实验证后的项目现状
 
 ---
@@ -24,12 +24,12 @@
 
 ## 🚀 **下一步优化重点**
 
-### **阶段1: Enhanced EEHFR协议集成** (本周重点)
+### **阶段1: Enhanced AERIS协议集成** (本周重点)
 
 #### **1.1 协议架构优化**
 ```python
 # 目标：集成所有改进组件
-class EnhancedEEHFRProtocol:
+class EnhancedAERISProtocol:
     def __init__(self, config: NetworkConfig):
         # 集成改进的能耗模型
         self.energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
@@ -62,7 +62,7 @@ class EnhancedEEHFRProtocol:
 protocols = [
     ('LEACH', LEACHProtocol),
     ('PEGASIS', PEGASISProtocol), 
-    ('Enhanced_EEHFR', EnhancedEEHFRProtocol)
+    ('Enhanced_AERIS', EnhancedAERISProtocol)
 ]
 
 # 多维度测试配置
@@ -104,13 +104,13 @@ test_configs = [
 
 ## 📊 **具体执行计划**
 
-### **第1天: Enhanced EEHFR核心集成**
+### **第1天: Enhanced AERIS核心集成**
 ```bash
 # 任务清单
-[ ] 集成improved_energy_model到Enhanced EEHFR
-[ ] 集成realistic_channel_model到Enhanced EEHFR  
-[ ] 集成environment_aware机制到Enhanced EEHFR
-[ ] 创建统一的EnhancedEEHFRProtocol类
+[ ] 集成improved_energy_model到Enhanced AERIS
+[ ] 集成realistic_channel_model到Enhanced AERIS  
+[ ] 集成environment_aware机制到Enhanced AERIS
+[ ] 创建统一的EnhancedAERISProtocol类
 [ ] 基础功能测试
 ```
 
@@ -127,7 +127,7 @@ test_configs = [
 ### **第3天: 三协议对比实验**
 ```bash
 # 任务清单
-[ ] 扩展comprehensive_benchmark支持Enhanced EEHFR
+[ ] 扩展comprehensive_benchmark支持Enhanced AERIS
 [ ] 设计多维度实验配置
 [ ] 运行大规模对比实验
 [ ] 收集完整的性能数据
@@ -158,11 +158,11 @@ test_configs = [
 
 ## 🔧 **技术实现细节**
 
-### **Enhanced EEHFR集成架构**
+### **Enhanced AERIS集成架构**
 ```python
-class EnhancedEEHFRProtocol:
+class EnhancedAERISProtocol:
     """
-    Enhanced EEHFR协议主类
+    Enhanced AERIS协议主类
     集成所有优化组件
     """
     
@@ -180,7 +180,7 @@ class EnhancedEEHFRProtocol:
         self.network_stats = {}
         
     def run_simulation(self, max_rounds: int) -> Dict:
-        """运行Enhanced EEHFR仿真"""
+        """运行Enhanced AERIS仿真"""
         
         # 初始化网络
         self._initialize_network()
@@ -249,7 +249,7 @@ def comprehensive_performance_evaluation(protocols, configs):
 ## 📈 **预期成果**
 
 ### **技术成果**
-1. **完整的Enhanced EEHFR协议**: 集成所有优化组件
+1. **完整的Enhanced AERIS协议**: 集成所有优化组件
 2. **全面的性能对比**: 三协议多维度对比结果
 3. **统计严谨的分析**: 显著性检验和置信区间
 4. **高质量的可视化**: IEEE标准格式图表
@@ -271,7 +271,7 @@ def comprehensive_performance_evaluation(protocols, configs):
 ## 🎯 **成功标准**
 
 ### **技术标准**
-- [ ] Enhanced EEHFR协议完整实现
+- [ ] Enhanced AERIS协议完整实现
 - [ ] 三协议对比实验完成
 - [ ] 统计分析结果可信
 - [ ] 代码质量达到开源标准
@@ -290,4 +290,4 @@ def comprehensive_performance_evaluation(protocols, configs):
 
 ---
 
-**总结**: 基于诚实验证的项目现状，制定了切实可行的优化规划。重点是Enhanced EEHFR协议的集成和三协议全面对比，目标是产出高质量的学术成果。所有计划都基于已验证的技术基础，避免不切实际的承诺。
+**总结**: 基于诚实验证的项目现状，制定了切实可行的优化规划。重点是Enhanced AERIS协议的集成和三协议全面对比，目标是产出高质量的学术成果。所有计划都基于已验证的技术基础，避免不切实际的承诺。

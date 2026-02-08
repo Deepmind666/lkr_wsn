@@ -19,10 +19,9 @@ conda activate $EnvName
 if ($Cuda -eq "auto") {
   Write-Host "Detecting CUDA..."
   $cudaVer = & nvcc --version 2>$null | Select-String -Pattern "release" | ForEach-Object { $_.ToString() }
-  if ($cudaVer) {
-    Write-Host "CUDA detected: $cudaVer"
-    # Use PyTorch official instructions for Windows + CUDA 12.1 (most 50xx are 12.x). Adjust if needed.
-    Write-Host "Installing PyTorch (CUDA 12.1)"
+  $nvidiaSmi = & nvidia-smi -L 2>$null
+  if ($cudaVer -or $nvidiaSmi) {
+    Write-Host "CUDA-capable driver detected. Installing PyTorch (CUDA 12.1)"
     pip install --index-url https://download.pytorch.org/whl/cu121 torch torchvision torchaudio
   } else {
     Write-Host "CUDA not detected; installing CPU-only PyTorch"
@@ -33,7 +32,13 @@ if ($Cuda -eq "auto") {
   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 } else {
   Write-Host "Installing PyTorch for $Cuda"
-  pip install --index-url https://download.pytorch.org/whl/$Cuda torch torchvision torchaudio
+  if ($Cuda -match "^cu\d{3}$") {
+    $index = "https://download.pytorch.org/whl/$Cuda"
+    pip install --index-url $index torch torchvision torchaudio
+  } else {
+    Write-Host "[WARN] Unknown CUDA spec '$Cuda', defaulting to cu121"
+    pip install --index-url https://download.pytorch.org/whl/cu121 torch torchvision torchaudio
+  }
 }
 
 Write-Host "Done. Activate with: conda activate $EnvName"

@@ -1,0 +1,65 @@
+﻿# Ablation experiment plan (template)
+# TODO: fill with verified scenario definitions and seed lists.
+
+scenarios:
+  - name: intel_replay
+    nodes: 54
+    rounds: 200
+    phases: 4
+    seeds: []  # TODO
+  - name: corridor_shift
+    nodes: 80
+    rounds: 200
+    phases: 4
+    seeds: []
+  - name: moving_bs
+    nodes: 80
+    rounds: 200
+    phases: 4
+    seeds: []
+  - name: dropout
+    nodes: 120
+    rounds: 200
+    phases: 4
+    seeds: []
+
+ablations:
+  - name: full
+    disable_context: false
+    disable_skeleton: false
+    disable_gateway: false
+    disable_safety: false
+  - name: no_context
+    disable_context: true
+    disable_skeleton: false
+    disable_gateway: false
+    disable_safety: false
+  - name: no_skeleton
+    disable_context: false
+    disable_skeleton: true
+    disable_gateway: false
+    disable_safety: false
+  - name: no_gateway
+    disable_context: false
+    disable_skeleton: false
+    disable_gateway: true
+    disable_safety: false
+  - name: no_safety
+    disable_context: false
+    disable_skeleton: false
+    disable_gateway: false
+    disable_safety: true
+
+metrics:
+  - pdr
+  - energy_total_j
+  - energy_per_success_j
+  - control_overhead_packets
+  - control_overhead_bytes
+  - latency_ms  # TODO: only if measured
+
+statistics:
+  ci: bootstrap
+  ci_level: 0.95
+  multiple_testing: holm_bonferroni
+  effect_size: cohens_d

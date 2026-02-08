@@ -1,18 +1,18 @@
-# Enhanced EEHFR 2.0 混合优化协议设计方案
+# Enhanced AERIS 2.0 混合优化协议设计方案
 ## Week 2 实施计划 - 2025年1月30日
 
 ## 🎯 **核心目标**
-基于专家分析，设计Enhanced EEHFR 2.0混合优化协议，融合PEGASIS链式优化和HEED能效聚类的优势，实现10-15%性能提升，达到SCI Q3期刊发表标准。
+基于专家分析，设计Enhanced AERIS 2.0混合优化协议，融合PEGASIS链式优化和HEED能效聚类的优势，实现10-15%性能提升，达到SCI Q3期刊发表标准。
 
 ## 📊 **当前基准数据**
 - **PEGASIS**: 249.97 packets/J, 0.980 PDR (最佳能效)
 - **HEED**: 224.15 packets/J, 1.000 PDR (最佳可靠性)
-- **Enhanced EEHFR**: ~280 packets/J, 96.7% PDR (当前5-6%提升)
+- **Enhanced AERIS**: ~280 packets/J, 96.7% PDR (当前5-6%提升)
 - **目标**: >275 packets/J, >0.985 PDR (10-15%提升)
 
 ## 🏗️ **技术架构设计**
 
-### **Enhanced EEHFR 2.0 = 基础EEHFR + 双阶段优化 + 智能切换**
+### **Enhanced AERIS 2.0 = 基础AERIS + 双阶段优化 + 智能切换**
 
 ```
 阶段1: HEED能效聚类
@@ -92,7 +92,7 @@
 ## 🧪 **实验设计方案**
 
 ### **对比实验**
-1. **单协议对比**: Enhanced EEHFR 2.0 vs LEACH/PEGASIS/HEED
+1. **单协议对比**: Enhanced AERIS 2.0 vs LEACH/PEGASIS/HEED
 2. **消融实验**: 验证各组件的贡献度
 3. **参数优化**: 寻找最优配置参数
 
@@ -141,7 +141,7 @@
 - 模糊逻辑应用: WSN中的智能决策系统
 
 ## 🎉 **Week 2成功标准**
-1. ✅ Enhanced EEHFR 2.0核心算法实现完成
+1. ✅ Enhanced AERIS 2.0核心算法实现完成
 2. ✅ 双阶段混合优化机制验证有效
 3. ✅ 性能提升达到10%以上
 4. ✅ 代码质量达到开源标准

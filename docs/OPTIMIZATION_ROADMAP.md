@@ -1,11 +1,11 @@
-# 🚀 Enhanced EEHFR 深度优化路线图
+# 🚀 Enhanced AERIS 深度优化路线图
 
 ## 📊 当前项目状态深度分析
 
 ### 🏆 已完成的核心成就 (Stage 1)
 
 #### 技术创新突破
-- ✅ **Enhanced EEHFR协议**: 链式聚类 + 模糊逻辑 + 混合元启发式
+- ✅ **Enhanced AERIS协议**: 链式聚类 + 模糊逻辑 + 混合元启发式
 - ✅ **卓越性能**: 60.1% vs LEACH, 20.0% vs PEGASIS, 80.3% vs HEED
 - ✅ **完美可靠性**: 500轮仿真零节点死亡，100%数据包传输
 - ✅ **多规模验证**: 50/100/150节点网络全面测试
@@ -118,7 +118,7 @@
 #### 技术实现
 ```python
 # 预测驱动的智能路由
-class PredictiveEEHFR:
+class PredictiveAERIS:
     def __init__(self):
         self.lstm_predictor = LSTMPredictor()
         self.fuzzy_system = EnhancedFuzzySystem()
@@ -202,7 +202,7 @@ class PredictiveEEHFR:
 2. **Introduction** (1.5页) - 问题动机和贡献
 3. **Related Work** (2页) - 文献综述和对比
 4. **System Model** (1页) - 网络模型和假设
-5. **Enhanced EEHFR Protocol** (3页) - 核心算法
+5. **Enhanced AERIS Protocol** (3页) - 核心算法
 6. **Performance Evaluation** (3页) - 实验设计和结果
 7. **Conclusion** (0.5页) - 总结和未来工作
 

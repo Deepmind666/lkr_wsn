@@ -1,9 +1,9 @@
-# 🧠 第一性原理分析：Enhanced EEHFR 2.0 vs PEGASIS
+# 🧠 第一性原理分析：Enhanced AERIS 2.0 vs PEGASIS
 
 ## 📋 问题定义
 
 **核心问题**：
-- 为什么Enhanced EEHFR 2.0能效提高5.54%？
+- 为什么Enhanced AERIS 2.0能效提高5.54%？
 - 为什么投递率降低3.95%？
 - 这种技术权衡的本质原因是什么？
 
@@ -25,7 +25,7 @@
 - **路径确定性**：固定链路径
 - **能耗分布**：均匀分布在所有节点
 
-#### Enhanced EEHFR 2.0协议架构
+#### Enhanced AERIS 2.0协议架构
 ```
 簇1: 成员 → 簇头1 → 基站
 簇2: 成员 → 簇头2 → 基站
@@ -47,7 +47,7 @@
 **数学模型**：
 ```
 PEGASIS总传输次数 = n-1 = 49次
-Enhanced EEHFR 2.0总传输次数 = 簇内传输 + 簇间传输
+Enhanced AERIS 2.0总传输次数 = 簇内传输 + 簇间传输
                             = (n-k) + k = n次
 但到基站的长距离传输次数 = k ≈ 5-8次
 ```
@@ -66,7 +66,7 @@ E_Enhanced = Σ(E_circuit + E_amp × d_intra²) + Σ(E_circuit + E_amp × d_bs²
 - 但链路径固定，可能包含次优路径
 - 领导者到基站距离不可控
 
-**Enhanced EEHFR 2.0距离优化**：
+**Enhanced AERIS 2.0距离优化**：
 ```python
 # 簇头选择的位置因子
 position_factor = 1.0 - (distance_to_bs / max_distance)
@@ -97,7 +97,7 @@ P_CH = 0.4 × energy_factor + 0.3 × position_factor + 0.3 × centrality_factor
 传输成功概率 = 98% (单次传输)
 ```
 
-**Enhanced EEHFR 2.0**：
+**Enhanced AERIS 2.0**：
 ```
 参与基站传输的节点数 = k ≈ 5-8 (所有簇头)
 每次传输成功概率 = 95%
@@ -109,7 +109,7 @@ P_CH = 0.4 × energy_factor + 0.3 × position_factor + 0.3 × centrality_factor
 **数学分析**：
 ```
 PEGASIS: P_success = 0.98 (单次传输)
-Enhanced EEHFR 2.0: 
+Enhanced AERIS 2.0: 
   - 尝试传输次数：k次
   - 期望成功次数：k × 0.95
   - 实际成功率：(k × 0.95) / k = 0.95 = 95%
@@ -129,7 +129,7 @@ Enhanced EEHFR 2.0:
 - **路径固定**：减少路由开销和不确定性
 - **负载均衡**：所有节点轮流承担传输任务
 
-**Enhanced EEHFR 2.0设计哲学**：
+**Enhanced AERIS 2.0设计哲学**：
 - **效率优先**：通过智能选择减少总体能耗
 - **自适应性**：根据网络状态动态调整
 - **优化导向**：牺牲部分可靠性换取能效提升
@@ -139,11 +139,11 @@ Enhanced EEHFR 2.0:
 ```
 优化目标函数：
 PEGASIS: max(Reliability) subject to Energy_constraint
-Enhanced EEHFR 2.0: max(Energy_Efficiency) subject to Reliability_threshold
+Enhanced AERIS 2.0: max(Energy_Efficiency) subject to Reliability_threshold
 
 结果：
 PEGASIS: 高可靠性(98%) + 中等能效(278 packets/J)
-Enhanced EEHFR 2.0: 中等可靠性(94%) + 高能效(294 packets/J)
+Enhanced AERIS 2.0: 中等可靠性(94%) + 高能效(294 packets/J)
 ```
 
 ### 5. 实验验证
@@ -152,7 +152,7 @@ Enhanced EEHFR 2.0: 中等可靠性(94%) + 高能效(294 packets/J)
 
 ```
 实际测试结果：
-Enhanced EEHFR 2.0: 293.56 packets/J
+Enhanced AERIS 2.0: 293.56 packets/J
 PEGASIS: 278.16 packets/J
 提升幅度: (293.56 - 278.16) / 278.16 = 5.54%
 
@@ -163,7 +163,7 @@ PEGASIS: 278.16 packets/J
 
 ```
 实际测试结果：
-Enhanced EEHFR 2.0: 94.1%
+Enhanced AERIS 2.0: 94.1%
 PEGASIS: 98.0%
 降低幅度: (94.1 - 98.0) / 98.0 = -3.95%
 
@@ -180,10 +180,10 @@ PEGASIS: 98.0%
 
 ```python
 # PEGASIS: 每轮1次基站传输，98%成功率
-# Enhanced EEHFR 2.0: 每轮多个簇头传输，但聚合为1个结果，95%成功率
+# Enhanced AERIS 2.0: 每轮多个簇头传输，但聚合为1个结果，95%成功率
 
 实际投递率 = 成功传输轮数 / 总轮数
-Enhanced EEHFR 2.0: 930成功 / 988尝试 = 94.1%
+Enhanced AERIS 2.0: 930成功 / 988尝试 = 94.1%
 PEGASIS: 约196成功 / 200轮 = 98.0%
 ```
 
@@ -198,7 +198,7 @@ PEGASIS: 约196成功 / 200轮 = 98.0%
 
 ```python
 # 实际能耗对比
-Enhanced EEHFR 2.0: 34.024J / 9988packets = 293.56 packets/J
+Enhanced AERIS 2.0: 34.024J / 9988packets = 293.56 packets/J
 PEGASIS: ~35.9J / 10000packets = 278.16 packets/J
 
 # 能耗节省 = 35.9 - 34.024 = 1.876J (5.2%节省)

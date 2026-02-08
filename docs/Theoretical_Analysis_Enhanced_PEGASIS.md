@@ -288,7 +288,7 @@ Improvement_lifetime = (T_Enhanced - T_PEGASIS) / T_PEGASIS × 100%
 ---
 
 **文档信息**:
-- 作者: Enhanced EEHFR Research Team
+- 作者: Enhanced AERIS Research Team
 - 日期: 2025-01-31
 - 版本: 1.0
 - 状态: Week 3理论分析完成

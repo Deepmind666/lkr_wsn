@@ -153,9 +153,19 @@ class LogNormalShadowingModel:
                     10 * self.params.path_loss_exponent * 
                     math.log10(distance / reference_distance))
         
-        # Shadowing term (log-normal)
+        # Shadowing term (log-normal) - 支持外部RNG
         shadowing = np.random.normal(0, self.params.shadowing_std)
-        
+
+        return path_loss + shadowing
+
+    def calculate_path_loss_with_rng(self, distance: float, rng, reference_distance: float = 1.0) -> float:
+        """使用独立RNG计算路径损耗"""
+        if distance <= 0:
+            distance = 0.1
+        path_loss = (self.params.reference_path_loss +
+                    10 * self.params.path_loss_exponent *
+                    math.log10(distance / reference_distance))
+        shadowing = rng.normal(0, self.params.shadowing_std)
         return path_loss + shadowing
     
     def calculate_received_power(self, tx_power_dbm: float, distance: float) -> float:
@@ -170,6 +180,11 @@ class LogNormalShadowingModel:
             Received power in dBm.
         """
         path_loss = self.calculate_path_loss(distance)
+        return tx_power_dbm - path_loss
+
+    def calculate_received_power_with_rng(self, tx_power_dbm: float, distance: float, rng) -> float:
+        """使用独立RNG计算接收功率"""
+        path_loss = self.calculate_path_loss_with_rng(distance, rng)
         return tx_power_dbm - path_loss
 
 class IEEE802154LinkQuality:
@@ -195,6 +210,11 @@ class IEEE802154LinkQuality:
         """
         measurement_noise = np.random.normal(0, self.rssi_measurement_std)
         return received_power_dbm + measurement_noise
+
+    def calculate_rssi_with_rng(self, received_power_dbm: float, rng) -> float:
+        """使用独立RNG计算RSSI"""
+        measurement_noise = rng.normal(0, self.rssi_measurement_std)
+        return received_power_dbm + measurement_noise
     
     def calculate_lqi(self, rssi_dbm: float) -> int:
         """
@@ -219,26 +239,30 @@ class IEEE802154LinkQuality:
     def calculate_pdr(self, rssi_dbm: float) -> float:
         """
         Estimate Packet Delivery Ratio (PDR) from RSSI using a piecewise model.
-        
+        Calibrated to match NS-3 INDOOR_LOS results.
+
         Args:
             rssi_dbm: RSSI in dBm
-            
+
         Returns:
             PDR in [0.0, 1.0].
         """
         if rssi_dbm < self.sensitivity_threshold:
             return 0.0
-        
-        # Based on empirical observations in literature
-        if rssi_dbm > -70:
+
+        # Calibrated based on NS-3 cross-validation
+        if rssi_dbm > -60:
             # Strong signal region
-            return 0.99
+            return 0.999
+        elif rssi_dbm > -70:
+            # Good signal region
+            return 0.98 + 0.019 * (rssi_dbm + 70) / 10
         elif rssi_dbm > -80:
             # Transitional region
-            return 0.5 + 0.49 * (rssi_dbm + 80) / 10
+            return 0.80 + 0.18 * (rssi_dbm + 80) / 10
         else:
             # Weak signal region
-            return max(0.0, (rssi_dbm + 85) / 5 * 0.5)
+            return max(0.0, (rssi_dbm + 85) / 5 * 0.80)
 
 class InterferenceModel:
     """
@@ -298,21 +322,25 @@ class InterferenceModel:
     def calculate_interference_pdr(self, sinr_db: float) -> float:
         """
         Estimate PDR under interference using SINR.
-        
+        Calibrated to match NS-3 INDOOR_LOS results (avg_snr ~24dB -> PDR ~99.98%)
+
         Args:
             sinr_db: SINR in dB
-            
+
         Returns:
             PDR in [0.0, 1.0].
         """
-        if sinr_db > 15:
-            return 0.95
+        # Calibrated thresholds based on NS-3 cross-validation
+        if sinr_db > 20:
+            return 0.999  # NS-3 shows ~99.98% at 24dB
+        elif sinr_db > 15:
+            return 0.98 + 0.019 * (sinr_db - 15) / 5
         elif sinr_db > 10:
-            return 0.8 + 0.15 * (sinr_db - 10) / 5
+            return 0.90 + 0.08 * (sinr_db - 10) / 5
         elif sinr_db > 5:
-            return 0.5 + 0.3 * (sinr_db - 5) / 5
+            return 0.70 + 0.20 * (sinr_db - 5) / 5
         elif sinr_db > 0:
-            return 0.1 + 0.4 * sinr_db / 5
+            return 0.30 + 0.40 * sinr_db / 5
         else:
             return 0.05  # minimum PDR
 
@@ -387,6 +415,13 @@ class RealisticChannelModel:
             self.path_loss_model.params.noise_floor
         )
         self.environment_type = environment
+        self.dropout_rate = 0.0
+        # 独立的随机数生成器，避免污染全局随机状态
+        self._rng = np.random.default_rng()
+
+    def set_dropout_rate(self, rate: float) -> None:
+        """设置统一的信道dropout率，对所有协议公平应用"""
+        self.dropout_rate = max(0.0, min(1.0, rate))
 
     def add_interference_source(self, power_dbm: float, distance: float, source_type: str = "wifi") -> None:
         """Convenience wrapper to add an interference source.
@@ -410,9 +445,9 @@ class RealisticChannelModel:
         Returns:
             閾捐矾鎸囨爣瀛楀吀
         """
-        # 1. 璁＄畻鎺ユ敹鍔熺巼
-        received_power = self.path_loss_model.calculate_received_power(
-            tx_power_dbm, distance
+        # 1. 使用独立RNG计算接收功率
+        received_power = self.path_loss_model.calculate_received_power_with_rng(
+            tx_power_dbm, distance, self._rng
         )
         
         # 2. 鐜鍥犵礌淇
@@ -420,15 +455,19 @@ class RealisticChannelModel:
             humidity_ratio
         ) * distance / 1000  # 杞崲涓哄疄闄呮崯鑰?        received_power -= humidity_loss
         
-        # 3. 璁＄畻RSSI鍜孡QI
-        rssi = self.link_quality.calculate_rssi(received_power)
+        # 3. 使用独立RNG计算RSSI和LQI
+        rssi = self.link_quality.calculate_rssi_with_rng(received_power, self._rng)
         lqi = self.link_quality.calculate_lqi(rssi)
         
         # 4. 璁＄畻PDR (鑰冭檻骞叉壈)
         sinr = self.interference.calculate_sinr(received_power)
         pdr_interference = self.interference.calculate_interference_pdr(sinr)
         pdr_rssi = self.link_quality.calculate_pdr(rssi)
-        pdr = min(pdr_interference, pdr_rssi)  # 鍙栬緝灏忓€?        
+        pdr = min(pdr_interference, pdr_rssi)
+
+        # 应用统一dropout率（对所有协议公平）
+        if self.dropout_rate > 0:
+            pdr = pdr * (1.0 - self.dropout_rate)        
         # 5. 鐢垫睜瀹归噺褰卞搷
         battery_factor = EnvironmentalFactors.temperature_effect_on_battery(
             temperature_c
@@ -444,6 +483,10 @@ class RealisticChannelModel:
             'path_loss_db': tx_power_dbm - received_power,
             'environment': self.environment_type.value
         }
+
+    def reset_rng(self, seed: int) -> None:
+        """重置独立随机数生成器状态，确保协议间随机性一致"""
+        self._rng = np.random.default_rng(seed)
 
 # 浣跨敤绀轰緥
 if __name__ == "__main__":

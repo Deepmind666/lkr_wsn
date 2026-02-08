@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sensors 主图预览（主图6幅 + 拓扑）</title>
+    <style>
+      body { font-family: -apple-system, Segoe UI, Microsoft YaHei, sans-serif; margin: 20px; }
+      h1 { font-size: 20px; margin-bottom: 12px; }
+      .fig { margin: 20px 0; }
+      .cap { font-size: 14px; color: #333; margin-top: 6px; }
+      object { width: 100%; height: 640px; border: 1px solid #ddd; }
+    </style>
+  </head>
+  <body>
+    <h1>Sensors 主图预览（精简主图 6 幅 + 1 拓扑）</h1>
+
+    <div class="fig">
+      <img src="/results/publication_figures/3d_network_topology.svg" alt="3D 网络拓扑" style="width:100%; height:auto; border:1px solid #ddd;" />
+      <div class="cap">3D 网络拓扑（美学增强版）：突出骨干与网关节点，去除遮挡和重叠标注，用以直观展示网络结构与关键信息流。</div>
+    </div>
+
+    <div class="fig">
+      <object data="/results/publication_figures/paper_intel_sig_combined.pdf" type="application/pdf">
+        无法加载 PDF：paper_intel_sig_combined.pdf
+      </object>
+      <div class="cap">联合显著性（Intel场景）：PDR 提升约 12 个百分点、能耗增加约 0.35 J；显著性经 BH-FDR 调整在 q&lt;0.01 成立。</div>
+    </div>
+
+    <div class="fig">
+      <object data="/results/publication_figures/paper_intel_pdr_gardner_altman.pdf" type="application/pdf">
+        无法加载 PDF：paper_intel_pdr_gardner_altman.pdf
+      </object>
+      <div class="cap">Gardner–Altman PDR 效应量图：AUC、Cliff’s delta、Cohen’s d，附 95% 置信区间。</div>
+    </div>
+
+    <div class="fig">
+      <object data="/results/publication_figures/paper_intel_baselines_panels_minimal.pdf" type="application/pdf">
+        无法加载 PDF：paper_intel_baselines_panels_minimal.pdf
+      </object>
+      <div class="cap">基线对比（Minimal 面板）：AERIS vs LEACH/HEED/PEGASIS/TEEN 的 PDR 与能耗散点。</div>
+    </div>
+
+    <div class="fig">
+      <object data="/results/publication_figures/paper_intel_ablation_pdr.pdf" type="application/pdf">
+        无法加载 PDF：paper_intel_ablation_pdr.pdf
+      </object>
+      <div class="cap">Intel 消融（PDR）：CAS/Skeleton/Gateway/Safety/Fairness 模块的边际贡献。</div>
+    </div>
+
+    <div class="fig">
+      <object data="/results/publication_figures/paper_intel_ablation_energy.pdf" type="application/pdf">
+        无法加载 PDF：paper_intel_ablation_energy.pdf
+      </object>
+      <div class="cap">Intel 消融（能耗）：相对 FULL 的能耗增量（Δ）很小且有 95% CI；与 PDR 消融配合说明可靠性提升的代价在能耗上可控。</div>
+    </div>
+
+    <div class="fig">
+      <object data="/results/publication_figures/paper_multi_topo_sig_pdr.pdf" type="application/pdf">
+        无法加载 PDF：paper_multi_topo_sig_pdr.pdf
+      </object>
+      <div class="cap">多拓扑显著性（PDR）：均匀与走廊系列拓扑下的统计优势与效应量。</div>
+    </div>
+
+  </body>
+</html>

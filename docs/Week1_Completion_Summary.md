@@ -2,7 +2,7 @@
 
 ## 📅 项目信息
 - **时间周期**: 2025-01-30 (Week 1)
-- **项目**: Enhanced EEHFR WSN Protocol
+- **项目**: Enhanced AERIS WSN Protocol
 - **阶段**: 基准协议扩展与大规模测试
 - **状态**: ✅ **完成**
 
@@ -11,7 +11,7 @@
 ### 原定目标
 1. **基准协议扩展**: 从3协议扩展到5+协议
 2. **大规模测试**: 支持100-500节点网络测试
-3. **性能基准建立**: 为Enhanced EEHFR提供完整对比基准
+3. **性能基准建立**: 为Enhanced AERIS提供完整对比基准
 4. **代码质量提升**: 标准化实现和文档
 
 ### 实际完成情况
@@ -108,7 +108,7 @@ def should_transmit(self, current_time: int, max_time_interval: int) -> bool:
 
 #### 代码结构优化
 ```
-Enhanced-EEHFR-WSN-Protocol/
+Enhanced-AERIS-WSN-Protocol/
 ├── src/
 │   ├── benchmark_protocols.py      # 基准协议框架
 │   ├── heed_protocol.py           # HEED协议实现
@@ -139,8 +139,8 @@ Enhanced-EEHFR-WSN-Protocol/
 - **LEACH**: 经典基准，性能均衡
 - **TEEN**: 反应式传输，适合特定场景
 
-### 2. Enhanced EEHFR改进方向
-基于四协议对比结果，确定Enhanced EEHFR改进策略：
+### 2. Enhanced AERIS改进方向
+基于四协议对比结果，确定Enhanced AERIS改进策略：
 
 #### 短期改进 (Week 2)
 1. **集成HEED聚类机制**: 提升簇头选择质量
@@ -153,7 +153,7 @@ Enhanced-EEHFR-WSN-Protocol/
 3. **多目标优化**: NSGA-II集成
 
 ### 3. 性能基准确立
-**Enhanced EEHFR目标基准**:
+**Enhanced AERIS目标基准**:
 - 目标能效: **> 253.79 packets/J** (超越PEGASIS)
 - 目标投递率: **> 1.000** (保持HEED水平)
 - 目标生存时间: **> 200轮**
@@ -196,14 +196,14 @@ class ProtocolWrapper:
 3. **文档完整性**: 详细的技术文档和报告
 
 ### 研究价值
-1. **创新启发**: 为Enhanced EEHFR提供技术组件
+1. **创新启发**: 为Enhanced AERIS提供技术组件
 2. **性能基准**: 建立了可信的对比标准
 3. **方法论**: 建立了标准化的协议评估方法
 
 ## 🚀 下一步计划
 
 ### Week 2: 算法核心创新
-- [ ] 集成HEED聚类机制到Enhanced EEHFR
+- [ ] 集成HEED聚类机制到Enhanced AERIS
 - [ ] 实现PEGASIS链式数据融合
 - [ ] 开发TEEN阈值敏感传输
 - [ ] 多目标优化算法集成
@@ -240,14 +240,14 @@ class ProtocolWrapper:
 
 ## 🎉 总结
 
-Week 1任务**圆满完成**，不仅达成了所有预定目标，还超额完成了四协议综合对比分析。通过HEED和TEEN协议的成功实现，Enhanced EEHFR项目现在拥有了：
+Week 1任务**圆满完成**，不仅达成了所有预定目标，还超额完成了四协议综合对比分析。通过HEED和TEEN协议的成功实现，Enhanced AERIS项目现在拥有了：
 
 1. **完整的基准协议库** (LEACH, PEGASIS, HEED, TEEN)
 2. **标准化的测试框架** (统一接口，公平对比)
 3. **可信的性能基准** (PEGASIS: 253.79 packets/J)
 4. **丰富的技术组件** (聚类、链式、阈值机制)
 
-这为后续的算法创新和性能提升奠定了坚实的基础。Enhanced EEHFR项目正朝着SCI Q3期刊标准稳步前进！
+这为后续的算法创新和性能提升奠定了坚实的基础。Enhanced AERIS项目正朝着SCI Q3期刊标准稳步前进！
 
 ---
 

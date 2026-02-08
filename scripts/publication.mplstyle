@@ -1,0 +1,54 @@
+# Publication-Quality Matplotlib Style for AERIS Paper
+# Following Gemini Review 审核意见三 - 附录A
+# Use: plt.style.use('./publication.mplstyle')
+
+# Font settings - Times New Roman for journal compatibility
+font.family: serif
+font.serif: Times New Roman, DejaVu Serif
+font.size: 10
+
+# Axes settings
+axes.titlesize: 12
+axes.labelsize: 11
+axes.linewidth: 0.8
+axes.spines.top: False
+axes.spines.right: False
+axes.prop_cycle: cycler('color', ['EE6677', '228833', '4477AA', 'CCBB44', '66CCEE', 'AA3377', 'BBBBBB'])
+
+# Tick settings
+xtick.labelsize: 10
+ytick.labelsize: 10
+xtick.major.width: 0.8
+ytick.major.width: 0.8
+xtick.direction: out
+ytick.direction: out
+
+# Legend settings
+legend.fontsize: 9
+legend.frameon: False
+legend.loc: best
+
+# Figure settings
+figure.dpi: 300
+figure.figsize: 8, 6
+figure.autolayout: True
+figure.facecolor: white
+
+# Saving settings
+savefig.dpi: 300
+savefig.format: pdf
+savefig.bbox: tight
+savefig.facecolor: white
+savefig.edgecolor: none
+
+# Grid settings
+grid.linestyle: --
+grid.alpha: 0.6
+grid.linewidth: 0.5
+
+# Line settings
+lines.linewidth: 1.5
+lines.markersize: 6
+
+# Error bar settings
+errorbar.capsize: 3

@@ -151,21 +151,60 @@ data/processed/large_datasets/
 temp/
 tmp/
 *.tmp
-
-# Log files
-*.log
 logs/
-
-# Model files (if large)
-models/*.h5
-models/*.pkl
-models/*.joblib
-
-# Results with timestamps (keep latest only)
-results/*_20*.json
-results/*_20*.png
-results/*_20*.csv
-
-# Backup files
+results/_logs/
 *_backup.*
 *.bak
+
+# Local virtual envs
+.venvs/
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project specific additions
+venv-cu128/
+temp/
+tmp/
+*.tmp
+logs/
+results/_logs/
+*_backup.*
+*.bak
+.venv_*/
+.venv_experiment/
+.venv_run/
+.venv_eehfr_clean/
+
+# Repo scan and runtime logs
+results/_logs/
+
+# Temp files
+temp_*
+
+# Large directories (scp to server separately)
+results/
+data/Intel_Lab_Data/
+data/cas_dataset_*/
+data/multi_datasets/
+data/real_datasets/
+data/*.npy
+data/*.npz
+models/
+contiki-ng/
+ns3_validation/
+for_submission/figures/*.png
+for_submission/figures_enhanced/
+for_submission/*.pdf
+NUL
+
+# LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.out
+*.synctex.gz

@@ -2,7 +2,7 @@
 
 ## 1. 模块目标
 
-本模块旨在为`Enhanced EEHFR`协议引入**可靠性感知**能力。核心是设计并实现一个`NodeStateManager`类，用于跟踪、计算和提供每个节点的**链路质量指数(Link Quality Indicator, LQI)**。这将作为增强模糊逻辑簇头选择机制的关键输入，使协议能够优先选择通信链路更稳定的节点作为簇头，从而提高网络的数据投递率和整体能效。
+本模块旨在为`Enhanced AERIS`协议引入**可靠性感知**能力。核心是设计并实现一个`NodeStateManager`类，用于跟踪、计算和提供每个节点的**链路质量指数(Link Quality Indicator, LQI)**。这将作为增强模糊逻辑簇头选择机制的关键输入，使协议能够优先选择通信链路更稳定的节点作为簇头，从而提高网络的数据投递率和整体能效。
 
 ## 2. 核心数据结构
 
@@ -129,7 +129,7 @@ class NodeStateManager:
 
 ## 4. 与主协议的集成方案
 
-1.  在`IntegratedEnhancedEEHFRProtocol`的`__init__`中，实例化一个`NodeStateManager`对象。
+1.  在`IntegratedEnhancedAERISProtocol`的`__init__`中，实例化一个`NodeStateManager`对象。
 2.  在仿真循环的每一次数据传输后，调用`state_manager.update_link_quality()`方法来更新相关节点的链路记录。
 3.  在每一轮簇头选举开始前，为每个节点调用`state_manager.get_lqi()`来获取其最新的LQI值。
 4.  将计算出的LQI作为第四个输入变量，传递给模糊逻辑引擎。

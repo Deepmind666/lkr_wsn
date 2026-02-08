@@ -1,8 +1,8 @@
-"""
+﻿"""
 Baseline WSN Routing Protocols
 
 This module contains implementations of standard WSN routing protocols
-used for performance comparison with Enhanced EEHFR.
+used for performance comparison with AERIS.
 
 Protocols included:
 - LEACH: Low-Energy Adaptive Clustering Hierarchy
@@ -19,3 +19,4 @@ __all__ = [
     "PEGASISProtocol", 
     "HEEDProtocol"
 ]
+

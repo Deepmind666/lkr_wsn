@@ -76,7 +76,7 @@ print(f"加载了 {len(sensor_data)} 条传感器记录")
 print(f"网络包含 {len(locations)} 个节点")
 ```
 
-### 🎯 在Enhanced EEHFR中的应用
+### 🎯 在 AERIS 协议中的应用
 
 1. **网络拓扑**: 使用真实的节点位置和连接性数据
 2. **能量模型**: 基于真实的电压读数建立能量消耗模型

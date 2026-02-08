@@ -164,6 +164,8 @@ class AerisProtocol:
             'enable_skeleton': enable_skeleton,
             'verbose': verbose
         }
+        # P1诊断: 运行时权重采样记录 (per RULES.md §5)
+        self._diag_weight_samples: List[Dict[str, Any]] = []
         # 主 BS + 可选辅助 BS（支持 run_dynamic_dropout_compare 传入 secondary_base_station）
         extra_bs = getattr(config, 'extra_base_stations', None) or []
         secondary_bs = getattr(config, 'secondary_base_station', None)
@@ -215,8 +217,8 @@ class AerisProtocol:
         self.gateway_uplink_suppressed_total = 0
         self.intra_link_retx = max(0, int(getattr(config, 'intra_link_retx', 0) or 0))
         self.intra_link_power_step = float(getattr(config, 'intra_link_power_step', 0.0) or 0.0)
-        self.gateway_retry_limit = max(0, int(getattr(config, 'gateway_retry_limit', 0) or 0))
-        self.gateway_rescue_direct = bool(getattr(config, 'gateway_rescue_direct', False))
+        self.gateway_retry_limit = max(0, int(getattr(config, 'gateway_retry_limit', 2) or 2))
+        self.gateway_rescue_direct = bool(getattr(config, 'gateway_rescue_direct', True))
 
         # 邻居质量表（PRR/ETX）
         self.neighbor_stats: Dict[int, Dict[int, AerisProtocol.NeighborStats]] = defaultdict(dict)
@@ -282,7 +284,8 @@ class AerisProtocol:
         self.total_packets_sent = 0
         self.total_packets_received = 0
         # 绔埌绔粺璁★紙鑱氬悎璇箟锛夛細婧愬寘鎬绘暟涓庢垚鍔熷埌杈綛S鐨勬暟鎹崟鍏冩€绘暟
-        self.source_packets_total = 0
+        self.source_packets_total = 0  # attempted
+        self.source_packets_expected = 0  # 期望包数
         self.bs_delivered_total = 0
         # 鏈€杩戜竴杞殑绔埌绔粺璁★紙渚沖round_statistics浣跨敤锛?
         self._last_source_packets_round = 0
@@ -291,6 +294,8 @@ class AerisProtocol:
         self.hop_count_distribution = {}  # {hop_count: frequency}
         self.packet_paths = {}  # {packet_id: path_length}
         self.cas_mode_usage_stats = {'DIRECT': 0, 'CHAIN': 0, 'TWO_HOP': 0, 'safety_override': 0}
+        self.cas_rule_trigger_counts = {'DIRECT': 0, 'CHAIN': 0, 'TWO_HOP': 0, 'NONE': 0}
+        self.cas_score_winner_counts = {'DIRECT': 0, 'CHAIN': 0, 'TWO_HOP': 0}
         self._packet_id_counter = 0
         self.intra_attempts_total = 0
         self.intra_success_total = 0
@@ -432,9 +437,25 @@ class AerisProtocol:
         # 鐜鍒嗙被
         self.current_environment = self.environment_classifier.classify_environment(self.nodes)
 
+        # 支持强制环境类型（用于公平对比实验）
+        force_env = getattr(self.config, 'force_environment', None)
+        if force_env:
+            env_map = {
+                'indoor_office': EnvironmentType.INDOOR_OFFICE,
+                'indoor_factory': EnvironmentType.INDOOR_FACTORY,
+                'indoor_residential': EnvironmentType.INDOOR_RESIDENTIAL,
+                'outdoor_open': EnvironmentType.OUTDOOR_OPEN,
+            }
+            self.current_environment = env_map.get(force_env, self.current_environment)
+
         # 鐜板湪鍙互鍒濆鍖栦俊閬撴ā鍨?
-        from realistic_channel_model import RealisticChannelModel
-        self.channel_model = RealisticChannelModel(self.current_environment)
+        # 支持从config注入外部信道模型（构造期注入，优先级最高）
+        external_channel = getattr(self.config, 'external_channel_model', None)
+        if external_channel is not None:
+            self.channel_model = external_channel
+        elif self.channel_model is None:
+            from realistic_channel_model import RealisticChannelModel
+            self.channel_model = RealisticChannelModel(self.current_environment)
 
         # 鏍规嵁鐜璋冩暣鍒濆鍙傛暟
         self._adapt_to_environment()
@@ -444,15 +465,20 @@ class AerisProtocol:
 
         # 鏍规嵁鐜绫诲瀷璁剧设置有
         power_settings = {
-            EnvironmentType.INDOOR_OFFICE: -5.0,      # 浣庡姛鐜?
-            EnvironmentType.INDOOR_RESIDENTIAL: -3.0,  # 涓綆鍔熺巼
-            EnvironmentType.INDOOR_FACTORY: 0.0,      # 涓姛鐜?
-            EnvironmentType.OUTDOOR_OPEN: 3.0,        # 涓珮鍔熺巼
-            EnvironmentType.OUTDOOR_SUBURBAN: 5.0,    # 楂樺姛鐜?
-            EnvironmentType.OUTDOOR_URBAN: 8.0        # 鏈€楂樺姛鐜?
+            EnvironmentType.INDOOR_OFFICE: 10.0,      # 提高功率
+            EnvironmentType.INDOOR_RESIDENTIAL: 10.0,  # 涓綆鍔熺巼
+            EnvironmentType.INDOOR_FACTORY: 10.0,      # 涓姛鐜?
+            EnvironmentType.OUTDOOR_OPEN: 10.0,        # 涓珮鍔熺巼
+            EnvironmentType.OUTDOOR_SUBURBAN: 10.0,    # 楂樺姛鐜?
+            EnvironmentType.OUTDOOR_URBAN: 10.0        # 鏈€楂樺姛鐜?
         }
 
-        default_power = power_settings.get(self.current_environment, 0.0)
+        default_power = power_settings.get(self.current_environment, 10.0)
+
+        # 优先从config读取tx_power_dbm（允许0dBm设置）
+        config_power = getattr(self.config, 'tx_power_dbm', None)
+        if config_power is not None:
+            default_power = float(config_power)
 
         for node in self.nodes:
             if node.is_alive:
@@ -725,9 +751,11 @@ class AerisProtocol:
         packets_sent = 0
         packets_received = 0
         energy_consumed = 0.0
+        hop_counts_to_bs = []  # collect per-packet hop count for latency measurement
 
         alive_nodes = [node for node in self.nodes if node.is_alive]
         self._last_source_packets_round = len(alive_nodes)
+        self.source_packets_expected += len(alive_nodes)  # 累计期望包数
         self._last_bs_delivered_round = 0
         self._round_intra_attempts = 0
         self._round_intra_success = 0
@@ -917,6 +945,7 @@ class AerisProtocol:
                         continue
                     ok2 = hop_with_arq(lambda pw: one_try_bs(target_bs, pw, parent), tx_power_base + p_boost + 1.5)
                     if ok2:
+                        hop_counts_to_bs.append(2)
                         return True
                 return False
 
@@ -947,9 +976,10 @@ class AerisProtocol:
                 rescue_candidates = []
 
             for cand, prr_c in rescue_candidates[:6]:
-                # “求援”双副本：sender->cand（2 副本），cand->BS（2 副本），高功率 + ARQ
+                # "求援"双副本：sender->cand（2 副本），cand->BS（2 副本），高功率 + ARQ
                 if hop_with_arq(lambda pw: one_try_link(sender, cand, tx_power_base + parent_boost + 1.5 + pw), 0.0):
                     if hop_with_arq(lambda pw: one_try_bs(target_bs, tx_power_base + parent_boost + 3.0 + pw, cand), 0.0):
+                        hop_counts_to_bs.append(2)
                         return True
 
             # 直达 BS 阶梯兜底
@@ -957,10 +987,12 @@ class AerisProtocol:
             for j in range(direct_tries):
                 pw = tx_power_base + j * 1.5
                 if hop_with_arq(lambda step: one_try_bs(target_bs, pw, sender), 0.0):
+                    hop_counts_to_bs.append(1)
                     return True
             for bs_pos in self.base_stations:
                 for j in range(10):
                     if hop_with_arq(lambda step: one_try_bs(bs_pos, tx_power_base + 3.0 + j * 1.2, sender), 0.0):
+                        hop_counts_to_bs.append(1)
                         return True
 
             # 广播级兜底（近似 flood）：选取前 12 个离 BS 最近的活跃节点并行尝试
@@ -973,11 +1005,13 @@ class AerisProtocol:
                 if relay.id == sender.id:
                     continue
                 if hop_with_arq(lambda pw: one_try_bs(target_bs, tx_power_base + 6.0 + pw, relay), 0.0):
+                    hop_counts_to_bs.append(2)
                     return True
 
             # 极限兜底
             for _ in range(12):
                 if one_try_bs(target_bs, tx_power_base + 13.5, sender):
+                    hop_counts_to_bs.append(1)
                     return True
 
             # 终极“可靠模式”兜底：近似 CTP/ORW flood，强行计为成功但扣除能量
@@ -996,6 +1030,7 @@ class AerisProtocol:
                 self._last_bs_delivered_round += payload_count
                 self._round_uplink_success += 1
                 self.uplink_success_total += 1
+                hop_counts_to_bs.append(3)  # flood approximation
                 return True
             return False
 
@@ -1090,13 +1125,7 @@ class AerisProtocol:
                         self.cas_selector = DistilledCASSelector(CASConfig())
                     else:
                         self.cas_selector = CASSelector(CASConfig())
-                if not hasattr(self, '_cas_cfg_tuned'):
-                    self.cas_selector.cfg.w_direct_link = 0.8
-                    self.cas_selector.cfg.w_direct_energy = 0.7
-                    self.cas_selector.cfg.w_chain_radius = 0.4
-                    self.cas_selector.cfg.w_chain_density = 0.3
-                    self.cas_selector.cfg.twohop_tail_threshold = 0.7
-                    self._cas_cfg_tuned = True
+                # CAS权重使用默认值，启用CHAIN/TWO_HOP模式
                 if not self._cas_cfg_defaults:
                     cfg = self.cas_selector.cfg
                     self._cas_cfg_defaults = {
@@ -1142,6 +1171,18 @@ class AerisProtocol:
                         'fairness': fair_penalty,
                         'tail_max': tail_max,
                     })
+                    meta = getattr(self.cas_selector, 'last_decision_meta', None)
+                    if isinstance(meta, dict):
+                        rule = meta.get('rule_triggered')
+                        if rule:
+                            key = str(rule).upper()
+                            self.cas_rule_trigger_counts[key] = self.cas_rule_trigger_counts.get(key, 0) + 1
+                        else:
+                            self.cas_rule_trigger_counts['NONE'] = self.cas_rule_trigger_counts.get('NONE', 0) + 1
+                        score_winner = meta.get('score_winner')
+                        if score_winner:
+                            key = str(score_winner).upper()
+                            self.cas_score_winner_counts[key] = self.cas_score_winner_counts.get(key, 0) + 1
                 if self._cas_last_mode is not None:
                     self._cas_switch_window.append(1 if mode != self._cas_last_mode else 0)
                 else:
@@ -1251,6 +1292,8 @@ class AerisProtocol:
             # 高掉线模式：按距离最近的网关优先，避免长链分配
             if self.high_dropout_mode:
                 gateways = sorted(gateways, key=lambda g: self._distance_to_nearest_bs(g.x, g.y))
+            # 自适应 Gateway bypass 阈值：CH-BS 链路 PDR 高于此值时跳过 Gateway 直连
+            _gw_bypass_threshold = float(getattr(self, 'gateway_bypass_pdr_threshold', 0.7))
             for ch in cluster_heads:
                 payload = cluster_payloads.get(ch.id, 0)
                 if payload <= 0:
@@ -1258,6 +1301,13 @@ class AerisProtocol:
                 if ch.id in gateway_set:
                     continue
                 if not gateways:
+                    transmit_to_bs(ch, payload)
+                    continue
+                # 自适应 bypass：估算 CH→BS 链路质量，若足够好则跳过 Gateway
+                _ch_bs_dist = self._distance_to_nearest_bs(ch.x, ch.y)
+                _ch_bs_lm = self.channel_model.calculate_link_metrics(
+                    ch.transmission_power, _ch_bs_dist, temp_c, hum_ratio)
+                if _ch_bs_lm.get('pdr', 0.0) >= _gw_bypass_threshold:
                     transmit_to_bs(ch, payload)
                     continue
                 ordered_gateways = sorted(gateways, key=lambda g: math.hypot(ch.x - g.x, ch.y - g.y))
@@ -1448,6 +1498,9 @@ class AerisProtocol:
         self.total_energy_consumed += energy_consumed
         self.total_packets_sent += packets_sent
         self.total_packets_received += packets_received
+        if not hasattr(self, '_all_hop_counts'):
+            self._all_hop_counts = []
+        self._all_hop_counts.extend(hop_counts_to_bs)
         return packets_sent, packets_received, energy_consumed
     def _update_node_status(self):
         """更新节点状态"""
@@ -1707,6 +1760,24 @@ class AerisProtocol:
                 'lambda_uncertainty': max(base['lambda_uncertainty'], 0.12 + 0.35 * stage_boost + 0.25 * switch_boost),
             }
 
+        # P1诊断: 采样运行时权重 (每10轮采样一次，减少内存占用)
+        # 移到if块外部，确保即使CAS未启用也能采样stage_boost/energy_boost
+        if hasattr(self, '_diag_weight_samples') and self.current_round % 10 == 0:
+            w_dl = self._adaptive_cas_weights.get('w_direct_link') if self._cas_cfg_defaults else None
+            w_de = self._adaptive_cas_weights.get('w_direct_energy') if self._cas_cfg_defaults else None
+            self._diag_weight_samples.append({
+                'round': self.current_round,
+                'stage_boost': stage_boost,
+                'energy_boost': energy_boost,
+                'w_direct_link': w_dl,
+                'w_direct_energy': w_de,
+                # B.6 TODO: 根因分析所需字段
+                'avg_energy_ratio': avg_energy_ratio,
+                'rel_boost': rel_boost,
+                'level': level,
+                'pdr_trend': pdr_trend,
+            })
+
         # Skeleton scaling for larger CH sets.
         last_ch = 0
         if self.round_statistics:
@@ -1816,6 +1887,11 @@ class AerisProtocol:
 
         print(f"[SUCCESS] Simulation completed: network ended after {network_lifetime} rounds.")
 
+        # Fill hop_count_distribution from collected data
+        if hasattr(self, '_all_hop_counts'):
+            for h in self._all_hop_counts:
+                self.hop_count_distribution[h] = self.hop_count_distribution.get(h, 0) + 1
+
         return {
             'protocol': ('AERIS-E' if self.profile == 'energy' else 'AERIS-R' if self.profile == 'robust' else 'AERIS'),
             'network_lifetime': network_lifetime,
@@ -1847,6 +1923,8 @@ class AerisProtocol:
                 # [NEW] Diagnostic information
                 'hop_count_distribution': dict(self.hop_count_distribution),
                 'cas_mode_usage_stats': dict(self.cas_mode_usage_stats),
+                'cas_rule_trigger_counts': dict(self.cas_rule_trigger_counts),
+                'cas_score_winner_counts': dict(self.cas_score_winner_counts),
                 'avg_hop_count': sum(hops * count for hops, count in self.hop_count_distribution.items()) / max(1, sum(self.hop_count_distribution.values())) if self.hop_count_distribution else 0,
                 'cluster_to_ch_attempts_total': self.intra_attempts_total,
                 'cluster_to_ch_success_total': self.intra_success_total,

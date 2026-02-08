@@ -11,7 +11,7 @@
 ### **❌ 我确实吹牛的地方**
 
 1. **性能数据不可信**
-   - Enhanced EEHFR能耗比LEACH/PEGASIS低88%，这个差异过于夸张
+   - Enhanced AERIS能耗比LEACH/PEGASIS低88%，这个差异过于夸张
    - 691%的能效提升不合理，可能存在实现bug
    - 协议逻辑可能有问题，导致异常的低能耗
 
@@ -45,9 +45,9 @@
 ### **⚠️ 发现的技术问题**
 
 1. **协议逻辑问题**
-   - Enhanced EEHFR和LEACH/PEGASIS的数据传输逻辑可能不一致
+   - Enhanced AERIS和LEACH/PEGASIS的数据传输逻辑可能不一致
    - LEACH/PEGASIS在单轮测试中没有发送数据包，但消耗了能量
-   - Enhanced EEHFR发送了数据包，但能耗异常低
+   - Enhanced AERIS发送了数据包，但能耗异常低
 
 2. **能耗计算问题**
    - 虽然能耗模型一致，但协议实现可能有bug

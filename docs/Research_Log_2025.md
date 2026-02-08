@@ -3,7 +3,7 @@
 ## 🎯 **研究目标与核心问题**
 
 ### **主要研究目标**
-建立基于IEEE 802.15.4标准的WSN真实环境建模框架，解决现有仿真工具的系统性缺陷，为Enhanced EEHFR协议提供科学的性能评估基础。
+建立基于IEEE 802.15.4标准的WSN真实环境建模框架，解决现有仿真工具的系统性缺陷，为Enhanced AERIS协议提供科学的性能评估基础。
 
 ### **核心科学问题**
 1. **如何建立准确的WSN真实环境信道模型？**
@@ -119,7 +119,7 @@
 - **论文准备度**: 实验部分基本完成，可开始撰写
 
 **🎯 明日重点任务**:
-1. 开始Enhanced EEHFR协议的现实环境集成
+1. 开始Enhanced AERIS协议的现实环境集成
 2. 设计环境自适应的路由策略
 3. 准备与基准协议的对比实验框架
 4. 开始论文Introduction和Related Work部分撰写
@@ -135,14 +135,14 @@
 
 ---
 
-## 📅 **2025-01-30 下午 - 环境感知EEHFR协议开发**
+## 📅 **2025-01-30 下午 - 环境感知AERIS协议开发**
 
 ### **🎯 今日目标**
-按照专家级执行计划，完成环境感知EEHFR协议的核心开发和验证
+按照专家级执行计划，完成环境感知AERIS协议的核心开发和验证
 
 ### **✅ 重大成就**
 
-#### **1. 环境感知EEHFR协议完整实现** ⭐⭐⭐⭐⭐
+#### **1. 环境感知AERIS协议完整实现** ⭐⭐⭐⭐⭐
 **文件**: `src/environment_aware_eehfr.py` (545行)
 
 **核心创新功能**:
@@ -194,7 +194,7 @@ env_params = {
 
 #### **与现有研究的差异化**
 - **NS-3/COOJA**: 缺乏系统性环境建模 → 我们提供6种标准环境
-- **传统EEHFR**: 静态参数设置 → 我们实现动态环境自适应
+- **传统AERIS**: 静态参数设置 → 我们实现动态环境自适应
 - **基准协议**: 理想信道假设 → 我们使用现实信道模型
 
 ### **📊 性能验证结果**
@@ -215,7 +215,7 @@ env_params = {
 - [ ] **任务1.6**: 性能优化与内存使用优化
 
 #### **第2周重点 (下周)**
-- [ ] **统一实验框架**: 建立EEHFR vs LEACH vs PEGASIS vs HEED对比
+- [ ] **统一实验框架**: 建立AERIS vs LEACH vs PEGASIS vs HEED对比
 - [ ] **大规模实验**: 4协议 × 6环境 × 多轮测试
 - [ ] **统计分析**: 置信区间、显著性检验、效应量分析
 
@@ -223,7 +223,7 @@ env_params = {
 
 **新增核心文件**:
 ```
-src/environment_aware_eehfr.py          # 环境感知EEHFR协议 (545行) ✅
+src/environment_aware_eehfr.py          # 环境感知AERIS协议 (545行) ✅
 src/quick_test_environment_aware.py     # 快速验证测试 ✅
 docs/Expert_Level_Execution_Plan.md     # 专家级执行计划 ✅
 ```
@@ -231,7 +231,7 @@ docs/Expert_Level_Execution_Plan.md     # 专家级执行计划 ✅
 **关键依赖文件**:
 ```
 src/realistic_channel_model.py          # 现实环境建模 (417行) ✅
-src/enhanced_eehfr_protocol.py          # 基础EEHFR协议 ✅
+src/enhanced_eehfr_protocol.py          # 基础AERIS协议 ✅
 results/multi_environment_data_*.json   # 多环境实验数据 ✅
 ```
 
@@ -245,7 +245,7 @@ results/multi_environment_data_*.json   # 多环境实验数据 ✅
 
 ### **🎉 里程碑成就**
 
-**Phase 3 系统集成重大突破**: 环境感知Enhanced EEHFR协议成功实现并验证！
+**Phase 3 系统集成重大突破**: 环境感知Enhanced AERIS协议成功实现并验证！
 
 这标志着我们的研究从理论建模进入到实际协议实现阶段，为后续的全面对比实验和SCI论文撰写奠定了坚实的技术基础。
 
@@ -255,7 +255,7 @@ results/multi_environment_data_*.json   # 多环境实验数据 ✅
 - ✅ **理论基础**：基于20+篇权威文献的Log-Normal Shadowing模型
 - ✅ **技术实现**：完整的Python建模框架 (`realistic_channel_model.py`)
 - ✅ **实验验证**：基于Intel Lab数据的初步验证
-- ✅ **协议集成**：Enhanced EEHFR的初步环境感知实现
+- ✅ **协议集成**：Enhanced AERIS的初步环境感知实现
 
 #### **🚨 识别的局限性**
 - **数据范围有限**：主要基于Intel Lab数据集
@@ -280,7 +280,7 @@ results/multi_environment_data_*.json   # 多环境实验数据 ✅
 
 ### **💻 核心代码**
 - `src/realistic_channel_model.py` - 真实信道建模核心实现
-- `src/enhanced_eehfr_realistic.py` - 环境感知EEHFR协议
+- `src/enhanced_eehfr_realistic.py` - 环境感知AERIS协议
 - `experiments/test_realistic_modeling.py` - 建模框架验证测试
 - `experiments/realistic_environment_comparison.py` - 协议对比框架
 

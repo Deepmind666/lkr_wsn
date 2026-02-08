@@ -34,7 +34,7 @@ Based on the excellent Stage 1 results, Stage 2 focuses on **complete protocol i
 - [ ] **2.1.5**: Test prediction accuracy with Intel Lab historical data
 
 #### Technical Requirements:
-- Modify `EnhancedEEHFR` class to include LSTM prediction
+- Modify `EnhancedAERIS` class to include LSTM prediction
 - Add prediction-based routing decision methods
 - Implement prediction data preprocessing
 - Create prediction accuracy validation
@@ -214,7 +214,7 @@ Based on the excellent Stage 1 results, Stage 2 focuses on **complete protocol i
 ## 📈 Expected Outcomes
 
 ### Technical Achievements
-- **Complete Enhanced EEHFR Protocol** with all advanced features
+- **Complete Enhanced AERIS Protocol** with all advanced features
 - **Validated Performance** across multiple network configurations
 - **Optimized Parameters** for maximum efficiency
 - **Comprehensive Documentation** for future development

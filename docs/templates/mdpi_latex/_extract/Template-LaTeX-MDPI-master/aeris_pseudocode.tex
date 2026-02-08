@@ -1,0 +1,24 @@
+% AERIS Protocol Pseudocode (for inclusion in Materials and Methods)
+% Keep package-free; use simple LaTeX constructs compatible with MDPI class.
+
+\noindent\textbf{Algorithm 1. AERIS Round (node $i$)}\\
+\noindent\textit{Inputs}: residual energy $E_i$, link quality $q_i$, PDR history $h_i$, neighbor set $\mathcal{N}_i$, base-station distance $d_i$, round index $t$, weights $(w_E, w_R, w_D)$, thresholds $(\tau_{CH}, \tau_J)$, fairness window $W$.\\
+\noindent\textit{Outputs}: role $r_i \in \{\mathrm{CH}, \mathrm{Member}, \mathrm{Sleep}\}$, transmit power $p_i$, next hop $n_i$.
+
+\begin{enumerate}[leftmargin=*,labelsep=5.8mm]
+  \item \textbf{Estimate reliability}. Update short-term reliability $R_i \leftarrow \mathrm{EMA}(h_i)$; estimate CI95 if needed.
+  \item \textbf{Energy score}. Compute normalized energy score $S_E \leftarrow E_i / E_{\max}$.
+  \item \textbf{Distance score}. Compute normalized distance score $S_D \leftarrow 1 - d_i / d_{\max}$.
+  \item \textbf{Composite priority}. $\Pi_i \leftarrow w_E S_E + w_R R_i + w_D S_D$.
+  \item \textbf{CH candidacy}. If $\Pi_i \ge \tau_{CH}$ and fairness($i$, $W$) is satisfied, mark $i$ as candidate CH.
+  \item \textbf{Neighborhood coordination}. Exchange $\Pi$ and residual energy with $\mathcal{N}_i$; elect local CH by argmax of $\Pi$.
+  \item \textbf{Join decision}. If nearest CH exists and $\Pi_i < \tau_{CH}$ and join-score $\ge \tau_J$, set $r_i \leftarrow \mathrm{Member}$ and associate.
+  \item \textbf{Sleep gating}. If $E_i$ below safeguard threshold or $q_i$ poor, set $r_i \leftarrow \mathrm{Sleep}$ for round $t$.
+  \item \textbf{Transmit power}. Set $p_i \leftarrow f(q_i, d_i, \mathrm{role})$ to meet reliability target with minimal energy.
+  \item \textbf{Routing}. If $r_i = \mathrm{Member}$, $n_i \leftarrow$ associated CH; if $r_i = \mathrm{CH}$, $n_i \leftarrow$ next hop toward BS via gateway selector.
+  \item \textbf{Update state}. Log $(E_i, R_i, r_i)$; update fairness window and membership.
+\end{enumerate}
+
+\noindent\textbf{Complexity}. Per-node per-round $\mathcal{O}(\deg(i))$ for neighborhood exchange; network-wide $\mathcal{O}(|E|)$.
+
+\noindent\textbf{Notes}. Implementation aligns with repository modules: reliability and energy in \texttt{src/fairness\_metrics.py}, neighborhood and selection in \texttt{src/aeris\_protocol.py}, gateway selection in \texttt{src/gateway\_selector.py}, state updates in \texttt{src/node\_state\_manager.py}. Parameters $(w_E, w_R, w_D)$ and thresholds $(\tau_{CH}, \tau_J)$ follow experiment configs (e.g., 50x200).

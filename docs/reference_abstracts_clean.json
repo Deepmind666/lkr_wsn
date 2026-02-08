@@ -1,0 +1,272 @@
+[
+  {
+    "order": 1,
+    "category": "new",
+    "bibkey": "Tariq2024A",
+    "title": "A Novel Energy Replenishment Algorithm to Increase the Network Performance of Rechargeable Wireless Sensor Networks",
+    "doi": "10.3390/s24237491",
+    "year": 2024,
+    "abstract": "The emerging wireless energy transfer technology enables sensor nodes to maintain perpetual operation. However, maximizing the network performance while preserving short charging delay is a great challenge. In this work, a Wireless Mobile Charger (MC) and a directional charger (DC) were deployed to transmit wireless energy to the sensor node to improve the network’s throughput. To the best of our knowledge, this is the first work to optimize the data sensing rate and charging delay by the joint scheduling of an MC and a DC. We proved we could transmit maximum energy to each sensor node to obtain our optimization objective. In our proposed work, a DC selected a total horizon of 360° and then selected the horizon of each specific 90∘ area based on its antenna orientation. The DC’s orientation was scheduled for each time slot. Furthermore, multiple MCs were used to transmit energy for sensor nodes that could not be covered by the DC. We divided the rechargeable wireless sensor network into several zones via a Voronoi diagram. We deployed a static DC and one MC charging location in each zone to provide wireless charging service jointly. We obtained the optimal charging locations of the MCs in each zone by solving Mix Integral Programming for energy transmission. The optimization objective of our proposed research was to sense maximum data from each sensor node with the help of maximum energy. The lifetime of each sensor network could increase, and the end delay could be maximized, with joint energy transmission. Extensive simulation results demonstrated that our RWSNs were designed to significantly improve network lifetime over the baseline method."
+  },
+  {
+    "order": 2,
+    "category": "new",
+    "bibkey": "Jain2025Optimized",
+    "title": "Optimized secure and energy-efficient approach for IoT-enabled wireless sensor networks",
+    "doi": "10.1016/j.pmcj.2025.102049",
+    "year": 2025,
+    "abstract": ""
+  },
+  {
+    "order": 3,
+    "category": "new",
+    "bibkey": "Singh2025Enhanced",
+    "title": "Enhanced energy-aware routing protocol with mobile sink optimization for wireless sensor networks",
+    "doi": "10.1016/j.comnet.2025.111100",
+    "year": 2025,
+    "abstract": ""
+  },
+  {
+    "order": 4,
+    "category": "new",
+    "bibkey": "Tang2025Enhancing",
+    "title": "Enhancing Underwater Wireless Sensor Network Lifetime: An Energy-Aware AUV-Assisted Data Collection Scheme",
+    "doi": "10.1109/jsen.2025.3580629",
+    "year": 2025,
+    "abstract": ""
+  },
+  {
+    "order": 5,
+    "category": "new",
+    "bibkey": "Jia2024Wireless",
+    "title": "Wireless Sensor Network (WSN) Model Targeting Energy Efficient Wireless Sensor Networks Node Coverage",
+    "doi": "10.1109/access.2024.3365511",
+    "year": 2024,
+    "abstract": ""
+  },
+  {
+    "order": 6,
+    "category": "new",
+    "bibkey": "Qin2024Enhancing",
+    "title": "Enhancing Performance for Wireless Location: Leveraging Linear Trend and Uncertainty Inherent in NLOS Error",
+    "doi": "10.1109/tii.2024.3413336",
+    "year": 2024,
+    "abstract": ""
+  },
+  {
+    "order": 7,
+    "category": "new",
+    "bibkey": "Bhukya2025Hybrid",
+    "title": "Hybrid Reliable Clustering Algorithm with Heterogeneous Traffic Routing for Wireless Sensor Networks",
+    "doi": "10.3390/s25030864",
+    "year": 2025,
+    "abstract": "Wireless sensor networks (WSNs) are vulnerable to several challenges. Congestion control, the utilization of trust to ensure security, and the incorporation of clustering schemes demand much attention. Algorithms designed to deal with congestion control fail to ensure security and address challenges faced due to congestion in the network. To resolve this issue, a Hybrid Trust-based Congestion-aware Cluster Routing (HTCCR) protocol is proposed to effectively detect attacker nodes and reduce congestion via optimal routing through clustering. In the proposed HTCCR protocol, node probability is determined based on the trust factor, queue congestion status, residual energy (RE), and distance from the mobile base station (BS) by using hybrid K-Harmonic Means (KHM) and the Enhanced Gravitational Search Algorithm (EGSA). Sensor nodes select cluster heads (CHs) with better fitness values and transmit data through them. The CH forwards data to a mobile sink once the sink comes into the range of CH. Priority-based data delivery is incorporated to effectively control packet forwarding based on priority level, thus decreasing congestion. It is evident that the propounded HTCCR protocol offers better performance in contrast to the benchmarked TBSEER, CTRF, and TAGA based on the average delay, packet delivery ratio (PDR), throughput, detection ratio, packet loss ratio (PLR), overheads, and energy through simulations. The proposed HTCCR protocol involves 2.5, 2.3, and 1.7 times less delay; an 18.1%, 12.5%, and 5.5% better detection ratio; 2.9, 2.6, and 1.8 times less energy; a 2.2, 1.9, and 1.5 times lower PLR; a 14.5%, 10.5%, and 5.2% better PDR; a 30.7%, 28.5%, and 18.4% better throughput; and 2.27, 1.91, and 1.66 times lower routing overheads in contrast to the TBSEER, CTRF, and TAGA protocols, respectively. The HTCCR protocol involves 4.1% less delay for the ‘C1’ and ‘C2’ RT packets, and the average throughput of RT is 10.4% better when compared with NRT."
+  },
+  {
+    "order": 8,
+    "category": "new",
+    "bibkey": "Reddy2025Enhanced",
+    "title": "Enhanced Cuckoo Search Optimization with Opposition-Based Learning for the Optimal Placement of Sensor Nodes and Enhanced Network Coverage in Wireless Sensor Networks",
+    "doi": "10.3390/app15158575",
+    "year": 2025,
+    "abstract": "Network connectivity and area coverage are the most important aspects in the applications of wireless sensor networks (WSNs). The resource and energy constraints of sensor nodes, operational conditions, and network size pose challenges to the optimal coverage of targets in the region of interest (ROI). The main idea is to achieve maximum area coverage and connectivity with strategic deployment and the minimal number of sensor nodes. This work addresses the problem of network area coverage in randomly distributed WSNs and provides an efficient deployment strategy using an enhanced version of cuckoo search optimization (ECSO). The “sequential update evaluation” mechanism is used to mitigate the dependency among dimensions and provide highly accurate solutions, particularly during the local search phase. During the preference random walk phase of conventional CSO, particle swarm optimization (PSO) with adaptive inertia weights is defined to accelerate the local search capabilities. The “opposition-based learning (OBL)” strategy is applied to ensure high-quality initial solutions that help to enhance the balance between exploration and exploitation. By considering the opposite of current solutions to expand the search space, we achieve higher convergence speed and population diversity. The performance of ECSO-OBL is evaluated using eight benchmark functions, and the results of three cases are compared with the existing methods. The proposed method enhances network coverage with a non-uniform distribution of sensor nodes and attempts to cover the whole ROI with a minimal number of sensor nodes. In a WSN with a 100 m2 area, we achieved a maximum coverage rate of 98.45% and algorithm convergence in 143 iterations, and the execution time was limited to 2.85 s. The simulation results of various cases prove the higher efficiency of the ECSO-OBL method in terms of network coverage and connectivity in WSNs compared with existing state-of-the-art works."
+  },
+  {
+    "order": 9,
+    "category": "new",
+    "bibkey": "Ogundile2025Path",
+    "title": "Path Priority Routing Protocol for Underwater Wireless Sensor Network",
+    "doi": "10.1109/jiot.2025.3574076",
+    "year": 2025,
+    "abstract": ""
+  },
+  {
+    "order": 10,
+    "category": "new",
+    "bibkey": "Qi2025Sparse",
+    "title": "Sparse Inversion Localization of Multiple Sources With a Wireless Sensor Network",
+    "doi": "10.1109/jiot.2025.3605980",
+    "year": 2025,
+    "abstract": ""
+  },
+  {
+    "order": 11,
+    "category": "classic",
+    "bibkey": "Heinzelman2005Energy",
+    "title": "Energy-efficient communication protocol for wireless microsensor networks",
+    "doi": "10.1109/hicss.2000.926982",
+    "year": null,
+    "abstract": ""
+  },
+  {
+    "order": 12,
+    "category": "classic",
+    "bibkey": "Intanagonwiwat2000Directed",
+    "title": "Directed diffusion",
+    "doi": "10.1145/345910.345920",
+    "year": 2000,
+    "abstract": ""
+  },
+  {
+    "order": 13,
+    "category": "classic",
+    "bibkey": "Manjeshwar2005TEEN",
+    "title": "TEEN: a routing protocol for enhanced efficiency in wireless sensor networks",
+    "doi": "10.1109/ipdps.2001.925197",
+    "year": null,
+    "abstract": ""
+  },
+  {
+    "order": 14,
+    "category": "classic",
+    "bibkey": "Lindsey2003PEGASIS",
+    "title": "PEGASIS: Power-efficient gathering in sensor information systems",
+    "doi": "10.1109/aero.2002.1035242",
+    "year": null,
+    "abstract": ""
+  },
+  {
+    "order": 15,
+    "category": "classic",
+    "bibkey": "Heinzelman2002An",
+    "title": "An application-specific protocol architecture for wireless microsensor networks",
+    "doi": "10.1109/twc.2002.804190",
+    "year": 2002,
+    "abstract": ""
+  },
+  {
+    "order": 16,
+    "category": "classic",
+    "bibkey": "Akyildiz2002A",
+    "title": "A survey on sensor networks",
+    "doi": "10.1109/mcom.2002.1024422",
+    "year": 2002,
+    "abstract": ""
+  },
+  {
+    "order": 17,
+    "category": "classic",
+    "bibkey": "AlKaraki2004Routing",
+    "title": "Routing techniques in wireless sensor networks: a survey",
+    "doi": "10.1109/mwc.2004.1368893",
+    "year": 2004,
+    "abstract": ""
+  },
+  {
+    "order": 18,
+    "category": "classic",
+    "bibkey": "Younis2004HEED",
+    "title": "HEED: a hybrid, energy-efficient, distributed clustering approach for ad hoc sensor networks",
+    "doi": "10.1109/tmc.2004.41",
+    "year": 2004,
+    "abstract": ""
+  },
+  {
+    "order": 19,
+    "category": "classic",
+    "bibkey": "Abbasi2007A",
+    "title": "A survey on clustering algorithms for wireless sensor networks",
+    "doi": "10.1016/j.comcom.2007.05.024",
+    "year": 2007,
+    "abstract": ""
+  },
+  {
+    "order": 20,
+    "category": "classic",
+    "bibkey": "Kao2017A",
+    "title": "A Comprehensive Study on the Internet of Underwater Things: Applications, Challenges, and Channel Models",
+    "doi": "10.3390/s17071477",
+    "year": 2017,
+    "abstract": "The Internet of Underwater Things (IoUT) is a novel class of Internet of Things (IoT), and is defined as the network of smart interconnected underwater objects. IoUT is expected to enable various practical applications, such as environmental monitoring, underwater exploration, and disaster prevention. With these applications, IoUT is regarded as one of the potential technologies toward developing smart cities. To support the concept of IoUT, Underwater Wireless Sensor Networks (UWSNs) have emerged as a promising network system. UWSNs are different from the traditional Territorial Wireless Sensor Networks (TWSNs), and have several unique properties, such as long propagation delay, narrow bandwidth, and low reliability. These unique properties would be great challenges for IoUT. In this paper, we provide a comprehensive study of IoUT, and the main contributions of this paper are threefold: (1) we introduce and classify the practical underwater applications that can highlight the importance of IoUT; (2) we point out the differences between UWSNs and traditional TWSNs, and these differences are the main challenges for IoUT; and (3) we investigate and evaluate the channel models, which are the technical core for designing reliable communication protocols on IoUT."
+  },
+  {
+    "order": 21,
+    "category": "classic",
+    "bibkey": "Wang2016An",
+    "title": "An Energy-Efficient Reliable Data Transmission Scheme for Complex Environmental Monitoring in Underwater Acoustic Sensor Networks",
+    "doi": "10.1109/jsen.2015.2428712",
+    "year": 2016,
+    "abstract": ""
+  },
+  {
+    "order": 22,
+    "category": "classic",
+    "bibkey": "Sarkar2017Cluster",
+    "title": "Cluster head selection for energy efficient and delay-less routing in wireless sensor network",
+    "doi": "10.1007/s11276-017-1558-2",
+    "year": 2017,
+    "abstract": ""
+  },
+  {
+    "order": 23,
+    "category": "classic",
+    "bibkey": "Wang2019Energy",
+    "title": "Energy Efficient Routing Algorithm with Mobile Sink Support for Wireless Sensor Networks",
+    "doi": "10.3390/s19071494",
+    "year": 2019,
+    "abstract": "Recently, wireless sensor network (WSN) has drawn wide attention. It can be viewed as a network with lots of sensors that are autonomously organized and cooperate with each other to collect, process, and transmit data around targets to some remote administrative center. As such, sensors may be deployed in harsh environments where it is impossible for battery replacement. Therefore, energy efficient routing is crucial for applications that introduce WSNs. In this paper, we present an energy efficient routing schema combined with clustering and sink mobility technology. We first divide the whole sensor field into sectors and each sector elects a Cluster Head (CH) by calculating its members’ weight. Member nodes calculate energy consumption of different routing paths to choose the optimal scenario. Then CHs are connected into a chain using the greedy algorithm for intercluster communication. Simulation results prove the presented schema outperforms some similar work such as Cluster-Chain Mobile Agent Routing (CCMAR) and Energy-efficient Cluster-based Dynamic Routing Algorithm (ECDRA). Additionally, we explore the influence of different network parameters on the performance of the network and further enhance its performance."
+  },
+  {
+    "order": 24,
+    "category": "classic",
+    "bibkey": "TiansiHu2010QELAR",
+    "title": "QELAR: A Machine-Learning-Based Adaptive Routing Protocol for Energy-Efficient and Lifetime-Extended Underwater Sensor Networks",
+    "doi": "10.1109/tmc.2010.28",
+    "year": 2010,
+    "abstract": ""
+  },
+  {
+    "order": 25,
+    "category": "classic",
+    "bibkey": "Ayaz2011A",
+    "title": "A survey on routing techniques in underwater wireless sensor networks",
+    "doi": "10.1016/j.jnca.2011.06.009",
+    "year": 2011,
+    "abstract": ""
+  },
+  {
+    "order": 26,
+    "category": "classic",
+    "bibkey": "Yuan2014Data",
+    "title": "Data Density Correlation Degree Clustering Method for Data Aggregation in WSN",
+    "doi": "10.1109/jsen.2013.2293093",
+    "year": 2014,
+    "abstract": ""
+  },
+  {
+    "order": 27,
+    "category": "classic",
+    "bibkey": "Gjanci2018Path",
+    "title": "Path Finding for Maximum Value of Information in Multi-Modal Underwater Wireless Sensor Networks",
+    "doi": "10.1109/tmc.2017.2706689",
+    "year": 2018,
+    "abstract": ""
+  },
+  {
+    "order": 28,
+    "category": "classic",
+    "bibkey": "Han2019District",
+    "title": "District Partition-Based Data Collection Algorithm With Event Dynamic Competition in Underwater Acoustic Sensor Networks",
+    "doi": "10.1109/tii.2019.2912320",
+    "year": 2019,
+    "abstract": ""
+  },
+  {
+    "order": 29,
+    "category": "classic",
+    "bibkey": "Han2018A",
+    "title": "A Stratification-Based Data Collection Scheme in Underwater Acoustic Sensor Networks",
+    "doi": "10.1109/tvt.2018.2867021",
+    "year": 2018,
+    "abstract": ""
+  },
+  {
+    "order": 30,
+    "category": "classic",
+    "bibkey": "Han2017Probabilistic",
+    "title": "Probabilistic Neighborhood-Based Data Collection Algorithms for 3D Underwater Acoustic Sensor Networks",
+    "doi": "10.3390/s17020316",
+    "year": 2017,
+    "abstract": "Marine environmental monitoring provides crucial information and support for the exploitation, utilization, and protection of marine resources. With the rapid development of information technology, the development of three-dimensional underwater acoustic sensor networks (3D UASNs) provides a novel strategy to acquire marine environment information conveniently, efficiently and accurately. However, the specific propagation effects of acoustic communication channel lead to decreased successful information delivery probability with increased distance. Therefore, we investigate two probabilistic neighborhood-based data collection algorithms for 3D UASNs which are based on a probabilistic acoustic communication model instead of the traditional deterministic acoustic communication model. An autonomous underwater vehicle (AUV) is employed to traverse along the designed path to collect data from neighborhoods. For 3D UASNs without prior deployment knowledge, partitioning the network into grids can allow the AUV to visit the central location of each grid for data collection. For 3D UASNs in which the deployment knowledge is known in advance, the AUV only needs to visit several selected locations by constructing a minimum probabilistic neighborhood covering set to reduce data latency. Otherwise, by increasing the transmission rounds, our proposed algorithms can provide a tradeoff between data collection latency and information gain. These algorithms are compared with basic Nearest-neighbor Heuristic algorithm via simulations. Simulation analyses show that our proposed algorithms can efficiently reduce the average data collection completion time, corresponding to a decrease of data latency."
+  }
+]

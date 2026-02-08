@@ -20,7 +20,7 @@ from datetime import datetime
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'tests'))
 
-from enhanced_eehfr_protocol import EnhancedEEHFRProtocol
+from enhanced_eehfr_protocol import EnhancedAERISProtocol
 from baseline_protocols.leach_protocol import LEACHProtocol
 from baseline_protocols.pegasis_protocol import PEGASISProtocol
 from baseline_protocols.heed_protocol import HEEDProtocol
@@ -41,7 +41,7 @@ class ComprehensiveExperiments:
         
         # 协议实例
         self.protocols = {
-            'Enhanced EEHFR': EnhancedEEHFRProtocol,
+            'AERIS': EnhancedAERISProtocol,
             'PEGASIS': PEGASISProtocol,
             'LEACH': LEACHProtocol,
             'HEED': HEEDProtocol
@@ -123,19 +123,19 @@ class ComprehensiveExperiments:
             size_data = df[df['network_size'] == size]
             
             # 获取各协议的能耗数据
-            eehfr_data = size_data[size_data['protocol'] == 'Enhanced EEHFR']['energy_consumption'].values
+            aeris_data = size_data[size_data['protocol'] == 'AERIS']['energy_consumption'].values
             pegasis_data = size_data[size_data['protocol'] == 'PEGASIS']['energy_consumption'].values
             leach_data = size_data[size_data['protocol'] == 'LEACH']['energy_consumption'].values
             heed_data = size_data[size_data['protocol'] == 'HEED']['energy_consumption'].values
             
-            # 配对t检验 (EEHFR vs PEGASIS)
-            if len(eehfr_data) > 0 and len(pegasis_data) > 0:
-                t_stat, p_value = ttest_rel(eehfr_data, pegasis_data)
-                improvement = ((np.mean(pegasis_data) - np.mean(eehfr_data)) / np.mean(pegasis_data)) * 100
+            # 配对t检验 (AERIS vs PEGASIS)
+            if len(aeris_data) > 0 and len(pegasis_data) > 0:
+                t_stat, p_value = ttest_rel(aeris_data, pegasis_data)
+                improvement = ((np.mean(pegasis_data) - np.mean(aeris_data)) / np.mean(pegasis_data)) * 100
                 
                 stats_results[f'size_{size}'] = {
-                    'eehfr_mean': np.mean(eehfr_data),
-                    'eehfr_std': np.std(eehfr_data),
+                    'aeris_mean': np.mean(aeris_data),
+                    'aeris_std': np.std(aeris_data),
                     'pegasis_mean': np.mean(pegasis_data),
                     'pegasis_std': np.std(pegasis_data),
                     't_statistic': t_stat,
@@ -144,7 +144,7 @@ class ComprehensiveExperiments:
                     'significant': p_value < 0.05
                 }
                 
-                print(f"  📈 {size}节点: EEHFR vs PEGASIS")
+                print(f"  📈 {size}节点: AERIS vs PEGASIS")
                 print(f"    改进: {improvement:.1f}%, p-value: {p_value:.4f}")
                 print(f"    显著性: {'✅ 显著' if p_value < 0.05 else '❌ 不显著'}")
         
@@ -194,7 +194,7 @@ class ComprehensiveExperiments:
                 test_params[param_name] = value
                 
                 # 运行实验
-                protocol = EnhancedEEHFRProtocol(**test_params)
+                protocol = EnhancedAERISProtocol(**test_params)
                 nodes = self.generate_network_topology(50)  # 使用50节点
                 result = self.run_simulation(protocol, nodes, 200)  # 减少轮数以加快测试
                 
@@ -295,7 +295,7 @@ class ComprehensiveExperiments:
             f.write(f"**生成时间**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             
             f.write("## 🎯 实验目标\n")
-            f.write("为Enhanced EEHFR协议的SCI Q3期刊论文提供完整的实验验证数据\n\n")
+            f.write("为 AERIS 协议的 SCI Q3 期刊论文提供完整的实验验证数据\n\n")
             
             f.write("## 📊 实验配置\n")
             f.write(f"- **网络规模**: {self.network_sizes} 节点\n")
@@ -322,7 +322,7 @@ class ComprehensiveExperiments:
 
 def main():
     """主函数"""
-    print("🔬 Enhanced EEHFR 综合实验系统")
+        print("🔬 AERIS 综合实验系统")
     print("=" * 50)
     
     # 创建实验实例

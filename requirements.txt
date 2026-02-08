@@ -1,4 +1,4 @@
-# Enhanced EEHFR WSN Protocol Dependencies
+# Enhanced AERIS WSN Protocol Dependencies
 # Core scientific computing
 numpy>=1.21.0
 scipy>=1.7.0
@@ -11,6 +11,17 @@ scikit-fuzzy>=0.4.2
 # Deep learning (for LSTM prediction module)
 tensorflow>=2.8.0
 keras>=2.8.0
+
+# Deep learning (PyTorch for LSTM/TCN env mapping)
+torch>=2.2.0
+torchvision>=0.17.0
+torchaudio>=2.2.0
+
+# Classical time-series baselines
+statsmodels>=0.13.0
+# TBATS is optional; if not available, the script will skip it gracefully
+# On Windows, tbats may require C extensions; install only if needed for TBATS runs
+# pip install tbats
 
 # Visualization
 matplotlib>=3.5.0
@@ -35,3 +46,6 @@ sphinx-rtd-theme>=1.0.0
 pyyaml>=6.0
 jsonschema>=4.0.0
 click>=8.0.0
+
+# PDF merging for submission pack
+PyPDF2>=3.0.0

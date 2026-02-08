@@ -1,17 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-LEACH (Low-Energy Adaptive Clustering Hierarchy) 协议实现
-经典的WSN分层路由协议，用作EEHFR协议的对比基准
+LEACH (Low-Energy Adaptive Clustering Hierarchy) protocol implementation.
+This module provides a basic LEACH simulation for WSN baseline comparison.
 
-参考文献:
-Heinzelman, W. R., Chandrakasan, A., & Balakrishnan, H. (2000). 
-Energy-efficient communication protocol for wireless microsensor networks. 
+**MODIFIED 2025-11-04**: Now uses ImprovedEnergyModel for unified comparison with AERIS.
+
+References:
+Heinzelman, W. R., Chandrakasan, A., & Balakrishnan, H. (2000).
+Energy-efficient communication protocol for wireless microsensor networks.
 In Proceedings of the 33rd annual Hawaii international conference on system sciences.
-
-项目路径: EEHFR：融合模糊逻辑与混合元启发式优化的WSN智能节能路由协议/EEHFR_Optimized_v1/
-数据源: Intel Berkeley Research Lab数据集 (https://db.csail.mit.edu/labdata/labdata.html)
 """
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import numpy as np
 import random
@@ -19,8 +22,11 @@ import math
 from typing import List, Tuple, Dict, Optional
 import matplotlib.pyplot as plt
 
+# Import unified energy model
+from improved_energy_model import ImprovedEnergyModel, HardwarePlatform
+
 class LEACHNode:
-    """LEACH协议中的传感器节点"""
+    """LEACH node representing a sensor node."""
     
     def __init__(self, node_id: int, x: float, y: float, initial_energy: float = 2.0):
         self.node_id = node_id
@@ -33,292 +39,320 @@ class LEACHNode:
         self.cluster_head_id = None
         self.cluster_members = []
         
-        # LEACH特定参数
+        # LEACH specific parameters
         self.ch_probability = 0.0
         self.last_ch_round = -1
         self.data_packets = []
         
     def distance_to(self, other_node) -> float:
-        """计算到另一个节点的欧几里得距离"""
+        """Compute Euclidean distance to another node."""
         return math.sqrt((self.x - other_node.x)**2 + (self.y - other_node.y)**2)
     
     def consume_energy(self, energy_amount: float):
-        """消耗能量"""
+        """Consume energy and update alive status."""
         self.current_energy -= energy_amount
         if self.current_energy <= 0:
             self.current_energy = 0
             self.is_alive = False
     
     def reset_cluster_info(self):
-        """重置簇信息"""
+        """Reset cluster membership and head assignment."""
         self.is_cluster_head = False
         self.cluster_head_id = None
         self.cluster_members = []
 
 class LEACHProtocol:
-    """LEACH协议实现"""
+    """LEACH protocol simulator."""
     
     def __init__(self, nodes: List[LEACHNode], base_station: Tuple[float, float],
-                 desired_ch_percentage: float = 0.1):
-        """
-        初始化LEACH协议 - 严格按照权威LEACH实现
+                 desired_ch_percentage: float = 0.1, use_unified_energy_model: bool = True,
+                 tx_power_dbm: float = 10.0, channel_model=None):
+        """Initialize LEACH protocol.
 
-        参数:
-            nodes: 传感器节点列表
-            base_station: 基站坐标 (x, y)
-            desired_ch_percentage: 期望的簇头百分比 (权威LEACH使用0.1)
+        Args:
+            nodes: List of LEACH nodes
+            base_station: Base station coordinates (x, y)
+            desired_ch_percentage: Desired percentage of cluster heads
+            use_unified_energy_model: If True, use ImprovedEnergyModel (CC2420 parameters).
+                                     If False, use legacy simplified parameters.
+            tx_power_dbm: Transmission power in dBm (default 10.0 for fair comparison)
+            channel_model: Optional RealisticChannelModel for PDR calculation
         """
         self.nodes = nodes
         self.base_station = base_station
         self.desired_ch_percentage = desired_ch_percentage
         self.current_round = 0
+        self.use_unified_energy_model = use_unified_energy_model
+        self.tx_power_dbm = tx_power_dbm
+        self.channel_model = channel_model
 
-        # 能量消耗模型参数 (严格按照权威LEACH)
-        self.E_elec = 50e-9  # 电子能耗 (J/bit) - 权威LEACH参数
-        self.E_fs = 10e-12   # 自由空间模型 (J/bit/m²)
-        self.E_mp = 0.0013e-12  # 多径衰落模型 (J/bit/m⁴)
-        self.E_DA = 5e-9     # 数据聚合能耗 (J/bit/signal)
-        self.d_crossover = math.sqrt(self.E_fs / self.E_mp)  # 距离阈值
-        self.packet_size = 4000  # 数据包大小 (bits)
-        self.radio_range = 0.5 * 100 * math.sqrt(2)  # 无线电范围 (权威LEACH参数)
+        # Packet size and radio range
+        self.packet_size = 8192  # packet size (bits) - 统一为1024 bytes
+        self.radio_range = 0.5 * 100 * math.sqrt(2)  # radio range
 
-        # 权威LEACH的初始能量参数
-        self.initial_energy = 2.0  # 权威LEACH使用2J初始能量，不是10J
-        
-        # 性能统计
+        if use_unified_energy_model:
+            # Use unified real hardware model (CC2420 TelosB)
+            self.energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
+            self.d_crossover = 87.0  # Use standard threshold
+            print(f"[LEACH] Using unified energy model (CC2420 TelosB, 208.8 nJ/bit)")
+        else:
+            # Legacy simplified parameters (for backward compatibility)
+            self.E_elec = 50e-9  # electronics energy (J/bit)
+            self.E_fs = 10e-12   # free-space model (J/bit/m^2)
+            self.E_mp = 0.0013e-12  # multi-path model (J/bit/m^4)
+            self.E_DA = 5e-9     # data aggregation energy (J/bit)
+            self.d_crossover = math.sqrt(self.E_fs / self.E_mp)  # threshold distance
+            self.energy_model = None
+            print(f"[LEACH] Using legacy energy model (50 nJ/bit)")
+
+        # Initial energy parameter (classical LEACH often uses 2J)
+        self.initial_energy = 2.0
+
+        # Metrics
         self.total_energy_consumed = 0.0
         self.packets_sent = 0
         self.packets_received = 0
-        # 端到端统计（统一为“源→基站”口径）
-        self.total_source_packets = 0
+        self.total_source_packets = 0  # 实际尝试发送的包数 (attempted)
+        self.source_packets_expected = 0  # 期望包数 = 每轮存活节点数累计
         self.total_bs_delivered = 0
         self.dead_nodes = 0
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
 
-        print(f"🔧 LEACH协议初始化完成")
-        print(f"   节点数: {len(self.nodes)}")
-        print(f"   基站位置: {self.base_station}")
-        print(f"   期望簇头比例: {self.desired_ch_percentage*100:.1f}%")
+        print(f"[OK] LEACH initialization complete")
+        print(f"   Nodes: {len(self.nodes)}")
+        print(f"   Base station: {self.base_station}")
+        print(f"   Desired CH percentage: {self.desired_ch_percentage*100:.1f}%")
     
-    def calculate_transmission_energy(self, distance: float, packet_size: int) -> float:
-        """计算传输能耗"""
-        if distance < self.d_crossover:
-            return self.E_elec * packet_size + self.E_fs * packet_size * (distance ** 2)
+    def calculate_transmission_energy(self, distance: float, packet_size: int,
+                                     temperature_c: float = 25.0, humidity_ratio: float = 0.5) -> float:
+        """Compute transmission energy per packet based on distance.
+
+        Uses unified energy model if enabled, otherwise legacy simplified model.
+        """
+        if self.use_unified_energy_model:
+            # Use ImprovedEnergyModel (real CC2420 parameters)
+            return self.energy_model.calculate_transmission_energy(
+                data_size_bits=packet_size,
+                distance=distance,
+                tx_power_dbm=self.tx_power_dbm,
+                temperature_c=temperature_c,
+                humidity_ratio=humidity_ratio
+            )
         else:
-            return self.E_elec * packet_size + self.E_mp * packet_size * (distance ** 4)
-    
-    def calculate_reception_energy(self, packet_size: int) -> float:
-        """计算接收能耗"""
-        return self.E_elec * packet_size
+            # Legacy simplified model
+            if distance < self.d_crossover:
+                return self.E_elec * packet_size + self.E_fs * packet_size * (distance ** 2)
+            else:
+                return self.E_elec * packet_size + self.E_mp * packet_size * (distance ** 4)
+
+    def calculate_reception_energy(self, packet_size: int,
+                                   temperature_c: float = 25.0, humidity_ratio: float = 0.5) -> float:
+        """Compute reception energy per packet.
+
+        Uses unified energy model if enabled, otherwise legacy simplified model.
+        """
+        if self.use_unified_energy_model:
+            # Use ImprovedEnergyModel (real CC2420 parameters)
+            return self.energy_model.calculate_reception_energy(
+                data_size_bits=packet_size,
+                temperature_c=temperature_c,
+                humidity_ratio=humidity_ratio
+            )
+        else:
+            # Legacy simplified model
+            return self.E_elec * packet_size
     
     def cluster_head_selection(self) -> List[LEACHNode]:
-        """LEACH簇头选择算法"""
+        """Select cluster heads following LEACH threshold rule."""
         cluster_heads = []
         
-        # 计算阈值T(n)
+        # Reset epoch if needed
         if self.current_round % (1 / self.desired_ch_percentage) == 0:
-            # 重置所有节点的簇头历史
             for node in self.nodes:
                 node.last_ch_round = -1
         
         for node in self.nodes:
             if not node.is_alive:
                 continue
-                
-            # 如果节点在当前周期内已经当过簇头，则不能再次当选
             rounds_since_ch = self.current_round - node.last_ch_round
             if rounds_since_ch < (1 / self.desired_ch_percentage):
                 continue
-            
-            # 计算阈值
             remaining_nodes = len([n for n in self.nodes if n.is_alive and 
                                  (self.current_round - n.last_ch_round) >= (1 / self.desired_ch_percentage)])
-            
             if remaining_nodes == 0:
                 continue
-                
             threshold = self.desired_ch_percentage / (1 - self.desired_ch_percentage * 
                                                     (self.current_round % (1 / self.desired_ch_percentage)))
-            
-            # 随机数判断
             random_value = random.random()
             if random_value < threshold:
                 node.is_cluster_head = True
                 node.last_ch_round = self.current_round
                 cluster_heads.append(node)
-
-        # 不强制选择簇头 - 允许某些轮次没有簇头（符合权威LEACH行为）
         return cluster_heads
     
     def cluster_formation(self, cluster_heads: List[LEACHNode]):
-        """簇形成阶段 - 严格按照权威LEACH逻辑"""
-        # 重置所有节点的簇信息
+        """Form clusters by assigning nodes to the closest CH under constraints."""
         for node in self.nodes:
             node.reset_cluster_info()
-            node.cluster_head_id = None  # None表示直接连基站
-
-        # 重新设置簇头标记
+            node.cluster_head_id = None
         for ch in cluster_heads:
             ch.is_cluster_head = True
-
-        # 非簇头节点选择最近的簇头（权威LEACH的条件判断）
         for node in self.nodes:
             if not node.is_alive or node.is_cluster_head:
                 continue
-
             min_distance = float('inf')
             closest_ch = None
-
-            # 找到最近的簇头
             for ch in cluster_heads:
                 distance = node.distance_to(ch)
                 if distance < min_distance:
                     min_distance = distance
                     closest_ch = ch
-
-            # 权威LEACH的关键逻辑：只有满足条件才加入簇头
             if closest_ch:
                 distance_to_bs = math.sqrt((node.x - self.base_station[0])**2 +
                                          (node.y - self.base_station[1])**2)
-
-                # 条件1: 在无线电范围内 AND 条件2: 比到基站更近
                 if min_distance <= self.radio_range and min_distance < distance_to_bs:
                     node.cluster_head_id = closest_ch.node_id
                     closest_ch.cluster_members.append(node)
-                # 否则cluster_head_id保持None，表示直接连基站
     
     def data_transmission_phase(self, cluster_heads: List[LEACHNode]):
-        """数据传输阶段 - 严格按照权威LEACH实现"""
+        """Simulate one data transmission phase in LEACH."""
         round_energy_consumption = 0.0
-
-        # 稳态阶段：模拟权威LEACH的10次数据包传输尝试
-        for _ in range(10):  # 权威LEACH的NumPacket=10
-
-            # 1. 簇内数据传输（如果有簇头）
+        if not hasattr(self, '_all_hop_counts'):
+            self._all_hop_counts = []
+        for _ in range(10):
+            # intra-cluster transmission
             if cluster_heads:
                 for ch in cluster_heads:
                     if not ch.is_alive or not ch.cluster_members:
                         continue
-
-                    # 簇内成员向簇头发送数据
                     for member in ch.cluster_members:
                         if not member.is_alive:
                             continue
-
                         distance = member.distance_to(ch)
-                        tx_energy = self.calculate_transmission_energy(distance, self.packet_size)
-                        rx_energy = self.calculate_reception_energy(self.packet_size)
-
+                        tx_energy = self.calculate_transmission_energy(distance, self.packet_size, temperature_c=25.0, humidity_ratio=0.5)
+                        rx_energy = self.calculate_reception_energy(self.packet_size, temperature_c=25.0, humidity_ratio=0.5)
                         if member.current_energy >= tx_energy and ch.current_energy >= rx_energy:
                             member.consume_energy(tx_energy)
                             ch.consume_energy(rx_energy)
                             round_energy_consumption += tx_energy + rx_energy
-
-                            # 统一端到端统计口径：簇内仅视为中继，不计入源→BS送达
                             self.packets_sent += 1
-                            # 不增加 self.packets_received
-                            self.total_source_packets += 1  # 本轮产生一个源数据包
-
-            # 2. 直接向基站发送数据（cluster_head_id为None）
+                            self.total_source_packets += 1  # 源节点发送即计入
+                            # 成员→CH使用信道模型判断是否到达CH
+                            member_to_ch_success = True
+                            if self.channel_model is not None:
+                                import random
+                                link_metrics = self.channel_model.calculate_link_metrics(
+                                    self.tx_power_dbm, distance, 25.0, 0.5)
+                                member_to_ch_success = random.random() < link_metrics['pdr']
+                            # 记录到达CH的包数（用于后续CH→BS聚合）
+                            if member_to_ch_success:
+                                if not hasattr(ch, '_packets_received_this_round'):
+                                    ch._packets_received_this_round = 0
+                                ch._packets_received_this_round += 1
+            # direct to base station
             for node in self.nodes:
                 if not node.is_alive or node.is_cluster_head:
                     continue
-
                 if node.cluster_head_id is None:
                     bs_distance = math.sqrt((node.x - self.base_station[0])**2 +
                                           (node.y - self.base_station[1])**2)
-                    tx_energy = self.calculate_transmission_energy(bs_distance, self.packet_size)
-
+                    tx_energy = self.calculate_transmission_energy(bs_distance, self.packet_size, temperature_c=25.0, humidity_ratio=0.5)
                     if node.current_energy >= tx_energy:
                         node.consume_energy(tx_energy)
                         round_energy_consumption += tx_energy
-
                         self.packets_sent += 1
-                        # 直接到达基站：计入端到端送达
                         self.total_source_packets += 1
-                        self.total_bs_delivered += 1
-
-            # 3. 簇头向基站传输聚合数据
+                        # 使用信道模型判断是否成功
+                        if self.channel_model is not None:
+                            import random
+                            link_metrics = self.channel_model.calculate_link_metrics(
+                                self.tx_power_dbm, bs_distance, 25.0, 0.5)
+                            if random.random() < link_metrics['pdr']:
+                                self.total_bs_delivered += 1
+                                self._all_hop_counts.append(1)
+                        else:
+                            self.total_bs_delivered += 1
+                            self._all_hop_counts.append(1)
+            # CH to BS after aggregation
             if cluster_heads:
                 for ch in cluster_heads:
                     if not ch.is_alive:
                         continue
+                    # CH自身也有感知数据，计入source_packets和packets_at_ch
+                    self.total_source_packets += 1
+                    if not hasattr(ch, '_packets_received_this_round'):
+                        ch._packets_received_this_round = 0
+                    ch._packets_received_this_round += 1  # CH自身数据
+                    # 获取本轮到达CH的包数（含CH自身）
+                    packets_at_ch = ch._packets_received_this_round
+                    if packets_at_ch == 0:
+                        continue
 
-                    # 数据聚合能耗
-                    aggregation_energy = self.E_DA * self.packet_size * len(ch.cluster_members)
+                    # Data aggregation at cluster head
+                    if self.use_unified_energy_model:
+                        aggregation_energy = self.energy_model.calculate_processing_energy(
+                            self.packet_size * packets_at_ch)
+                    else:
+                        aggregation_energy = self.E_DA * self.packet_size * packets_at_ch
 
-                    # 向基站传输
                     bs_distance = math.sqrt((ch.x - self.base_station[0])**2 +
                                           (ch.y - self.base_station[1])**2)
-                    tx_energy = self.calculate_transmission_energy(bs_distance, self.packet_size)
-
+                    tx_energy = self.calculate_transmission_energy(bs_distance, self.packet_size, temperature_c=25.0, humidity_ratio=0.5)
                     total_ch_energy = aggregation_energy + tx_energy
-
                     if ch.current_energy >= total_ch_energy:
                         ch.consume_energy(total_ch_energy)
                         round_energy_consumption += total_ch_energy
-
                         self.packets_sent += 1
-                        # 视为聚合后的端到端一次送达
-                        self.total_bs_delivered += 1
-
-            # 权威LEACH每轮只进行一次有效传输
+                        # CH→BS信道判断
+                        ch_to_bs_success = True
+                        if self.channel_model is not None:
+                            import random
+                            link_metrics = self.channel_model.calculate_link_metrics(
+                                self.tx_power_dbm, bs_distance, 25.0, 0.5)
+                            ch_to_bs_success = random.random() < link_metrics['pdr']
+                        if ch_to_bs_success:
+                            self.total_bs_delivered += packets_at_ch
+                            for _ in range(packets_at_ch):
+                                self._all_hop_counts.append(2)
+                    # 清理临时变量
+                    ch._packets_received_this_round = 0
             break
-
         self.total_energy_consumed += round_energy_consumption
         self.energy_consumption_per_round.append(round_energy_consumption)
     
     def run_round(self) -> bool:
-        """运行一轮LEACH协议"""
-        # 检查网络是否还有存活节点
+        """Run a single LEACH round."""
         alive_nodes = [n for n in self.nodes if n.is_alive]
         if not alive_nodes:
             return False
-        
+        # 累计期望包数 = 每轮存活节点数
+        self.source_packets_expected += len(alive_nodes)
         self.current_round += 1
-        
-        # 1. 簇头选择阶段
         cluster_heads = self.cluster_head_selection()
-        
-        # 2. 簇形成阶段
         self.cluster_formation(cluster_heads)
-        
-        # 3. 数据传输阶段
         self.data_transmission_phase(cluster_heads)
-        
-        # 4. 更新统计信息
         current_alive = len(alive_nodes)
         current_dead = len(self.nodes) - current_alive
-        
         if current_dead > self.dead_nodes:
             self.dead_nodes = current_dead
             if self.network_lifetime == 0 and current_dead > 0:
                 self.network_lifetime = self.current_round
-        
         self.alive_nodes_per_round.append(current_alive)
-        
         return True
     
     def run_simulation(self, max_rounds: int = 1000) -> Dict:
-        """运行完整的LEACH仿真"""
-        print(f"🚀 开始LEACH协议仿真 (最大轮数: {max_rounds})")
-        
+        """Run a complete LEACH simulation and return summary metrics."""
+        print(f">>> Start LEACH protocol simulation (max rounds: {max_rounds})")
         for round_num in range(max_rounds):
             success = self.run_round()
-            
             if not success:
-                print(f"⚠️ 网络生命周期结束于第 {round_num} 轮")
+                print(f"[WARN] Network lifetime ended at round {round_num}")
                 break
-            
-            # 每100轮输出一次状态
             if round_num % 100 == 0:
                 alive_count = len([n for n in self.nodes if n.is_alive])
-                print(f"   第{round_num}轮: 存活节点={alive_count}, "
-                      f"总能耗={self.total_energy_consumed:.3f}J")
-        
-        # 返回性能结果
+                print(f"   Round {round_num}: alive nodes={alive_count}, total energy {self.total_energy_consumed:.3f}J")
         results = {
             'protocol_name': 'LEACH',
             'total_rounds': self.current_round,
@@ -327,19 +361,20 @@ class LEACHProtocol:
             'packets_sent': self.packets_sent,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': self.packets_received / max(self.packets_sent, 1),
-                'packet_delivery_ratio_end2end': self.total_bs_delivered / max(self.total_source_packets, 1),
-                'bs_delivered': self.total_bs_delivered,
-                'source_packets': self.total_source_packets,
+            'packet_delivery_ratio_end2end': self.total_bs_delivered / max(self.total_source_packets, 1),
+            'bs_delivered': self.total_bs_delivered,
+            'source_packets': self.total_source_packets,
             'dead_nodes': self.dead_nodes,
             'alive_nodes': len(self.nodes) - self.dead_nodes,
             'energy_consumption_per_round': self.energy_consumption_per_round,
             'alive_nodes_per_round': self.alive_nodes_per_round,
-            'average_energy_per_round': self.total_energy_consumed / max(self.current_round, 1)
+            'average_energy_per_round': self.total_energy_consumed / max(self.current_round, 1),
+            'avg_hops_to_bs': (sum(self._all_hop_counts) / len(self._all_hop_counts)) if hasattr(self, '_all_hop_counts') and self._all_hop_counts else 0,
+            'hop_count_distribution': dict((h, self._all_hop_counts.count(h)) for h in set(self._all_hop_counts)) if hasattr(self, '_all_hop_counts') and self._all_hop_counts else {},
         }
-        
-        print(f"✅ LEACH仿真完成")
-        print(f"   网络生存时间: {results['network_lifetime']} 轮")
-        print(f"   总能耗: {results['total_energy_consumed']:.3f} J")
-        print(f"   数据传输成功率: {results['packet_delivery_ratio']*100:.1f}%")
-        
+        print(f"[OK] LEACH simulation complete")
+        print(f"   Network lifetime: {results['network_lifetime']} rounds")
+        print(f"   Total energy: {results['total_energy_consumed']:.3f} J")
+        print(f"   PDR: {results['packet_delivery_ratio']*100:.1f}%")
         return results
+

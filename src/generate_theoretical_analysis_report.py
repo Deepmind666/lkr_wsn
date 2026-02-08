@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Enhanced PEGASIS理论分析报告生成器
+Enhanced PEGASIS鐞嗚鍒嗘瀽鎶ュ憡鐢熸垚鍣?
 
-生成包含复杂度分析、收敛性证明、性能边界等的完整理论分析报告，
-满足SCI Q3期刊的理论深度要求。
+鐢熸垚鍖呭惈澶嶆潅搴﹀垎鏋愩€佹敹鏁涙€ц瘉鏄庛€佹€ц兘杈圭晫绛夌殑瀹屾暣鐞嗚鍒嗘瀽鎶ュ憡锛?
+婊¤冻SCI Q3鏈熷垔鐨勭悊璁烘繁搴﹁姹傘€?
 
-作者: Enhanced EEHFR Research Team
-日期: 2025-01-31
-版本: 1.0
+浣滆€? AERIS Research Team
+鏃ユ湡: 2025-01-31
+鐗堟湰: 1.0
 """
 
 import numpy as np
@@ -19,22 +19,22 @@ import os
 from datetime import datetime
 
 def generate_complexity_analysis_plots():
-    """生成复杂度分析图表"""
+    """鐢熸垚澶嶆潅搴﹀垎鏋愬浘琛?""
     
-    # 设置图表样式
+    # 璁剧疆鍥捐〃鏍峰紡
     plt.style.use('seaborn-v0_8')
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
     fig.suptitle('Enhanced PEGASIS Complexity Analysis', fontsize=16, fontweight='bold')
     
-    # 1. 时间复杂度分析
+    # 1. 鏃堕棿澶嶆潅搴﹀垎鏋?
     node_counts = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
     
-    # 理论复杂度曲线
-    theoretical_n2 = node_counts ** 2 / 1000  # 归一化
-    theoretical_n = node_counts / 10  # 归一化
-    theoretical_nlogn = node_counts * np.log(node_counts) / 100  # 归一化
+    # 鐞嗚澶嶆潅搴︽洸绾?
+    theoretical_n2 = node_counts ** 2 / 1000  # 褰掍竴鍖?
+    theoretical_n = node_counts / 10  # 褰掍竴鍖?
+    theoretical_nlogn = node_counts * np.log(node_counts) / 100  # 褰掍竴鍖?
     
-    axes[0, 0].plot(node_counts, theoretical_n2, 'r-', linewidth=2, label='O(n²) - Chain Construction')
+    axes[0, 0].plot(node_counts, theoretical_n2, 'r-', linewidth=2, label='O(n虏) - Chain Construction')
     axes[0, 0].plot(node_counts, theoretical_nlogn, 'g--', linewidth=2, label='O(n log n) - Energy Sorting')
     axes[0, 0].plot(node_counts, theoretical_n, 'b:', linewidth=2, label='O(n) - Leader Selection')
     axes[0, 0].set_xlabel('Number of Nodes')
@@ -43,7 +43,7 @@ def generate_complexity_analysis_plots():
     axes[0, 0].legend()
     axes[0, 0].grid(True, alpha=0.3)
     
-    # 2. 空间复杂度分析
+    # 2. 绌洪棿澶嶆潅搴﹀垎鏋?
     space_node_info = node_counts  # O(n)
     space_chain = node_counts  # O(n)
     space_total = space_node_info + space_chain
@@ -57,7 +57,7 @@ def generate_complexity_analysis_plots():
     axes[0, 1].legend()
     axes[0, 1].grid(True, alpha=0.3)
     
-    # 3. 通信复杂度分析
+    # 3. 閫氫俊澶嶆潅搴﹀垎鏋?
     comm_chain = node_counts - 1  # n-1 intra-chain communications
     comm_leader = np.ones_like(node_counts)  # 1 leader-to-BS communication
     comm_total = comm_chain + comm_leader
@@ -71,9 +71,9 @@ def generate_complexity_analysis_plots():
     axes[1, 0].legend()
     axes[1, 0].grid(True, alpha=0.3)
     
-    # 4. 可扩展性分析
-    efficiency = 1.0 / (node_counts ** 2)  # 效率随n²下降
-    normalized_efficiency = efficiency / efficiency[0]  # 归一化到第一个值
+    # 4. 鍙墿灞曟€у垎鏋?
+    efficiency = 1.0 / (node_counts ** 2)  # 鏁堢巼闅弉虏涓嬮檷
+    normalized_efficiency = efficiency / efficiency[0]  # 褰掍竴鍖栧埌绗竴涓€?
     
     axes[1, 1].semilogy(node_counts, normalized_efficiency, 'orange', linewidth=2, marker='o')
     axes[1, 1].set_xlabel('Number of Nodes')
@@ -87,34 +87,34 @@ def generate_complexity_analysis_plots():
     return fig
 
 def generate_energy_model_plots():
-    """生成能耗模型分析图表"""
+    """鐢熸垚鑳借€楁ā鍨嬪垎鏋愬浘琛?""
     
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
     fig.suptitle('Enhanced PEGASIS Energy Model Analysis', fontsize=16, fontweight='bold')
     
-    # 参数设置
+    # 鍙傛暟璁剧疆
     params = TheoreticalParameters()
     distances = np.linspace(1, 100, 100)
     packet_sizes = np.array([512, 1024, 2048, 4096])
     
-    # 1. 传输能耗vs距离
+    # 1. 浼犺緭鑳借€梫s璺濈
     for k in packet_sizes:
         tx_energy = k * (params.E_elec + params.epsilon_amp * distances**2)
-        axes[0, 0].plot(distances, tx_energy * 1e6, label=f'{k} bits')  # 转换为μJ
+        axes[0, 0].plot(distances, tx_energy * 1e6, label=f'{k} bits')  # 杞崲涓何糐
     
     axes[0, 0].set_xlabel('Transmission Distance (m)')
-    axes[0, 0].set_ylabel('Transmission Energy (μJ)')
+    axes[0, 0].set_ylabel('Transmission Energy (渭J)')
     axes[0, 0].set_title('Transmission Energy vs Distance')
     axes[0, 0].legend()
     axes[0, 0].grid(True, alpha=0.3)
     
-    # 2. 能耗组成分析
-    k = 1024  # 固定包大小
-    d = 25    # 固定距离
+    # 2. 鑳借€楃粍鎴愬垎鏋?
+    k = 1024  # 鍥哄畾鍖呭ぇ灏?
+    d = 25    # 鍥哄畾璺濈
     
-    e_elec_component = k * params.E_elec * 1e6  # μJ
-    e_amp_component = k * params.epsilon_amp * d**2 * 1e6  # μJ
-    e_da_component = k * params.E_DA * 1e6  # μJ
+    e_elec_component = k * params.E_elec * 1e6  # 渭J
+    e_amp_component = k * params.epsilon_amp * d**2 * 1e6  # 渭J
+    e_da_component = k * params.E_DA * 1e6  # 渭J
     
     components = ['Circuit Energy', 'Amplifier Energy', 'Data Aggregation']
     energies = [e_elec_component, e_amp_component, e_da_component]
@@ -123,21 +123,21 @@ def generate_energy_model_plots():
     axes[0, 1].pie(energies, labels=components, colors=colors, autopct='%1.1f%%', startangle=90)
     axes[0, 1].set_title(f'Energy Breakdown (k={k}bits, d={d}m)')
     
-    # 3. 网络规模vs总能耗
+    # 3. 缃戠粶瑙勬āvs鎬昏兘鑰?
     node_counts = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
     avg_distance = 25.0
     
-    # 理论总能耗计算
+    # 鐞嗚鎬昏兘鑰楄绠?
     total_energies = []
     for n in node_counts:
-        # 链内传输能耗
+        # 閾惧唴浼犺緭鑳借€?
         chain_energy = (n-1) * k * (2*params.E_elec + params.epsilon_amp * avg_distance**2)
-        # 领导者传输能耗
+        # 棰嗗鑰呬紶杈撹兘鑰?
         leader_energy = k * (params.E_elec + params.epsilon_amp * (avg_distance*2)**2)
-        # 数据融合能耗
+        # 鏁版嵁铻嶅悎鑳借€?
         fusion_energy = n * params.E_DA * k
         
-        total_energy = (chain_energy + leader_energy + fusion_energy) * 1e3  # 转换为mJ
+        total_energy = (chain_energy + leader_energy + fusion_energy) * 1e3  # 杞崲涓簃J
         total_energies.append(total_energy)
     
     axes[1, 0].plot(node_counts, total_energies, 'b-o', linewidth=2, markersize=6)
@@ -146,7 +146,7 @@ def generate_energy_model_plots():
     axes[1, 0].set_title('Network Size vs Energy Consumption')
     axes[1, 0].grid(True, alpha=0.3)
     
-    # 4. 能效vs距离
+    # 4. 鑳芥晥vs璺濈
     distances_eff = np.linspace(5, 50, 50)
     efficiencies = []
     
@@ -165,12 +165,12 @@ def generate_energy_model_plots():
     return fig
 
 def generate_convergence_analysis_plots():
-    """生成收敛性分析图表"""
+    """鐢熸垚鏀舵暃鎬у垎鏋愬浘琛?""
     
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
     fig.suptitle('Enhanced PEGASIS Convergence Analysis', fontsize=16, fontweight='bold')
     
-    # 1. 链构建收敛性
+    # 1. 閾炬瀯寤哄敹鏁涙€?
     node_counts = np.array([10, 20, 30, 40, 50])
     convergence_steps = []
     
@@ -188,14 +188,14 @@ def generate_convergence_analysis_plots():
     axes[0, 0].legend()
     axes[0, 0].grid(True, alpha=0.3)
     
-    # 2. 能量方差收敛
+    # 2. 鑳介噺鏂规硶鏀舵暃
     rounds = np.arange(1, 101)
     initial_energies = [2.0] * 50
     
     result = analyzer.analyze_energy_balance_convergence(initial_energies, rounds=100)
     variance_history = result['variance_history']
     
-    # 补齐到100轮
+    # 琛ラ綈鍒?00杞?
     while len(variance_history) < 100:
         variance_history.append(variance_history[-1])
     
@@ -207,7 +207,7 @@ def generate_convergence_analysis_plots():
     axes[0, 1].legend()
     axes[0, 1].grid(True, alpha=0.3)
     
-    # 3. 收敛率vs网络规模
+    # 3. 鏀舵暃鐜噕s缃戠粶瑙勬ā
     convergence_rates = []
     for n in node_counts:
         result = analyzer.analyze_chain_convergence(n, iterations=30)
@@ -219,7 +219,7 @@ def generate_convergence_analysis_plots():
     axes[1, 0].set_title('Convergence Rate vs Network Size')
     axes[1, 0].grid(True, alpha=0.3)
     
-    # 4. 理论vs实际收敛时间
+    # 4. 鐞嗚vs瀹為檯鏀舵暃鏃堕棿
     theoretical_bounds = node_counts
     actual_steps = convergence_steps
     
@@ -235,20 +235,20 @@ def generate_convergence_analysis_plots():
     return fig
 
 def generate_performance_bounds_plots():
-    """生成性能边界分析图表"""
+    """鐢熸垚鎬ц兘杈圭晫鍒嗘瀽鍥捐〃""
     
     fig, axes = plt.subplots(2, 2, figsize=(15, 12))
     fig.suptitle('Enhanced PEGASIS Performance Bounds Analysis', fontsize=16, fontweight='bold')
     
     analyzer = PerformanceBoundAnalyzer(TheoreticalParameters())
     
-    # 1. 网络生存时间边界
+    # 1. 缃戠粶鐢熷瓨鏃堕棿杈圭晫
     node_counts = np.array([10, 20, 30, 40, 50, 60, 70, 80, 90, 100])
     lifetime_bounds = []
     
     for n in node_counts:
         bounds = analyzer.calculate_lifetime_bound(
-            total_energy=n * 2.0,  # 每个节点2J
+            total_energy=n * 2.0,  # 姣忎釜鑺傜偣2J
             n=n,
             avg_distance=25.0
         )
@@ -260,7 +260,7 @@ def generate_performance_bounds_plots():
     axes[0, 0].set_title('Network Lifetime Upper Bound')
     axes[0, 0].grid(True, alpha=0.3)
     
-    # 2. 能效边界vs距离
+    # 2. 鑳芥晥杈圭晫vs璺濈
     distances = np.linspace(5, 100, 50)
     efficiency_bounds = []
     
@@ -274,7 +274,7 @@ def generate_performance_bounds_plots():
     axes[0, 1].set_title('Energy Efficiency Bounds')
     axes[0, 1].grid(True, alpha=0.3)
     
-    # 3. 吞吐量边界分析
+    # 3. 鍚炲悙閲忚竟鐣屽垎鏋?
     round_times = np.linspace(0.1, 2.0, 20)
     throughput_bounds = []
     
@@ -291,11 +291,11 @@ def generate_performance_bounds_plots():
     axes[1, 0].set_title('Throughput Upper Bound')
     axes[1, 0].grid(True, alpha=0.3)
     
-    # 4. 性能边界综合对比
-    metrics = ['Lifetime\n(×1000 rounds)', 'Efficiency\n(×1000 packets/J)', 'Throughput\n(packets/s)']
-    lower_bounds = [500, 900, 0.5]  # 示例下界
-    upper_bounds = [1500, 10000, 1.0]  # 示例上界
-    actual_values = [800, 2000, 0.8]  # 示例实际值
+    # 4. 鎬ц兘杈圭晫缁煎悎瀵规瘮
+    metrics = ['Lifetime\n(脳1000 rounds)', 'Efficiency\n(脳1000 packets/J)', 'Throughput\n(packets/s)']
+    lower_bounds = [500, 900, 0.5]  # 绀轰緥涓嬬晫
+    upper_bounds = [1500, 10000, 1.0]  # 绀轰緥涓婄晫
+    actual_values = [800, 2000, 0.8]  # 绀轰緥瀹為檯鍊?
     
     x = np.arange(len(metrics))
     width = 0.25
@@ -316,117 +316,118 @@ def generate_performance_bounds_plots():
     return fig
 
 def generate_complete_theoretical_report():
-    """生成完整的理论分析报告"""
+    """鐢熸垚瀹屾暣鐨勭悊璁哄垎鏋愭姤鍛?""
     
-    print("📊 生成Enhanced PEGASIS理论分析报告...")
+    print("[PLOT] Generating Enhanced PEGASIS theoretical analysis report...")
     
-    # 创建结果目录
-    results_dir = "Enhanced-EEHFR-WSN-Protocol/results/theoretical_analysis"
+    # 鍒涘缓缁撴灉鐩綍
+    results_dir = "AERIS-WSN-Protocol/results/theoretical_analysis"
     os.makedirs(results_dir, exist_ok=True)
     
-    # 生成各类图表
-    print("1. 生成复杂度分析图表...")
+    # 鐢熸垚鍚勭被鍥捐〃
+    print("1. Generate stability distribution plots...")
     complexity_fig = generate_complexity_analysis_plots()
-    complexity_fig.savefig(f"{results_dir}/complexity_analysis.png", dpi=300, bbox_inches='tight')
+    complexity_fig.savefig(f"{results_dir}/complexity_analysis.svg", dpi=300, bbox_inches='tight')
     plt.close(complexity_fig)
     
-    print("2. 生成能耗模型图表...")
+    print("2. Generate energy model plots...")
     energy_fig = generate_energy_model_plots()
-    energy_fig.savefig(f"{results_dir}/energy_model_analysis.png", dpi=300, bbox_inches='tight')
+    energy_fig.savefig(f"{results_dir}/energy_model_analysis.svg", dpi=300, bbox_inches='tight')
     plt.close(energy_fig)
     
-    print("3. 生成收敛性分析图表...")
+    print("3. Generate link-quality analysis plots...")
     convergence_fig = generate_convergence_analysis_plots()
-    convergence_fig.savefig(f"{results_dir}/convergence_analysis.png", dpi=300, bbox_inches='tight')
+    convergence_fig.savefig(f"{results_dir}/convergence_analysis.svg", dpi=300, bbox_inches='tight')
     plt.close(convergence_fig)
     
-    print("4. 生成性能边界图表...")
+    print("4. Generate performance boundary charts...")
     bounds_fig = generate_performance_bounds_plots()
-    bounds_fig.savefig(f"{results_dir}/performance_bounds_analysis.png", dpi=300, bbox_inches='tight')
+    bounds_fig.savefig(f"{results_dir}/performance_bounds_analysis.svg", dpi=300, bbox_inches='tight')
     plt.close(bounds_fig)
     
-    # 生成理论分析总结报告
+    # 鐢熸垚鐞嗚鍒嗘瀽鎬荤粨鎶ュ憡
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     report_path = f"{results_dir}/theoretical_analysis_report_{timestamp}.md"
     
     with open(report_path, 'w', encoding='utf-8') as f:
-        f.write(f"""# Enhanced PEGASIS理论分析报告
+        f.write(f"""# Enhanced PEGASIS鐞嗚鍒嗘瀽鎶ュ憡
 
-**生成时间**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
-**版本**: Week 3 理论分析完成版
+**鐢熸垚鏃堕棿**: {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**鐗堟湰**: Week 3 鐞嗚鍒嗘瀽瀹屾垚鐗?
 
-## 执行摘要
+## 鎵ц鎽樿
 
-本报告提供Enhanced PEGASIS协议的完整理论分析，包括：
+鏈姤鍛婃彁渚汦nhanced PEGASIS鍗忚鐨勫畬鏁寸悊璁哄垎鏋愶紝鍖呮嫭锛?
 
-1. **复杂度分析**: 时间O(n²)、空间O(n)、通信O(n)
-2. **能耗模型**: 基于CC2420硬件的精确数学建模
-3. **收敛性证明**: 链构建和能量均衡的收敛性保证
-4. **性能边界**: 生存时间、能效、吞吐量的理论界限
+1. **澶嶆潅搴﹀垎鏋?*: 鏃堕棿O(n虏)銆佺┖闂碠(n)銆侀€氫俊O(n)
+2. **鑳借€楁ā鍨?*: 鍩轰簬CC2420纭欢鐨勭簿纭暟瀛﹀缓妯?
+3. **鏀舵暃鎬ц瘉鏄?*: 閾炬瀯寤哄拰鑳介噺鍧囪　鐨勬敹鏁涙€т繚璇?
+4. **鎬ц兘杈圭晫**: 鐢熷瓨鏃堕棿銆佽兘鏁堛€佸悶鍚愰噺鐨勭悊璁虹晫闄?
 
-## 主要理论成果
+## 涓昏鐞嗚鎴愭灉
 
-### 1. 复杂度分析结果
-- **时间复杂度**: O(n²) - 主要由链构建的距离计算决定
-- **空间复杂度**: O(n) - 线性存储需求，具有良好的内存效率
-- **通信复杂度**: O(n) - 每轮n次通信，与网络规模线性相关
+### 1. 澶嶆潅搴﹀垎鏋愮粨鏋?
+- **鏃堕棿澶嶆潅搴?*: O(n虏) - 涓昏鐢遍摼鏋勫缓鐨勮窛绂昏绠楀喅瀹?
+- **绌洪棿澶嶆潅搴?*: O(n) - 绾挎€у瓨鍌ㄩ渶姹傦紝鍏锋湁鑹ソ鐨勫唴瀛樻晥鐜?
+- **閫氫俊澶嶆潅搴?*: O(n) - 姣忚疆n娆￠€氫俊锛屼笌缃戠粶瑙勬ā绾挎€х浉鍏?
 
-### 2. 能耗模型验证
-- **理论模型**: 基于CC2420 TelosB硬件参数的精确建模
-- **能耗组成**: 电路能耗(50%)、放大器能耗(40%)、数据聚合(10%)
-- **距离敏感性**: 能耗随距离平方增长，验证了近距离传输的重要性
+### 2. 鑳借€楁ā鍨嬮獙璇?
+- **鐞嗚妯″瀷**: 鍩轰簬CC2420 TelosB纭欢鍙傛暟鐨勭簿纭缓妯?
+- **鑳借€楃粍鎴?*: 鐢佃矾鑳借€?50%)銆佹斁澶у櫒鑳借€?40%)銆佹暟鎹仛鍚?10%)
+- **璺濈鏁忔劅鎬?*: 鑳借€楅殢璺濈骞虫柟澧為暱锛岄獙璇佷簡杩戣窛绂讳紶杈撶殑閲嶈鎬?
 
-### 3. 收敛性保证
-- **链构建收敛**: 平均49步收敛(理论上界50步)，收敛率98%
-- **能量均衡收敛**: 1轮内达到能量均衡，方差降至0.000049
+### 3. 鏀舵暃鎬т繚璇?
+- **閾炬瀯寤烘敹鏁?*: 骞冲潎49姝ユ敹鏁?鐞嗚涓婄晫50姝?锛屾敹鏁涚巼98%
+- **鑳介噺鍧囪　鏀舵暃**: 1杞唴杈惧埌鑳介噺鍧囪　锛屾柟宸檷鑷?.000049
 
-### 4. 性能边界分析
-- **生存时间上界**: 600,962轮(理论计算)
-- **能效边界**: 909,091 - 9,990,010 packets/J
-- **吞吐量上界**: 1.0 packets/s(受轮时间限制)
+### 4. 鎬ц兘杈圭晫鍒嗘瀽
+- **鐢熷瓨鏃堕棿涓婄晫**: 600,962杞?鐞嗚璁＄畻)
+- **鑳芥晥杈圭晫**: 909,091 - 9,990,010 packets/J
+- **鍚炲悙閲忎笂鐣?*: 1.0 packets/s(鍙楄疆鏃堕棿闄愬埗)
 
-## 理论与实验对比
+## 鐞嗚涓庡疄楠屽姣?
 
-| 指标 | 理论预测 | 实验结果 | 分析 |
+| 鎸囨爣 | 鐞嗚棰勬祴 | 瀹為獙缁撴灉 | 鍒嗘瀽 |
 |------|----------|----------|------|
-| 能效改进 | 5-15% | 105.9% | 理论保守，实际效果显著 |
-| 收敛步数 | ≤n步 | 49步(n=50) | 符合理论预期 |
-| 复杂度 | O(n²) | 验证正确 | 理论模型准确 |
+| 鑳芥晥鏀硅繘 | 5-15% | 105.9% | 鐞嗚淇濆畧锛屽疄闄呮晥鏋滄樉钁?|
+| 鏀舵暃姝ユ暟 | 鈮姝?| 49姝?n=50) | 绗﹀悎鐞嗚棰勬湡 |
+| 澶嶆潅搴?| O(n虏) | 楠岃瘉姝ｇ‘ | 鐞嗚妯″瀷鍑嗙‘ |
 
-## 学术贡献
+## 瀛︽湳璐＄尞
 
-1. **理论完整性**: 提供了完整的数学理论框架
-2. **实验验证**: 理论预测与实验结果高度一致
-3. **性能保证**: 给出了算法性能的理论界限
-4. **可扩展性**: 分析了算法在不同网络规模下的表现
+1. **鐞嗚瀹屾暣鎬?*: 鎻愪緵浜嗗畬鏁寸殑鏁板鐞嗚妗嗘灦
+2. **瀹為獙楠岃瘉**: 鐞嗚棰勬祴涓庡疄楠岀粨鏋滈珮搴︿竴鑷?
+3. **鎬ц兘淇濊瘉**: 缁欏嚭浜嗙畻娉曟€ц兘鐨勭悊璁虹晫闄?
+4. **鍙墿灞曟€?*: 鍒嗘瀽浜嗙畻娉曞湪涓嶅悓缃戠粶瑙勬ā涓嬬殑琛ㄧ幇
 
-## 结论
+## 缁撹
 
-Enhanced PEGASIS协议的理论分析表明：
+Enhanced PEGASIS鍗忚鐨勭悊璁哄垎鏋愯〃鏄庯細
 
-1. **算法效率**: O(n²)时间复杂度在中小规模网络中可接受
-2. **收敛保证**: 链构建和能量均衡均具有收敛性保证
-3. **性能优势**: 理论分析支持实验观察到的显著性能改进
-4. **学术价值**: 完整的理论框架满足SCI Q3期刊要求
+1. **绠楁硶鏁堢巼**: O(n虏)鏃堕棿澶嶆潅搴﹀湪涓皬瑙勬ā缃戠粶涓彲鎺ュ彈
+2. **鏀舵暃淇濊瘉**: 閾炬瀯寤哄拰鑳介噺鍧囪　鍧囧叿鏈夋敹鏁涙€т繚璇?
+3. **鎬ц兘浼樺娍**: 鐞嗚鍒嗘瀽鏀寔瀹為獙瑙傚療鍒扮殑鏄捐憲鎬ц兘鏀硅繘
+4. **瀛︽湳浠峰€?*: 瀹屾暣鐨勭悊璁烘鏋舵弧瓒砈CI Q3鏈熷垔瑕佹眰
 
-## 图表说明
+## 鍥捐〃璇存槑
 
-- `complexity_analysis.png`: 复杂度分析图表
-- `energy_model_analysis.png`: 能耗模型分析图表  
-- `convergence_analysis.png`: 收敛性分析图表
-- `performance_bounds_analysis.png`: 性能边界分析图表
+- `complexity_analysis.png`: 澶嶆潅搴﹀垎鏋愬浘琛?
+- `energy_model_analysis.png`: 鑳借€楁ā鍨嬪垎鏋愬浘琛? 
+- `convergence_analysis.png`: 鏀舵暃鎬у垎鏋愬浘琛?
+- `performance_bounds_analysis.png`: 鎬ц兘杈圭晫鍒嗘瀽鍥捐〃
 
 ---
 
-**报告状态**: ✅ Week 3理论分析完成
-**下一步**: Week 4实验方法论与论文撰写
+**鎶ュ憡鐘舵€?*: 鉁?Week 3鐞嗚鍒嗘瀽瀹屾垚
+**涓嬩竴姝?*: Week 4瀹為獙鎸囪粨璁轰笌璁哄枃鎾板啓
 """)
     
-    print(f"✅ 理论分析报告生成完成!")
-    print(f"📁 报告保存位置: {report_path}")
-    print(f"📊 图表保存位置: {results_dir}/")
+    print(f"[OK] Theoretical analysis report generated!")
+    print(f"[SAVE] Report path: {report_path}")
+    print(f"[SAVE] Figures directory: {results_dir}/")
     
     return results_dir
 
 if __name__ == "__main__":
     generate_complete_theoretical_report()
+

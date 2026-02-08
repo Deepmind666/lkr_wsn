@@ -1,11 +1,11 @@
-# Enhanced EEHFR 2.0 数学验证报告
+# Enhanced AERIS 2.0 数学验证报告
 ## 详细的计算过程与逻辑检查
 
 ### 1. 实验数据提取
 
 从最新的实验结果文件 `enhanced_eehfr_2_0_redesigned_comparison_20250731_185447.json` 中提取的关键数据：
 
-#### Enhanced EEHFR 2.0:
+#### Enhanced AERIS 2.0:
 - **总能耗**: 34.01083956613977 J
 - **传输数据包**: 9983 packets
 - **基站接收**: 983 packets
@@ -21,7 +21,7 @@
 
 ### 2. 能效计算验证
 
-#### 2.1 Enhanced EEHFR 2.0 能效验证
+#### 2.1 Enhanced AERIS 2.0 能效验证
 
 **公式**: Energy Efficiency = Total Packets Transmitted / Total Energy Consumed
 
@@ -56,7 +56,7 @@ Improvement = (293.524 - 278.316) / 278.316 × 100%
 
 ### 3. 数据传输逻辑分析
 
-#### 3.1 Enhanced EEHFR 2.0 传输逻辑
+#### 3.1 Enhanced AERIS 2.0 传输逻辑
 
 **每轮传输过程**:
 1. **簇内收集**: 成员节点 → 簇头
@@ -131,7 +131,7 @@ E_tx = 4.096×10⁻⁴ + 8.192×10⁻⁷ × 1225
 
 #### 4.4 总能耗估算
 
-**Enhanced EEHFR 2.0** (200轮):
+**Enhanced AERIS 2.0** (200轮):
 - 簇内传输: 200 × 45 × (7.373×10⁻⁴ + 4.096×10⁻⁴) ≈ 10.3 J
 - 基站传输: 200 × 5 × 1.413×10⁻³ ≈ 1.4 J
 - **估算总能耗**: ≈ 11.7 J
@@ -146,7 +146,7 @@ E_tx = 4.096×10⁻⁴ + 8.192×10⁻⁷ × 1225
 
 ### 5. 投递率计算验证
 
-#### 5.1 Enhanced EEHFR 2.0 投递率
+#### 5.1 Enhanced AERIS 2.0 投递率
 
 **当前计算方式**:
 ```python
@@ -173,7 +173,7 @@ packet_delivery_ratio = self.packets_received / self.packets_received if self.pa
 
 #### 6.1 投递率计算问题
 
-**问题**: Enhanced EEHFR 2.0的投递率计算逻辑有误
+**问题**: Enhanced AERIS 2.0的投递率计算逻辑有误
 **影响**: 投递率被人为设置为100%，不真实
 
 #### 6.2 能耗差异问题
@@ -186,10 +186,10 @@ packet_delivery_ratio = self.packets_received / self.packets_received if self.pa
 
 #### 6.3 传输计数问题
 
-**Enhanced EEHFR 2.0**: 9983 packets transmitted, 983 received
+**Enhanced AERIS 2.0**: 9983 packets transmitted, 983 received
 **PEGASIS**: 10000 packets transmitted, 9800 received
 
-**问题**: Enhanced EEHFR 2.0的传输数据包数为什么不是整数倍？
+**问题**: Enhanced AERIS 2.0的传输数据包数为什么不是整数倍？
 
 ### 7. 诚实的结论
 
@@ -235,7 +235,7 @@ packet_delivery_ratio = self.packets_received / self.packets_received if self.pa
 
 | 协议 | 能效 (packets/J) | 投递率 | 能效提升 | 投递率变化 |
 |------|------------------|--------|----------|------------|
-| Enhanced EEHFR 2.0 | 293.56 | 94.1% | +5.54% | -3.95% |
+| Enhanced AERIS 2.0 | 293.56 | 94.1% | +5.54% | -3.95% |
 | PEGASIS | 278.16 | 98.0% | 基准 | 基准 |
 
 #### 8.3 诚实的结论

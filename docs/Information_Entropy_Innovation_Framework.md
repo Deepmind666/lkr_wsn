@@ -280,8 +280,8 @@ class AdaptiveEntropyBalancingRouting:
 - LEACH (经典分簇协议)
 - PEGASIS (链式路由协议)
 - HEED (混合能效分簇协议)
-- Enhanced EEHFR (现有实现)
-- **Entropy-EEHFR (新提出的熵驱动协议)**
+- Enhanced AERIS (现有实现)
+- **Entropy-AERIS (新提出的熵驱动协议)**
 
 ### 2. 评估指标
 - **主要指标**: 网络生存时间、能效、数据包投递率

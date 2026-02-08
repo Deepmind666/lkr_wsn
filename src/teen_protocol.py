@@ -1,462 +1,482 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 TEEN (Threshold sensitive Energy Efficient sensor Network) Protocol Implementation
+Manjeshwar & Agrawal, "TEEN: A Routing Protocol for Enhanced Efficiency in WSNs", IPDPS 2001.
 
-基于Manjeshwar & Agrawal经典论文实现:
-"TEEN: A Routing Protocol for Enhanced Efficiency in Wireless Sensor Networks"
-IEEE IPDPS 2001
+**MODIFIED 2025-11-04**: Now uses ImprovedEnergyModel for unified comparison with AERIS.
 
-TEEN协议特点:
-- 阈值敏感的反应式协议
-- 硬阈值(Hard Threshold)和软阈值(Soft Threshold)机制
-- 适用于时间关键应用
-- 基于LEACH的分层聚类结构
-
-作者: Enhanced EEHFR Research Team
-日期: 2025-01-30
-版本: 1.0 (基于原始论文实现)
+This implementation provides a pragmatic TEEN baseline compatible with the
+benchmark wrapper expectations:
+ - initialize_network(node_positions)
+ - run_simulation(max_rounds) -> returns dict with required metrics
 """
 
-import numpy as np
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import math
 import random
-from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
-import copy
+from typing import List, Dict, Tuple
+try:
+    from realistic_channel_model import RealisticChannelModel, EnvironmentType
+except Exception:
+    RealisticChannelModel = None
+    EnvironmentType = None
+
+
+def _resolve_channel_env(env):
+    if EnvironmentType is None:
+        return None
+    if isinstance(env, EnvironmentType):
+        return env
+    if isinstance(env, str):
+        key = env.strip().lower()
+        for item in EnvironmentType:
+            if item.value == key:
+                return item
+        for item in EnvironmentType:
+            if item.name.lower() == key:
+                return item
+    return EnvironmentType.INDOOR_OFFICE
+
+# Import unified energy model
+from improved_energy_model import ImprovedEnergyModel, HardwarePlatform
+
+# ------------------------- Config & Data Structures -------------------------
 
 @dataclass
 class TEENConfig:
-    """TEEN协议配置参数"""
-    # 基本网络参数
+    # Network
     num_nodes: int = 50
     area_width: float = 100.0
     area_height: float = 100.0
     base_station_x: float = 50.0
     base_station_y: float = 175.0
-    
-    # 能量参数
+
+    # Energy
     initial_energy: float = 2.0
-    
-    # 通信参数
+
+    # PHY/MAC
     transmission_range: float = 30.0
-    packet_size: int = 4000  # bits - 与其他协议一致
-    
-    # TEEN特有参数
-    hard_threshold: float = 70.0    # 硬阈值 - 感知属性的绝对阈值
-    soft_threshold: float = 2.0     # 软阈值 - 感知属性的变化阈值
-    max_time_interval: int = 10     # 最大时间间隔(轮数)
-    
-    # 聚类参数(继承自LEACH)
-    cluster_head_percentage: float = 0.05  # 5%的节点作为簇头
-    
-    # 感知参数
-    sensing_range: float = 15.0
-    min_sensor_value: float = 20.0
-    max_sensor_value: float = 100.0
+    packet_size: int = 1024  # bytes
+    enable_channel: bool = False
+    channel_env: str | None = None
+    tx_power_dbm: float = 10.0
+    temperature_c: float = 25.0
+    humidity_ratio: float = 0.5
+    link_retx: int = 0
+    link_retx_power_step: float = 0.0
+
+    # TEEN thresholds
+    hard_threshold: float = 45.0
+    soft_threshold: float = 0.5
+    max_time_interval: int = 3
+
+    # Clustering
+    cluster_head_percentage: float = 0.08
 
 class TEENNodeState(Enum):
-    """TEEN节点状态"""
-    NORMAL = "normal"           # 普通节点
-    CLUSTER_HEAD = "cluster_head"  # 簇头节点
-    DEAD = "dead"              # 死亡节点
+    NORMAL = "normal"
+    CLUSTER_HEAD = "cluster_head"
+    DEAD = "dead"
 
 @dataclass
 class TEENNode:
-    """TEEN协议节点类"""
     id: int
     x: float
     y: float
     initial_energy: float
     current_energy: float
     state: TEENNodeState = TEENNodeState.NORMAL
-    
-    # 聚类相关
+
+    # Clustering
     cluster_id: int = -1
     is_cluster_head: bool = False
     cluster_head_id: int = -1
-    
-    # TEEN特有属性
-    last_sensed_value: float = 0.0      # 上次感知值
-    last_transmitted_value: float = 0.0  # 上次传输值
-    last_transmission_time: int = 0      # 上次传输时间
-    hard_threshold: float = 70.0         # 硬阈值
-    soft_threshold: float = 2.0          # 软阈值
-    
-    # 统计信息
+
+    # TEEN sensing state
+    last_sensed_value: float = 0.0
+    last_transmitted_value: float = 0.0
+    last_transmission_time: int = -1  # -1 means never transmitted
+
+    # Accounting
     packets_sent: int = 0
     packets_received: int = 0
-    
-    def __post_init__(self):
-        if self.current_energy is None:
-            self.current_energy = self.initial_energy
-    
+
     def is_alive(self) -> bool:
-        """检查节点是否存活"""
         return self.current_energy > 0 and self.state != TEENNodeState.DEAD
-    
-    def distance_to(self, other_node: 'TEENNode') -> float:
-        """计算到另一个节点的距离"""
-        return math.sqrt((self.x - other_node.x)**2 + (self.y - other_node.y)**2)
-    
-    def distance_to_base_station(self, bs_x: float, bs_y: float) -> float:
-        """计算到基站的距离"""
-        return math.sqrt((self.x - bs_x)**2 + (self.y - bs_y)**2)
-    
-    def sense_environment(self) -> float:
-        """模拟环境感知 - 返回感知值"""
-        # 改进的环境模拟：更容易触发阈值的温度感知
-        base_temp = 65.0  # 提高基础温度
-        location_factor = (self.x + self.y) / 200.0 * 20.0  # 增加位置影响
-        time_factor = random.uniform(-5.0, 15.0)  # 时间变化因子
-        noise = random.gauss(0, 3.0)  # 增加噪声
-        sensed_value = base_temp + location_factor + time_factor + noise
 
-        # 限制在合理范围内
-        sensed_value = max(20.0, min(100.0, sensed_value))
-        self.last_sensed_value = sensed_value
-        return sensed_value
-    
-    def should_transmit(self, current_time: int, max_time_interval: int) -> bool:
-        """TEEN核心逻辑：判断是否应该传输数据"""
-        current_value = self.sense_environment()
+    def distance_to(self, other: "TEENNode") -> float:
+        return math.hypot(self.x - other.x, self.y - other.y)
 
-        # 条件1：硬阈值检查
-        if current_value < self.hard_threshold:
-            return False
-
-        # 首次传输：如果从未传输过，直接传输
-        if self.last_transmission_time == 0:
-            self.last_transmitted_value = current_value
-            self.last_transmission_time = current_time
-            return True
-
-        # 条件2：软阈值检查
-        value_change = abs(current_value - self.last_transmitted_value)
-        if value_change >= self.soft_threshold:
-            # 软阈值满足，可以传输
-            self.last_transmitted_value = current_value
-            self.last_transmission_time = current_time
-            return True
-
-        # 条件3：时间间隔检查 - 即使软阈值不满足，如果时间间隔过长也要传输
-        time_since_last = current_time - self.last_transmission_time
-        if time_since_last >= max_time_interval:
-            self.last_transmitted_value = current_value
-            self.last_transmission_time = current_time
-            return True
-
-        # 不满足传输条件
-        return False
+# ------------------------------ TEEN Protocol ------------------------------
 
 class TEENProtocol:
-    """TEEN协议主类"""
-    
-    def __init__(self, config: TEENConfig):
+    def __init__(self, config: TEENConfig, use_unified_energy_model: bool = True):
+        """Initialize TEEN protocol.
+
+        Args:
+            config: TEEN configuration parameters
+            use_unified_energy_model: If True, use ImprovedEnergyModel (CC2420 parameters).
+                                     If False, use legacy simplified parameters.
+        """
         self.config = config
         self.nodes: List[TEENNode] = []
         self.clusters: Dict[int, Dict] = {}
         self.current_round = 0
         self.base_station = (config.base_station_x, config.base_station_y)
-        
-        # 统计信息
+        self.use_unified_energy_model = use_unified_energy_model
+
+        # Statistics
         self.total_energy_consumed = 0.0
         self.packets_transmitted = 0
         self.packets_received = 0
         self.network_lifetime = 0
-        self.round_stats = []
-        
+        self.round_stats: List[Dict] = []
+        self.source_packets_total = 0  # 实际尝试发送的包数 (attempted)
+        self.source_packets_expected = 0  # 期望包数 = 每轮存活节点数累计
+        self.bs_delivered_total = 0
+
+        # Packet size in bits
+        self.bits_per_packet = self.config.packet_size * 8
+        self.enable_channel = bool(getattr(config, "enable_channel", False))
+        self.tx_power_dbm = float(getattr(config, "tx_power_dbm", 0.0) or 0.0)
+        self.link_retx = max(0, int(getattr(config, "link_retx", 0) or 0))
+        self.link_retx_power_step = float(getattr(config, "link_retx_power_step", 0.0) or 0.0)
+        self.temperature_c = float(getattr(config, "temperature_c", 25.0) or 25.0)
+        self.humidity_ratio = float(getattr(config, "humidity_ratio", 0.5) or 0.5)
+        self.channel_model = None
+        # 支持外部注入信道模型
+        external_channel = getattr(config, 'external_channel_model', None)
+        if external_channel is not None:
+            self.channel_model = external_channel
+        elif self.enable_channel and RealisticChannelModel is not None:
+            env = _resolve_channel_env(getattr(config, "channel_env", None))
+            self.channel_model = RealisticChannelModel(env)
+
+        if use_unified_energy_model:
+            # Use unified real hardware model (CC2420 TelosB)
+            self.energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
+            print(f"[TEEN] Using unified energy model (CC2420 TelosB, 208.8 nJ/bit)")
+        else:
+            # Legacy simplified parameters (for backward compatibility)
+            self.E_elec = 50e-9
+            self.E_fs = 10e-12
+            self.E_mp = 0.0013e-12
+            self.d0 = math.sqrt(self.E_fs / self.E_mp)
+            self.energy_model = None
+            print(f"[TEEN] Using legacy energy model (50 nJ/bit)")
+
+    # ---------------------------- Energy Model -----------------------------
+
+    def _tx_energy(self, distance_m: float, bits: int,
+                   temperature_c: float = 25.0, humidity_ratio: float = 0.5) -> float:
+        """Compute transmission energy.
+
+        Uses unified energy model if enabled, otherwise legacy simplified model.
+        """
+        if self.use_unified_energy_model:
+            # Use ImprovedEnergyModel (real CC2420 parameters)
+            return self.energy_model.calculate_transmission_energy(
+                data_size_bits=bits,
+                distance=distance_m,
+                tx_power_dbm=self.tx_power_dbm,
+                temperature_c=temperature_c,
+                humidity_ratio=humidity_ratio
+            )
+        else:
+            # Legacy simplified model
+            if distance_m < self.d0:
+                return self.E_elec * bits + self.E_fs * bits * (distance_m ** 2)
+            else:
+                return self.E_elec * bits + self.E_mp * bits * (distance_m ** 4)
+
+    def _rx_energy(self, bits: int,
+                   temperature_c: float = 25.0, humidity_ratio: float = 0.5) -> float:
+        """Compute reception energy.
+
+        Uses unified energy model if enabled, otherwise legacy simplified model.
+        """
+        if self.use_unified_energy_model:
+            # Use ImprovedEnergyModel (real CC2420 parameters)
+            return self.energy_model.calculate_reception_energy(
+                data_size_bits=bits,
+                temperature_c=temperature_c,
+                humidity_ratio=humidity_ratio
+            )
+        else:
+            # Legacy simplified model
+            return self.E_elec * bits
+
+    # -------------------------- Network Lifecycle --------------------------
+
     def initialize_network(self, node_positions: List[Tuple[float, float]]):
-        """初始化网络节点"""
         self.nodes = []
         for i, (x, y) in enumerate(node_positions):
             node = TEENNode(
                 id=i,
-                x=x,
-                y=y,
+                x=float(x),
+                y=float(y),
                 initial_energy=self.config.initial_energy,
-                current_energy=self.config.initial_energy,
-                hard_threshold=self.config.hard_threshold,
-                soft_threshold=self.config.soft_threshold
+                current_energy=self.config.initial_energy
             )
             self.nodes.append(node)
-    
-    def _form_clusters(self):
-        """形成簇结构 - 基于LEACH的聚类算法"""
-        # 重置所有节点的簇头状态
-        for node in self.nodes:
-            if node.is_alive():
-                node.is_cluster_head = False
-                node.cluster_id = -1
-                node.cluster_head_id = -1
-                node.state = TEENNodeState.NORMAL
-        
-        # 选择簇头
-        alive_nodes = [node for node in self.nodes if node.is_alive()]
-        if not alive_nodes:
-            return
-        
-        # 计算期望的簇头数量
-        expected_cluster_heads = max(1, int(len(alive_nodes) * self.config.cluster_head_percentage))
-        
-        # 随机选择簇头
-        cluster_heads = random.sample(alive_nodes, min(expected_cluster_heads, len(alive_nodes)))
-        
-        # 设置簇头并计算广播能耗
-        self.clusters = {}
-        for i, ch in enumerate(cluster_heads):
+
+    def _select_cluster_heads(self) -> List[TEENNode]:
+        alive = [n for n in self.nodes if n.is_alive()]
+        if not alive:
+            return []
+
+        # reset
+        for n in alive:
+            n.is_cluster_head = False
+            n.cluster_id = -1
+            n.cluster_head_id = -1
+            n.state = TEENNodeState.NORMAL
+
+        expected = max(1, int(len(alive) * self.config.cluster_head_percentage))
+        # probability-based selection with energy bias
+        candidates = []
+        for n in alive:
+            # simple energy bias: higher energy, higher chance
+            p = self.config.cluster_head_percentage * (n.current_energy / max(1e-9, n.initial_energy))
+            if random.random() < p:
+                candidates.append(n)
+        if not candidates:
+            candidates = random.sample(alive, min(expected, len(alive)))
+        # keep top expected by residual energy
+        candidates = sorted(candidates, key=lambda n: n.current_energy, reverse=True)[:expected]
+        for cid, ch in enumerate(candidates):
             ch.is_cluster_head = True
-            ch.cluster_id = i
+            ch.cluster_id = cid
             ch.cluster_head_id = ch.id
             ch.state = TEENNodeState.CLUSTER_HEAD
+        return candidates
 
-            # 簇头广播自己的状态 - 计算能耗
-            broadcast_energy = self._calculate_transmission_energy(self.config.transmission_range, 512)  # 控制包较小
-            if ch.current_energy >= broadcast_energy:
-                ch.current_energy -= broadcast_energy
-                self.total_energy_consumed += broadcast_energy
+    def _form_clusters(self, chs: List[TEENNode]):
+        self.clusters = {ch.cluster_id: {"head": ch, "members": []} for ch in chs}
+        alive = [n for n in self.nodes if n.is_alive()]
+        for n in alive:
+            if n.is_cluster_head:
+                continue
+            # attach to nearest CH within range; otherwise remain standalone (direct-to-BS)
+            best = None
+            best_d = float("inf")
+            for cid, cinfo in self.clusters.items():
+                d = n.distance_to(cinfo["head"])
+                if d < best_d:
+                    best_d = d
+                    best = cid
+            if best is not None and best_d <= self.config.transmission_range:
+                n.cluster_id = best
+                n.cluster_head_id = self.clusters[best]["head"].id
+                self.clusters[best]["members"].append(n)
+            else:
+                n.cluster_id = -1  # direct-to-BS candidate
 
-            self.clusters[i] = {
-                'head': ch,
-                'members': [],
-                'hard_threshold': self.config.hard_threshold,
-                'soft_threshold': self.config.soft_threshold
-            }
-        
-        # 为每个非簇头节点分配到最近的簇头
-        for node in alive_nodes:
-            if not node.is_cluster_head:
-                min_distance = float('inf')
-                best_cluster = -1
-                
-                for cluster_id, cluster_info in self.clusters.items():
-                    ch = cluster_info['head']
-                    distance = node.distance_to(ch)
-                    if distance < min_distance:
-                        min_distance = distance
-                        best_cluster = cluster_id
-                
-                if best_cluster != -1:
-                    node.cluster_id = best_cluster
-                    node.cluster_head_id = self.clusters[best_cluster]['head'].id
-                    self.clusters[best_cluster]['members'].append(node)
+    def _sense_value(self, node: TEENNode) -> float:
+        # Simple synthetic sensing centered ~50 with location and noise
+        base = 50.0
+        loc = ((node.x + node.y) / (self.config.area_width + self.config.area_height)) * 20.0
+        noise = random.gauss(0.0, 3.0)
+        v = base + loc + noise
+        v = max(0.0, min(100.0, v))
+        node.last_sensed_value = v
+        return v
 
-                    # 成员节点发送加入请求 - 计算能耗
-                    ch = self.clusters[best_cluster]['head']
-                    join_energy = self._calculate_transmission_energy(min_distance, 256)  # 加入请求包很小
-                    if node.current_energy >= join_energy:
-                        node.current_energy -= join_energy
-                        self.total_energy_consumed += join_energy
+    def _member_transmit_condition(self, node: TEENNode) -> bool:
+        v = self._sense_value(node)
+        if v < self.config.hard_threshold:
+            return False
+        if node.last_transmission_time < 0:
+            node.last_transmitted_value = v
+            return True
+        if abs(v - node.last_transmitted_value) >= self.config.soft_threshold:
+            node.last_transmitted_value = v
+            return True
+        # time-based force
+        if (self.current_round - node.last_transmission_time) >= self.config.max_time_interval:
+            node.last_transmitted_value = v
+            return True
+        return False
 
-                        # 簇头接收加入请求
-                        if ch.is_alive():
-                            reception_energy = self._calculate_reception_energy(256)
-                            ch.current_energy -= reception_energy
-                            self.total_energy_consumed += reception_energy
-    
-    def _broadcast_thresholds(self):
-        """簇头广播阈值参数给成员节点"""
-        for cluster_id, cluster_info in self.clusters.items():
-            ch = cluster_info['head']
-            hard_threshold = cluster_info['hard_threshold']
-            soft_threshold = cluster_info['soft_threshold']
+    def _link_success(self, distance: float, tx_power: float) -> bool:
+        if self.channel_model is None:
+            return True
+        metrics = self.channel_model.calculate_link_metrics(
+            tx_power,
+            distance,
+            temperature_c=self.temperature_c,
+            humidity_ratio=self.humidity_ratio,
+        )
+        return random.random() < metrics.get("pdr", 0.0)
 
-            # 簇头广播阈值参数 - 计算能耗
-            if cluster_info['members']:  # 只有有成员时才广播
-                broadcast_energy = self._calculate_transmission_energy(self.config.transmission_range, 128)  # 阈值包很小
-                if ch.current_energy >= broadcast_energy:
-                    ch.current_energy -= broadcast_energy
-                    self.total_energy_consumed += broadcast_energy
+    def _round_communication(self):
+        cluster_payloads = {cid: 0 for cid in self.clusters.keys()}
 
-            # 广播给所有成员节点
-            for member in cluster_info['members']:
-                member.hard_threshold = hard_threshold
-                member.soft_threshold = soft_threshold
+        # Member -> CH (threshold controlled)
+        for cid, cinfo in self.clusters.items():
+            ch = cinfo["head"]
+            for m in list(cinfo["members"]):
+                if not m.is_alive() or not ch.is_alive():
+                    continue
+                if self._member_transmit_condition(m):
+                    d = m.distance_to(ch)
+                    tx_e = self._tx_energy(d, self.bits_per_packet, self.temperature_c, self.humidity_ratio)
+                    rx_e = self._rx_energy(self.bits_per_packet, self.temperature_c, self.humidity_ratio)
+                    self.source_packets_total += 1
+                    success = False
+                    for attempt in range(self.link_retx + 1):
+                        tx_power = self.tx_power_dbm + attempt * self.link_retx_power_step
+                        if m.current_energy < tx_e or ch.current_energy < rx_e:
+                            if m.current_energy < tx_e:
+                                m.current_energy = 0.0
+                                m.state = TEENNodeState.DEAD
+                            if ch.current_energy < rx_e:
+                                ch.current_energy = 0.0
+                                ch.state = TEENNodeState.DEAD
+                            break
+                        m.current_energy -= tx_e
+                        ch.current_energy -= rx_e
+                        m.packets_sent += 1
+                        ch.packets_received += 1
+                        self.packets_transmitted += 1
+                        self.total_energy_consumed += (tx_e + rx_e)
+                        if self._link_success(d, tx_power):
+                            self.packets_received += 1
+                            m.last_transmission_time = self.current_round
+                            cluster_payloads[cid] = cluster_payloads.get(cid, 0) + 1
+                            success = True
+                            break
+                    if not success:
+                        continue
 
-                # 成员节点接收阈值参数
-                reception_energy = self._calculate_reception_energy(128)
-                if member.current_energy >= reception_energy:
-                    member.current_energy -= reception_energy
-                    self.total_energy_consumed += reception_energy
-                
-                # 消耗通信能量
-                distance = ch.distance_to(member)
-                energy_cost = self._calculate_transmission_energy(distance, self.config.packet_size)
-                ch.current_energy -= energy_cost
-                self.total_energy_consumed += energy_cost
-    
-    def _data_transmission_phase(self):
-        """数据传输阶段 - TEEN的核心"""
-        packets_this_round = 0
-        
-        for cluster_id, cluster_info in self.clusters.items():
-            ch = cluster_info['head']
+        # Standalone nodes (no CH) direct to BS if threshold triggers
+        for n in self.nodes:
+            if not n.is_alive() or n.is_cluster_head or n.cluster_id != -1:
+                continue
+            if self._member_transmit_condition(n):
+                d_bs = math.hypot(n.x - self.base_station[0], n.y - self.base_station[1])
+                tx_e = self._tx_energy(d_bs, self.bits_per_packet, self.temperature_c, self.humidity_ratio)
+                self.source_packets_total += 1
+                success = False
+                for attempt in range(self.link_retx + 1):
+                    tx_power = self.tx_power_dbm + attempt * self.link_retx_power_step
+                    if n.current_energy < tx_e:
+                        n.current_energy = 0.0
+                        n.state = TEENNodeState.DEAD
+                        break
+                    n.current_energy -= tx_e
+                    n.packets_sent += 1
+                    self.packets_transmitted += 1
+                    self.total_energy_consumed += tx_e
+                    if self._link_success(d_bs, tx_power):
+                        self.packets_received += 1
+                        n.last_transmission_time = self.current_round
+                        self.bs_delivered_total += 1
+                        self._all_hop_counts.append(1)
+                        success = True
+                        break
+                if not success:
+                    continue
+
+        # CH -> BS (aggregate once per round)
+        for cid, cinfo in self.clusters.items():
+            ch = cinfo["head"]
             if not ch.is_alive():
                 continue
-            
-            # 成员节点根据TEEN规则决定是否传输
-            for member in cluster_info['members']:
-                if not member.is_alive():
+            d_bs = math.hypot(ch.x - self.base_station[0], ch.y - self.base_station[1])
+            tx_e = self._tx_energy(d_bs, self.bits_per_packet, self.temperature_c, self.humidity_ratio)
+            if ch.current_energy >= tx_e:
+                payload = cluster_payloads.get(cid, 0)
+                if payload <= 0:
                     continue
-                
-                # TEEN核心逻辑：检查是否满足传输条件
-                if member.should_transmit(self.current_round, self.config.max_time_interval):
-                    # 传输数据到簇头
-                    distance = member.distance_to(ch)
-                    energy_cost = self._calculate_transmission_energy(distance, self.config.packet_size)
-                    
-                    if member.current_energy >= energy_cost:
-                        member.current_energy -= energy_cost
-                        member.packets_sent += 1
-                        packets_this_round += 1
-                        self.total_energy_consumed += energy_cost
-                        
-                        # 簇头接收数据
-                        if ch.is_alive():
-                            reception_energy = self._calculate_reception_energy(self.config.packet_size)
-                            ch.current_energy -= reception_energy
-                            ch.packets_received += 1
-                            self.packets_received += 1  # 协议级别统计：成员到簇头的成功传输
-                            self.total_energy_consumed += reception_energy
-            
-            # 簇头聚合数据并传输到基站
-            if ch.packets_received > 0 and ch.is_alive():
-                distance_to_bs = ch.distance_to_base_station(self.base_station[0], self.base_station[1])
-                energy_cost = self._calculate_transmission_energy(distance_to_bs, self.config.packet_size)
-
-                if ch.current_energy >= energy_cost:
-                    ch.current_energy -= energy_cost
+                success = False
+                for attempt in range(self.link_retx + 1):
+                    tx_power = self.tx_power_dbm + attempt * self.link_retx_power_step
+                    if ch.current_energy < tx_e:
+                        ch.current_energy = 0.0
+                        ch.state = TEENNodeState.DEAD
+                        break
+                    ch.current_energy -= tx_e
                     ch.packets_sent += 1
-                    packets_this_round += 1
-                    self.total_energy_consumed += energy_cost
-                    # 注意：不再重复计数，因为成员到簇头的传输已经计入packets_received
-        
-        self.packets_transmitted += packets_this_round
-        return packets_this_round
-    
-    def _calculate_transmission_energy(self, distance: float, packet_size: int) -> float:
-        """计算传输能耗 - 使用改进能耗模型的逻辑"""
-        # 基础电子能耗 (CC2420标准)
-        E_elec = 208.8e-9  # 208.8nJ/bit
-        base_tx_energy = E_elec * packet_size
+                    self.packets_transmitted += 1
+                    self.total_energy_consumed += tx_e
+                    if self._link_success(d_bs, tx_power):
+                        self.packets_received += 1
+                        self.bs_delivered_total += payload
+                        for _ in range(payload):
+                            self._all_hop_counts.append(2)
+                        success = True
+                        break
+                if not success:
+                    continue
+            else:
+                ch.current_energy = 0.0
+                ch.state = TEENNodeState.DEAD
 
-        # 放大器能耗 (与改进模型一致)
-        tx_power_linear = 1e-3  # 1mW默认发射功率
-        amplifier_efficiency = 0.35  # 35%效率
+    def _collect_round_stats(self):
+        alive = sum(1 for n in self.nodes if n.is_alive())
+        ch_count = sum(1 for n in self.nodes if n.is_alive() and n.is_cluster_head)
+        self.round_stats.append({
+            "round": self.current_round,
+            "alive_nodes": alive,
+            "cluster_heads": ch_count
+        })
+        if alive == 0 and self.network_lifetime == 0:
+            self.network_lifetime = self.current_round
 
-        if distance <= 87:  # 自由空间传播
-            amplifier_energy = (tx_power_linear / amplifier_efficiency) * \
-                             (distance ** 2) * 1e-9 * packet_size
-        else:  # 多径传播
-            amplifier_energy = (tx_power_linear / amplifier_efficiency) * \
-                             (distance ** 4) * 1e-12 * packet_size
+    def run_simulation(self, max_rounds: int) -> Dict:
+        self.current_round = 0
+        self.round_stats = []
+        self.total_energy_consumed = 0.0
+        self.packets_transmitted = 0
+        self.packets_received = 0
+        self.network_lifetime = 0
+        self.source_packets_total = 0
+        self.source_packets_expected = 0
+        self.bs_delivered_total = 0
+        self._all_hop_counts = []
 
-        return base_tx_energy + amplifier_energy
-    
-    def _calculate_reception_energy(self, packet_size: int) -> float:
-        """计算接收能耗 - 与其他协议一致的能耗参数"""
-        E_elec = 225.6e-9  # 电子能耗 225.6nJ/bit (接收) - CC2420标准
-        return E_elec * packet_size
-    
-    def run_round(self) -> bool:
-        """运行一轮协议"""
-        self.current_round += 1
-        
-        # 检查是否还有存活节点
-        alive_nodes = [node for node in self.nodes if node.is_alive()]
-        if not alive_nodes:
-            return False
-        
-        # 每隔一定轮数重新形成簇
-        if self.current_round % 20 == 1:  # 每20轮重新聚类
-            self._form_clusters()
-            self._broadcast_thresholds()
-        
-        # 数据传输阶段
-        packets_sent = self._data_transmission_phase()
-        
-        # 更新节点状态
-        for node in self.nodes:
-            if node.current_energy <= 0:
-                node.state = TEENNodeState.DEAD
-        
-        # 记录统计信息
-        alive_count = len(alive_nodes)
-        total_energy = sum(node.current_energy for node in self.nodes)
-        
-        round_stat = {
-            'round': self.current_round,
-            'alive_nodes': alive_count,
-            'total_energy': total_energy,
-            'packets_sent': packets_sent,
-            'cluster_count': len(self.clusters)
-        }
-        self.round_stats.append(round_stat)
-        
-        return alive_count > 0
-    
-    def run_simulation(self, max_rounds: int = 200) -> Dict:
-        """运行完整仿真"""
-        print(f"🚀 开始TEEN协议仿真 (最大轮数: {max_rounds})")
-        
-        while self.current_round < max_rounds:
-            if not self.run_round():
+        for r in range(max_rounds):
+            self.current_round = r
+            alive_nodes = [n for n in self.nodes if n.is_alive()]
+            if not alive_nodes:
                 break
-            
-            # 每100轮输出一次状态
-            if self.current_round % 100 == 0:
-                alive_nodes = len([n for n in self.nodes if n.is_alive()])
-                total_energy = sum(n.current_energy for n in self.nodes)
-                print(f"   轮数 {self.current_round}: 存活节点 {alive_nodes}, 剩余能量 {total_energy:.3f}J")
-        
-        # 计算最终统计
-        self.network_lifetime = self.current_round
-        final_alive_nodes = len([n for n in self.nodes if n.is_alive()])
+            # 累计期望包数 = 每轮存活节点数
+            self.source_packets_expected += len(alive_nodes)
 
-        # 修复：使用实际节点能量消耗计算总能耗
-        initial_total_energy = len(self.nodes) * self.config.initial_energy
-        current_total_energy = sum(n.current_energy for n in self.nodes)
-        actual_total_energy_consumed = initial_total_energy - current_total_energy
+            chs = self._select_cluster_heads()
+            self._form_clusters(chs)
+            self._round_communication()
+            self._collect_round_stats()
 
-        # 使用实际能耗计算能效和投递率
-        energy_efficiency = self.packets_received / actual_total_energy_consumed if actual_total_energy_consumed > 0 else 0
-        packet_delivery_ratio = self.packets_received / self.packets_transmitted if self.packets_transmitted > 0 else 0
-        
-        print(f"✅ 仿真完成，网络在 {self.network_lifetime} 轮后结束")
-        
+        final_alive = sum(1 for n in self.nodes if n.is_alive())
+        lifetime = self.network_lifetime if self.network_lifetime > 0 else len(self.round_stats)
+        pdr = (self.packets_received / self.packets_transmitted) if self.packets_transmitted > 0 else 0.0
+        efficiency = (self.packets_received / self.total_energy_consumed) if self.total_energy_consumed > 0 else 0.0
+        avg_ch = (sum(s["cluster_heads"] for s in self.round_stats) / len(self.round_stats)) if self.round_stats else 0.0
+
         return {
-            'protocol': 'TEEN',
-            'network_lifetime': self.network_lifetime,
-            'total_energy_consumed': actual_total_energy_consumed,  # 使用实际能耗
-            'packets_transmitted': self.packets_transmitted,
-            'packets_received': self.packets_received,
-            'packet_delivery_ratio': packet_delivery_ratio,
-            'energy_efficiency': energy_efficiency,
-            'final_alive_nodes': final_alive_nodes,
-            'average_cluster_heads_per_round': len(self.clusters) if self.clusters else 0,
-            'additional_metrics': {
-                'hard_threshold': self.config.hard_threshold,
-                'soft_threshold': self.config.soft_threshold,
-                'max_time_interval': self.config.max_time_interval,
-                'total_rounds': self.current_round,
-                'protocol_stat_energy': self.total_energy_consumed,  # 保留协议统计用于调试
-                'actual_energy_consumed': actual_total_energy_consumed
-            }
+            "protocol": "TEEN",
+            "network_lifetime": lifetime,
+            "total_energy_consumed": self.total_energy_consumed,
+            "packets_transmitted": self.packets_transmitted,
+            "packets_received": self.packets_received,
+            "packet_delivery_ratio": pdr,
+            "packet_delivery_ratio_end2end": (self.bs_delivered_total / self.source_packets_total) if self.source_packets_total > 0 else 0.0,
+            "energy_efficiency": efficiency,
+            "final_alive_nodes": final_alive,
+            "average_cluster_heads_per_round": avg_ch,
+            "additional_metrics": {
+                "hard_threshold": self.config.hard_threshold,
+                "soft_threshold": self.config.soft_threshold,
+                "source_packets_total": self.source_packets_total,
+                "bs_delivered_total": self.bs_delivered_total
+            },
+            "avg_hops_to_bs": (sum(self._all_hop_counts) / len(self._all_hop_counts)) if self._all_hop_counts else 0,
         }
-    
-    def get_statistics(self) -> Dict:
-        """获取当前统计信息"""
-        alive_nodes = [n for n in self.nodes if n.is_alive()]
-        return {
-            'round': self.current_round,
-            'alive_nodes': len(alive_nodes),
-            'total_energy_consumed': self.total_energy_consumed,
-            'packets_transmitted': self.packets_transmitted,
-            'packets_received': self.packets_received,
-            'cluster_heads': [n.id for n in self.nodes if n.is_cluster_head and n.is_alive()]
-        }
-    
-    def get_final_statistics(self) -> Dict:
-        """获取最终统计信息"""
-        return self.run_simulation(0)  # 不运行，只返回当前状态

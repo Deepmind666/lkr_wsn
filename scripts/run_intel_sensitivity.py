@@ -3,8 +3,10 @@
 import os, sys, json, math, random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 import numpy as np
+BASE_SEED = int(os.environ.get('AERIS_SEED', '42001'))
+
 from benchmark_protocols import NetworkConfig
-from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
+from aeris_protocol import AerisProtocol
 from intel_dataset_loader import IntelLabDataLoader
 from gateway_selector import GatewaySelector, GatewayConfig
 
@@ -47,51 +49,51 @@ if __name__ == '__main__':
 
     initial_energies = [1.0, 2.0, 5.0]        # Joules
     packet_sizes = [256, 512, 1024]           # Bytes (≈2k/4k/8k bits)
-    gateway_counts = [1, 2, 3]
+    gateway_counts = [1, 2, 3, 4, 5]
 
     summary = {}
+    seed_registry = {}
 
-    for E0 in initial_energies:
-        for P in packet_sizes:
-            for G in gateway_counts:
-                key = f"E{E0}_P{P}_G{G}"
-                energies = []
-                pdrs = []
-                for r in range(repeats):
-                    seed = 2000 + r
-                    random.seed(seed); np.random.seed(seed)
-                    cfg = NetworkConfig(num_nodes=n, area_width=width, area_height=height, initial_energy=E0, packet_size=P)
-                    proto = IntegratedEnhancedEEHFRProtocol(cfg,
-                        enable_cas=True, enable_fairness=True, enable_gateway=True, enable_skeleton=False,
-                        profile='robust', verbose=False)
-                    # place nodes
-                    for i,(x,y) in enumerate(zip(xs, ys)):
-                        proto.nodes[i].x = float(x) - minx
-                        proto.nodes[i].y = float(y) - miny
-                    # set gateway count before run
-                    try:
-                        proto.gateway_selector = GatewaySelector(GatewayConfig(k=G))
-                    except Exception:
-                        pass
-                    env_provider = build_env_provider(loader, proto)
-                    res = proto.run_simulation(200, env_provider=env_provider)
-                    energies.append(res.get('total_energy_consumed', 0.0))
-                    pdrs.append(res.get('packet_delivery_ratio_end2end', 0.0))
-                mean_e, ci_e = _def(energies)
-                mean_p, ci_p = _def(pdrs)
-                summary[key] = {
-                    'initial_energy': E0,
-                    'packet_size': P,
-                    'gateway_k': G,
-                    'energy': {'mean': mean_e, 'ci95': ci_e},
-                    'pdr_end2end': {'mean': mean_p, 'ci95': ci_p},
-                    'repeats': repeats
-                }
-                print(f"[SENS] {key}: energy={mean_e:.3f}±{ci_e:.3f}, pdr={mean_p:.3f}±{ci_p:.3f}")
+    combos = [(E0, P, G) for E0 in initial_energies for P in packet_sizes for G in gateway_counts]
+    for idx, (E0, P, G) in enumerate(combos):
+        key = f"E{E0}_P{P}_G{G}"
+        seed_registry[key] = []
+        energies = []
+        pdrs = []
+        for r in range(repeats):
+            seed = BASE_SEED + idx * repeats + r
+            seed_registry[key].append(seed)
+            random.seed(seed); np.random.seed(seed)
+            cfg = NetworkConfig(num_nodes=n, area_width=width, area_height=height, initial_energy=E0, packet_size=P)
+            proto = AerisProtocol(cfg,
+                enable_cas=True, enable_fairness=True, enable_gateway=True, enable_skeleton=False,
+                profile='robust', verbose=False, seed=seed)
+            for i,(x,y) in enumerate(zip(xs, ys)):
+                proto.nodes[i].x = float(x) - minx
+                proto.nodes[i].y = float(y) - miny
+            try:
+                proto.gateway_selector = GatewaySelector(GatewayConfig(k=G))
+            except Exception:
+                pass
+            env_provider = build_env_provider(loader, proto)
+            res = proto.run_simulation(200, env_provider=env_provider)
+            energies.append(res.get('total_energy_consumed', 0.0))
+            pdrs.append(res.get('packet_delivery_ratio_end2end', 0.0))
+        mean_e, ci_e = _def(energies)
+        mean_p, ci_p = _def(pdrs)
+        summary[key] = {
+            'initial_energy': E0,
+            'packet_size': P,
+            'gateway_k': G,
+            'energy': {'mean': mean_e, 'ci95': ci_e, 'values': energies},
+            'pdr_end2end': {'mean': mean_p, 'ci95': ci_p, 'values': pdrs},
+            'runtime': {'seed_list': seed_registry[key], 'repeats': repeats}
+        }
+        print(f"[SENS] {key}: energy={mean_e:.3f}±{ci_e:.3f}, pdr={mean_p:.3f}±{ci_p:.3f}")
 
+    summary['meta'] = {'base_seed': BASE_SEED, 'repeats': repeats}
     out_path = os.path.join(os.path.dirname(__file__), '..', 'results', 'intel_sensitivity.json')
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, 'w', encoding='utf-8') as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     print('Saved', out_path)
-

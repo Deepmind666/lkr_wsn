@@ -162,7 +162,8 @@ class LEACHProtocol:
         # 端到端统计
         self.source_packets_total = 0
         self.bs_delivered_total = 0
-        
+        self._all_hop_counts = []
+
         self._initialize_network()
 
     def _link_success(self, distance: float, tx_power: float) -> bool:
@@ -173,7 +174,7 @@ class LEACHProtocol:
             self.config.temperature_c,
             self.config.humidity_ratio,
         )
-    
+
     def _initialize_network(self):
         """初始化网络节点"""
         self.nodes = []
@@ -399,6 +400,8 @@ class LEACHProtocol:
                     if self._link_success(distance_to_bs, tx_power):
                         packets_received += 1
                         self.bs_delivered_total += delivered
+                        for _ in range(delivered):
+                            self._all_hop_counts.append(2)
                         success = True
                         break
                 if not success and ch.current_energy <= 0:
@@ -521,6 +524,7 @@ class LEACHProtocol:
                 'source_packets_total': self.source_packets_total,
                 'bs_delivered_total': self.bs_delivered_total
             },
+            'avg_hops_to_bs': (sum(self._all_hop_counts) / len(self._all_hop_counts)) if self._all_hop_counts else 0,
             'config': {
                 'num_nodes': self.config.num_nodes,
                 'initial_energy': self.config.initial_energy,
@@ -528,7 +532,7 @@ class LEACHProtocol:
                 'packet_size': self.config.packet_size
             }
         }
-        
+
         return final_stats
 
 class PEGASISProtocol:
@@ -565,6 +569,7 @@ class PEGASISProtocol:
 
         self.source_packets_total = 0
         self.bs_delivered_total = 0
+        self._all_hop_counts = []
 
         self._initialize_network()
         self._construct_chain()
@@ -581,6 +586,31 @@ class PEGASISProtocol:
     def _initialize_network(self):
         """初始化网络节点"""
         self.nodes = []
+        provided = getattr(self.config, 'positions', None)
+        if provided and isinstance(provided, list) and len(provided) > 0:
+            limit = min(len(provided), self.config.num_nodes)
+            for i in range(limit):
+                x, y = provided[i]
+                node = Node(
+                    id=i,
+                    x=float(x),
+                    y=float(y),
+                    initial_energy=self.config.initial_energy,
+                    current_energy=self.config.initial_energy
+                )
+                self.nodes.append(node)
+            for i in range(limit, self.config.num_nodes):
+                x = random.uniform(0, self.config.area_width)
+                y = random.uniform(0, self.config.area_height)
+                node = Node(
+                    id=i,
+                    x=x,
+                    y=y,
+                    initial_energy=self.config.initial_energy,
+                    current_energy=self.config.initial_energy
+                )
+                self.nodes.append(node)
+            return
         for i in range(self.config.num_nodes):
             x = random.uniform(0, self.config.area_width)
             y = random.uniform(0, self.config.area_height)
@@ -785,6 +815,15 @@ class PEGASISProtocol:
         sources, delivered = self._data_gathering_phase()
         self.source_packets_total += sources
         self.bs_delivered_total += delivered
+        if delivered > 0:
+            chain_len = len(self.chain)
+            leader_pos = min(max(self.leader_index, 0), max(0, chain_len - 1))
+            left_sum = leader_pos * (leader_pos + 1) / 2.0
+            right_count = chain_len - leader_pos - 1
+            right_sum = right_count * (right_count + 1) / 2.0
+            avg_chain_hops = (left_sum + right_sum) / max(1.0, float(chain_len))
+            for _ in range(delivered):
+                self._all_hop_counts.append(avg_chain_hops + 1.0)
 
         # 3. 窄崲棰嗗鑰?
         if self.chain:
@@ -861,6 +900,7 @@ class PEGASISProtocol:
                 'source_packets_total': self.source_packets_total,
                 'bs_delivered_total': self.bs_delivered_total
             },
+            'avg_hops_to_bs': (sum(self._all_hop_counts) / len(self._all_hop_counts)) if self._all_hop_counts else 0,
             'config': {
                 'num_nodes': self.config.num_nodes,
                 'initial_energy': self.config.initial_energy,
@@ -907,11 +947,13 @@ class HEEDProtocolWrapper:
         """运行 HEED 协议仿真"""
 
         # 鐢熸垚鑺傜偣浣嶇疆
-        node_positions = []
-        for _ in range(self.config.num_nodes):
-            x = random.uniform(0, self.config.area_width)
-            y = random.uniform(0, self.config.area_height)
-            node_positions.append((x, y))
+        node_positions = getattr(self.config, "positions", None)
+        if not node_positions or len(node_positions) < self.config.num_nodes:
+            node_positions = []
+            for _ in range(self.config.num_nodes):
+                x = random.uniform(0, self.config.area_width)
+                y = random.uniform(0, self.config.area_height)
+                node_positions.append((x, y))
 
         # 鍒濆鍖栫綉缁?
         self.heed_protocol.initialize_network(node_positions)
@@ -964,7 +1006,8 @@ class HEEDProtocolWrapper:
             'energy_efficiency': final_stats['energy_efficiency'],
             'final_alive_nodes': final_stats['final_alive_nodes'],
             'average_cluster_heads_per_round': avg_cluster_heads,
-            'additional_metrics': final_stats['additional_metrics']
+            'additional_metrics': final_stats['additional_metrics'],
+            'avg_hops_to_bs': final_stats.get('avg_hops_to_bs', 0),
         }
 
 class TEENProtocolWrapper:
@@ -1003,11 +1046,13 @@ class TEENProtocolWrapper:
     def run_simulation(self, max_rounds: int = 200) -> Dict:
         """运行 TEEN 协议仿真"""
         # 鐢熸垚鑺傜偣浣嶇疆
-        node_positions = []
-        for _ in range(self.config.num_nodes):
-            x = random.uniform(0, self.config.area_width)
-            y = random.uniform(0, self.config.area_height)
-            node_positions.append((x, y))
+        node_positions = getattr(self.config, "positions", None)
+        if not node_positions or len(node_positions) < self.config.num_nodes:
+            node_positions = []
+            for _ in range(self.config.num_nodes):
+                x = random.uniform(0, self.config.area_width)
+                y = random.uniform(0, self.config.area_height)
+                node_positions.append((x, y))
 
         # 鍒濆鍖栫綉缁?
         self.teen_protocol.initialize_network(node_positions)
@@ -1027,7 +1072,8 @@ class TEENProtocolWrapper:
             'energy_efficiency': results['energy_efficiency'],
             'final_alive_nodes': results['final_alive_nodes'],
             'average_cluster_heads_per_round': results['average_cluster_heads_per_round'],
-            'additional_metrics': results['additional_metrics']
+            'additional_metrics': results['additional_metrics'],
+            'avg_hops_to_bs': results.get('avg_hops_to_bs', 0),
         }
 
 def test_leach_protocol():

@@ -1,4 +1,5 @@
 # 📝 SCI Q3论文写作具体执行计划
+术语说明：本文统一使用“AERIS”，历史命名为“Enhanced AERIS/EASR”
 
 ## 🎯 **目标确认**
 - **期刊定位**: SCI Q3 (Ad Hoc Networks, Wireless Networks)
@@ -14,7 +15,7 @@
 基于`latest_results.json`的真实数据：
 ```
 协议性能对比 (50节点, 500轮):
-- Enhanced EEHFR: 10.432J (基准)
+- EASR: 10.432J (基准)
 - PEGASIS: 11.329J (+7.9%能耗)
 - LEACH: 24.160J (+131.6%能耗)  
 - HEED: 48.468J (+364.6%能耗)
@@ -22,7 +23,7 @@
 关键指标：
 ✅ 网络生存时间: 500轮 (达到最大仿真时间)
 ✅ 包投递率: 100%
-✅ 能效比: Enhanced EEHFR最优
+✅ 能效比: AERIS最优
 ```
 
 ### 🔬 **需要补充的实验**
@@ -42,7 +43,7 @@ expected_improvement_range = [6.5%, 8.5%]  # 改进幅度应在此范围内
 ```python
 # 统计测试
 tests_needed = [
-    'paired_t_test',      # 配对t检验 (EEHFR vs PEGASIS)
+    'paired_t_test',      # 配对t检验 (AERIS vs PEGASIS)
     'confidence_interval', # 95%置信区间
     'effect_size',        # 效应量计算
     'power_analysis'      # 功效分析
@@ -129,14 +130,31 @@ convergence_metrics = [
 
 ### 🎨 **论文图表清单**
 
-#### 📈 **必需图表** (6-8个)
-1. **Figure 1**: 网络模型示意图
-2. **Figure 2**: 协议流程图
-3. **Figure 3**: 模糊逻辑系统结构
-4. **Figure 4**: 能耗对比柱状图
-5. **Figure 5**: 网络生存时间对比
-6. **Figure 6**: 不同网络规模性能对比
-7. **Figure 7**: PSO收敛曲线
+#### 📈 **必需图表** (严格 7 幅，统一与投稿编号)
+1. **Figure 1**: 网络模型/结果总览面板（Energy 与 End-to-end PDR）
+2. **Figure 2**: Predicted-environment vs Conservative 面板（Energy 与 PDR）
+3. **Figure 3**: 综合统计显著性（Welch t + Holm–Bonferroni，PDR 与 Energy）
+4. **Figure 4**: 消融实验——能耗（剥离 CAS/网关/公平/安全）
+5. **Figure 5**: 消融实验——端到端 PDR
+6. **Figure 6**: 方法流程图（见第 4 节 Methods）
+7. **Figure 7**: Gardner–Altman 图（End-to-end PDR）
+
+#### 📋 **必需表格** (3-4个)
+1. **Table 1**: 仿真参数配置
+2. **Table 2**: 协议性能对比
+3. **Table 3**: 统计显著性检验结果
+4. **Table 4**: 计算复杂度分析
+
+---
+
+## 图件规划（统一到投稿版 7 幅）
+1. **Figure 1**：Intel 基线对比面板（Energy 与 End-to-end PDR）
+2. **Figure 2**：Predicted-environment vs Conservative 面板（Energy 与 PDR）
+3. **Figure 3**：综合统计显著性（Welch t + Holm–Bonferroni，PDR 与 Energy）
+4. **Figure 4**：消融实验——能耗（剥离 CAS/网关/公平/安全）
+5. **Figure 5**：消融实验——端到端 PDR
+6. **Figure 6**：方法流程图（见第 4 节 Methods）
+7. **Figure 7**：Gardner–Altman 图（End-to-end PDR）
 8. **Figure 8**: 统计显著性分析
 
 #### 📋 **必需表格** (3-4个)
@@ -188,6 +206,123 @@ convergence_metrics = [
 
 #### 🔍 **内容检查**
 - [ ] 技术描述准确性
+- [ ] 实验数据一致性
+- [ ] 统计分析正确性
+- [ ] 图表清晰度
+- [ ] 引用格式规范
+
+#### 📊 **数据验证**
+- [ ] 所有数值可追溯
+- [ ] 统计显著性p<0.05
+- [ ] 改进幅度合理
+- [ ] 对比公平性
+
+#### 🎯 **期刊匹配**
+- [ ] 研究范围匹配
+- [ ] 技术深度适当
+- [ ] 创新程度合理
+- [ ] 格式要求符合
+
+---
+
+## 🎯 **成功关键指标**
+
+### ✅ **技术质量**
+- 实验可重复性: 100%
+- 统计显著性: p < 0.05
+- 性能改进: 7.9% (已验证)
+- 代码开源: 完整实现
+
+### ✅ **写作质量**
+- 逻辑清晰度: 结构化表述
+- 语言准确性: 技术术语规范
+- 图表专业性: IEEE标准
+- 引用完整性: 40+篇文献
+
+### ✅ **创新定位**
+- 工程价值: 实际可部署
+- 实验严谨: 权威数据集
+- 对比全面: 4种协议
+- 开源贡献: 完整代码
+
+---
+
+## 📅 **每周具体任务**
+
+### 📅 **本周任务** (第1周)
+- [x] 完成SCI Q3期刊调研
+- [x] 制定详细写作计划
+- [ ] 补充网络规模实验
+- [ ] 进行统计显著性检验
+- [ ] 开始Algorithm Design章节写作
+
+### 📅 **下周预览** (第2周)
+- [ ] 完成所有补充实验
+- [ ] 完成Experimental Setup章节
+- [ ] 开始Results and Analysis章节
+- [ ] 制作核心图表
+
+这个计划确保我们能在8周内完成高质量的SCI Q3论文，重点是基于真实数据的工程优化研究。
+
+## 图件规划（统一到投稿版 7 幅）
+1. **Figure 1**：Intel 基线对比面板（Energy 与 End-to-end PDR）
+2. **Figure 2**：Predicted-environment vs Conservative 面板（Energy 与 PDR）
+3. **Figure 3**：综合统计显著性（Welch t + Holm-Bonferroni，PDR 与 Energy）
+4. **Figure 4**：消融实验——能耗（剥离 CAS/网关/公平/安全）
+5. **Figure 5**：消融实验——端到端 PDR
+6. **Figure 6**：方法流程图（见第 4 节 Methods）
+7. **Figure 7**：Gardner–Altman 图（End-to-end PDR）
+8. **Figure 8**: 统计显著性分析
+
+#### 📋 **必需表格** (3-4个)
+1. **Table 1**: 仿真参数配置
+2. **Table 2**: 协议性能对比
+3. **Table 3**: 统计显著性检验结果
+4. **Table 4**: 计算复杂度分析
+
+---
+
+## 📚 **第四阶段：文献调研与引用** (第7周)
+
+### 📖 **文献收集目标**
+- **总引用数**: 40-50篇
+- **近5年文献**: >60%
+- **顶级期刊**: >30%
+
+#### 🔍 **文献分类**
+1. **WSN基础** (10-12篇)
+   - 经典路由协议
+   - 能耗模型
+   - 网络生存时间
+
+2. **模糊逻辑应用** (8-10篇)
+   - WSN中的模糊逻辑
+   - 簇头选择算法
+   - 决策系统
+
+3. **元启发式优化** (8-10篇)
+   - PSO算法及其变种
+   - 多目标优化
+   - 参数调优
+
+4. **对比协议** (6-8篇)
+   - LEACH协议及改进
+   - PEGASIS协议研究
+   - HEED协议分析
+
+5. **最新进展** (8-10篇)
+   - 2023-2025年最新研究
+   - 机器学习在WSN中应用
+   - 边缘计算集成
+
+---
+
+## ✅ **第五阶段：最终检查与投稿** (第8周)
+
+### 📝 **质量检查清单**
+
+#### 🔍 **内容检查**
+- [ ] 技术描述准确
 - [ ] 实验数据一致性
 - [ ] 统计分析正确性
 - [ ] 图表清晰度

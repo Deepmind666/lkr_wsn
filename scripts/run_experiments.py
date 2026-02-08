@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-Enhanced EEHFR Experiment Runner
+AERIS Experiment Runner
 
-This script provides a convenient way to run various experiments
-and tests for the Enhanced EEHFR protocol.
+Convenient wrapper to run various experiments and tests for the AERIS protocol.
 
 Usage:
     python scripts/run_experiments.py --test comprehensive
@@ -21,33 +20,35 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 def run_comprehensive_test():
-    """Run comprehensive multi-scale network testing"""
-    print("🔬 Running Comprehensive Enhanced EEHFR Testing...")
+    """Run comprehensive multi-scale network testing (AERIS unified)"""
+    print("🔬 Running Comprehensive AERIS Testing (Unified)...")
     print("=" * 60)
-    
-    cmd = [sys.executable, "tests/test_enhanced_eehfr.py"]
+
+    # Use the integrated AERIS test as the comprehensive entry
+    cmd = [sys.executable, "tests/test_aeris_integration.py"]
     result = subprocess.run(cmd, cwd=Path(__file__).parent.parent)
-    
+
     if result.returncode == 0:
         print("✅ Comprehensive test completed successfully!")
     else:
         print("❌ Comprehensive test failed!")
-    
+
     return result.returncode
 
 def run_comparison_test():
-    """Run baseline protocol comparison"""
-    print("📊 Running Baseline Protocol Comparison...")
+    """Run baseline protocol comparison (AERIS vs classics)"""
+    print("📊 Running Baseline Protocol Comparison (AERIS vs LEACH/PEGASIS/HEED)...")
     print("=" * 60)
-    
-    cmd = [sys.executable, "tests/comparative_experiment.py"]
+
+    # Use integrated AERIS comparison test script
+    cmd = [sys.executable, "tests/test_aeris_integration.py"]
     result = subprocess.run(cmd, cwd=Path(__file__).parent.parent)
-    
+
     if result.returncode == 0:
         print("✅ Comparison test completed successfully!")
     else:
         print("❌ Comparison test failed!")
-    
+
     return result.returncode
 
 def run_quick_test():
@@ -55,7 +56,7 @@ def run_quick_test():
     print("⚡ Running Quick Validation Test...")
     print("=" * 60)
     
-    cmd = [sys.executable, "tests/simple_enhanced_test.py"]
+    cmd = [sys.executable, "tests/simple_aeris_smoke_test.py"]
     result = subprocess.run(cmd, cwd=Path(__file__).parent.parent)
     
     if result.returncode == 0:
@@ -67,7 +68,7 @@ def run_quick_test():
 
 def run_all_tests():
     """Run all available tests"""
-    print("🚀 Running All Enhanced EEHFR Tests...")
+    print("🚀 Running All AERIS Tests...")
     print("=" * 60)
     
     tests = [
@@ -99,7 +100,7 @@ def run_all_tests():
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Enhanced EEHFR Experiment Runner",
+        description="AERIS Experiment Runner",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
@@ -128,7 +129,7 @@ Examples:
     # Change to project root directory
     os.chdir(Path(__file__).parent.parent)
     
-    print("🚀 Enhanced EEHFR Protocol Experiment Runner")
+    print("🚀 AERIS Protocol Experiment Runner")
     print(f"📁 Working directory: {os.getcwd()}")
     print(f"🔬 Test type: {args.test}")
     print()

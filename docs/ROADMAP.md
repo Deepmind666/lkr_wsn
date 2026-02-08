@@ -1,4 +1,4 @@
-## Roadmap: AETHER WSN – Experiments and Publication Plan
+## Roadmap: AERIS WSN – Experiments and Publication Plan
 
 Milestones (Weeks)
 - W1: Statistical rigor and figures

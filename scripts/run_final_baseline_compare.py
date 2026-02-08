@@ -3,7 +3,7 @@
 import os, sys, json, random
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 from benchmark_protocols import NetworkConfig
-from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
+from aeris_protocol import AerisProtocol
 from baseline_protocols.leach_protocol import LEACHProtocol, LEACHNode
 from baseline_protocols.pegasis_protocol import PEGASISProtocol, PEGASISNode
 from baseline_protocols.heed_protocol import HEEDProtocol, HEEDNode
@@ -13,7 +13,7 @@ random.seed(42)
 
 # Simple baseline runners (uniform API)
 def run_eenhfr(cfg, pts, profile):
-    proto = IntegratedEnhancedEEHFRProtocol(cfg, enable_cas=True, enable_fairness=True, enable_gateway=True, enable_skeleton=False, profile=profile)
+    proto = AerisProtocol(cfg, enable_cas=True, enable_fairness=True, enable_gateway=True, enable_skeleton=False, profile=profile)
     for i,(x,y) in enumerate(pts): proto.nodes[i].x, proto.nodes[i].y = x,y
     return proto.run_simulation(200)
 

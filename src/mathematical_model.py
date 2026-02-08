@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Enhanced EEHFR协议数学建模
+AERIS鍗忚鏁板寤烘ā
 
-严格的数学模型定义，包括：
-1. 优化目标函数
-2. 约束条件
-3. 算法复杂度分析
-4. 理论性能边界
+涓ユ牸鐨勬暟瀛︽ā鍨嬪畾涔夛紝鍖呮嫭锛?
+1. 浼樺寲鐩爣鍑芥暟
+2. 绾︽潫鏉′欢
+3. 绠楁硶澶嶆潅搴﹀垎鏋?
+4. 鐞嗚鎬ц兘杈圭晫
 
-作者: Enhanced EEHFR Research Team
-日期: 2025-01-31
-版本: 1.0 (Mathematical Foundation)
+浣滆€? AERIS Research Team
+鏃ユ湡: 2025-01-31
+鐗堟湰: 1.0 (Mathematical Foundation)
 """
 
 import numpy as np
@@ -22,7 +22,7 @@ from enum import Enum
 
 @dataclass
 class NetworkParameters:
-    """网络参数定义"""
+    """缃戠粶鍙傛暟瀹氫箟"""
     num_nodes: int
     area_width: float
     area_height: float
@@ -31,17 +31,17 @@ class NetworkParameters:
     base_station_x: float
     base_station_y: float
     
-    # 硬件参数
-    E_elec: float = 50e-9      # 电子能耗 (J/bit)
-    E_amp: float = 100e-12     # 放大器能耗 (J/bit/m²)
-    E_da: float = 5e-9         # 数据聚合能耗 (J/bit)
+    # 纭欢鍙傛暟
+    E_elec: float = 50e-9      # 鐢靛瓙鑳借€?(J/bit)
+    E_amp: float = 100e-12     # 鏀惧ぇ鍣ㄨ兘鑰?(J/bit/m虏)
+    E_da: float = 5e-9         # 鏁版嵁鑱氬悎鑳借€?(J/bit)
     
-    # 协议参数
+    # 鍗忚鍙傛暟
     cluster_head_ratio: float = 0.1
     max_rounds: int = 1000
 
 class WSNMathematicalModel:
-    """WSN路由协议数学模型"""
+    """WSN璺敱鍗忚鏁板妯″瀷"""
     
     def __init__(self, params: NetworkParameters):
         self.params = params
@@ -51,30 +51,30 @@ class WSNMathematicalModel:
     def objective_function(self, routing_matrix: np.ndarray, 
                           cluster_assignment: np.ndarray) -> float:
         """
-        目标函数：最小化总能耗
+        鐩爣鍑芥暟锛氭渶灏忓寲鎬昏兘鑰?
         
-        minimize: Σ(E_tx + E_rx + E_processing)
+        minimize: 危(E_tx + E_rx + E_processing)
         
         Args:
-            routing_matrix: 路由矩阵 [n×n]
-            cluster_assignment: 簇分配向量 [n×1]
+            routing_matrix: 璺敱鐭╅樀 [n脳n]
+            cluster_assignment: 绨囧垎閰嶅悜閲?[n脳1]
             
         Returns:
-            total_energy: 总能耗
+            total_energy: 鎬昏兘鑰?
         """
         total_energy = 0.0
         n = self.params.num_nodes
         
-        # 1. 传输能耗计算
+        # 1. 浼犺緭鑳借€楄绠?
         for i in range(n):
             for j in range(n):
-                if routing_matrix[i, j] > 0:  # 存在传输
+                if routing_matrix[i, j] > 0:  # 瀛樺湪浼犺緭
                     distance = self._calculate_distance(i, j)
                     tx_energy = self._transmission_energy(distance)
                     rx_energy = self._reception_energy()
                     total_energy += tx_energy + rx_energy
         
-        # 2. 簇头处理能耗
+        # 2. 绨囧ご澶勭悊鑳借€?
         cluster_heads = np.where(cluster_assignment == 1)[0]
         for ch in cluster_heads:
             cluster_size = np.sum(routing_matrix[:, ch])
@@ -85,11 +85,11 @@ class WSNMathematicalModel:
     
     def connectivity_constraint(self, routing_matrix: np.ndarray) -> bool:
         """
-        连通性约束：确保网络图保持连通
+        杩為€氭€х害鏉燂細纭繚缃戠粶鍥句繚鎸佽繛閫?
         
         G(V,E) must remain connected
         """
-        # 使用深度优先搜索检查连通性
+        # 浣跨敤娣卞害浼樺厛鎼滅储妫€鏌ヨ繛閫氭€?
         n = self.params.num_nodes
         visited = np.zeros(n, dtype=bool)
         
@@ -99,19 +99,19 @@ class WSNMathematicalModel:
                 if routing_matrix[node, neighbor] > 0 and not visited[neighbor]:
                     dfs(neighbor)
         
-        # 从节点0开始DFS
+        # 浠庤妭鐐?寮€濮婦FS
         dfs(0)
         
-        # 检查是否所有节点都被访问
+        # 妫€鏌ユ槸鍚︽墍鏈夎妭鐐归兘琚闂?
         return np.all(visited)
     
     def energy_constraint(self, energy_states: np.ndarray) -> bool:
         """
-        能量约束：所有节点能量必须大于阈值
+        鑳介噺绾︽潫锛氭墍鏈夎妭鐐硅兘閲忓繀椤诲ぇ浜庨槇鍊?
         
-        E_i(t) ≥ E_threshold, ∀i ∈ V
+        E_i(t) 鈮?E_threshold, 鈭€i 鈭?V
         """
-        E_threshold = 0.1  # 10%的初始能量作为阈值
+        E_threshold = 0.1  # 10%鐨勫垵濮嬭兘閲忎綔涓洪槇鍊?
         threshold = self.params.initial_energy * E_threshold
         
         return np.all(energy_states >= threshold)
@@ -119,17 +119,17 @@ class WSNMathematicalModel:
     def delay_constraint(self, routing_paths: List[List[int]], 
                         max_delay: float = 1.0) -> bool:
         """
-        延迟约束：端到端延迟不超过最大值
+        寤惰繜绾︽潫锛氱鍒扮寤惰繜涓嶈秴杩囨渶澶у€?
         
-        D_e2e ≤ D_max
+        D_e2e 鈮?D_max
         """
         for path in routing_paths:
             path_delay = 0.0
             for i in range(len(path) - 1):
-                # 传输延迟 + 处理延迟
+                # 浼犺緭寤惰繜 + 澶勭悊寤惰繜
                 distance = self._calculate_distance(path[i], path[i+1])
-                transmission_delay = distance * 1e-6  # 简化模型
-                processing_delay = 0.001  # 1ms处理延迟
+                transmission_delay = distance * 1e-6  # 绠€鍖栨ā鍨?
+                processing_delay = 0.001  # 1ms澶勭悊寤惰繜
                 path_delay += transmission_delay + processing_delay
             
             if path_delay > max_delay:
@@ -140,9 +140,9 @@ class WSNMathematicalModel:
     def reliability_constraint(self, routing_matrix: np.ndarray, 
                              min_pdr: float = 0.9) -> bool:
         """
-        可靠性约束：数据包投递率不低于最小值
+        鍙潬鎬х害鏉燂細鏁版嵁鍖呮姇閫掔巼涓嶄綆浜庢渶灏忓€?
         
-        PDR ≥ PDR_min
+        PDR 鈮?PDR_min
         """
         total_links = np.sum(routing_matrix > 0)
         if total_links == 0:
@@ -161,19 +161,19 @@ class WSNMathematicalModel:
         return overall_pdr >= min_pdr
     
     def _transmission_energy(self, distance: float) -> float:
-        """计算传输能耗"""
+        """璁＄畻浼犺緭鑳借€?""
         bits = self.params.packet_size * 8
         return self.params.E_elec * bits + self.params.E_amp * bits * (distance ** 2)
     
     def _reception_energy(self) -> float:
-        """计算接收能耗"""
+        """璁＄畻鎺ユ敹鑳借€?""
         bits = self.params.packet_size * 8
         return self.params.E_elec * bits
     
     def _calculate_distance(self, node_i: int, node_j: int) -> float:
-        """计算节点间距离"""
+        """璁＄畻鑺傜偣闂磋窛绂?""
         if not self.nodes_positions:
-            # 如果没有位置信息，使用随机位置
+            # 濡傛灉娌℃湁浣嶇疆淇℃伅锛屼娇鐢ㄩ殢鏈轰綅缃?
             return np.random.uniform(10, 50)
         
         pos_i = self.nodes_positions[node_i]
@@ -181,83 +181,83 @@ class WSNMathematicalModel:
         return math.sqrt((pos_i[0] - pos_j[0])**2 + (pos_i[1] - pos_j[1])**2)
     
     def _calculate_link_reliability(self, distance: float) -> float:
-        """计算链路可靠性"""
-        # 基于距离的简化可靠性模型
+        """璁＄畻閾捐矾鍙潬鎬?""
+        # 鍩轰簬璺濈鐨勭畝鍖栧彲闈犳€фā鍨?
         max_range = 100.0
         return max(0.5, 1.0 - distance / max_range)
 
 class ComplexityAnalyzer:
-    """算法复杂度分析器"""
+    """绠楁硶澶嶆潅搴﹀垎鏋愬櫒"""
     
     @staticmethod
     def cluster_head_selection_complexity(n: int) -> Dict[str, str]:
-        """簇头选择算法复杂度分析"""
+        """绨囧ご閫夋嫨绠楁硶澶嶆潅搴﹀垎鏋?""
         return {
-            'time_complexity': f'O({n}²)',
+            'time_complexity': f'O({n}虏)',
             'space_complexity': f'O({n})',
-            'explanation': '需要计算每个节点与其他所有节点的关系'
+            'explanation': '闇€瑕佽绠楁瘡涓妭鐐逛笌鍏朵粬鎵€鏈夎妭鐐圭殑鍏崇郴'
         }
     
     @staticmethod
     def routing_construction_complexity(n: int, k: int) -> Dict[str, str]:
-        """路由构建算法复杂度分析"""
+        """璺敱鏋勫缓绠楁硶澶嶆潅搴﹀垎鏋?""
         return {
-            'time_complexity': f'O({n} × {k})',
+            'time_complexity': f'O({n} 脳 {k})',
             'space_complexity': f'O({n})',
-            'explanation': f'n个节点，k个簇头，每个节点需要找到最近的簇头'
+            'explanation': f'n涓妭鐐癸紝k涓皣澶达紝姣忎釜鑺傜偣闇€瑕佹壘鍒版渶杩戠殑绨囧ご'
         }
     
     @staticmethod
     def fuzzy_logic_complexity(n: int) -> Dict[str, str]:
-        """模糊逻辑决策复杂度分析"""
+        """妯＄硦閫昏緫鍐崇瓥澶嶆潅搴﹀垎鏋?""
         return {
             'time_complexity': f'O({n})',
             'space_complexity': 'O(1)',
-            'explanation': '每个节点独立进行模糊逻辑计算'
+            'explanation': '姣忎釜鑺傜偣鐙珛杩涜妯＄硦閫昏緫璁＄畻'
         }
     
     @staticmethod
     def overall_complexity(n: int) -> Dict[str, str]:
-        """整体算法复杂度"""
+        """鏁crete綋绠楁硶澶嶆潅搴?""
         return {
-            'time_complexity': f'O({n}²)',
+            'time_complexity': f'O({n}虏)',
             'space_complexity': f'O({n})',
-            'explanation': '由簇头选择阶段主导整体复杂度'
+            'explanation': '鐢辩皣澶撮€夋嫨闃舵涓诲鏁crete綋澶嶆潅搴?
         }
 
 class TheoreticalAnalyzer:
-    """理论性能分析器"""
+    """鐞嗚鎬ц兘鍒嗘瀽鍣?""
     
     def __init__(self, params: NetworkParameters):
         self.params = params
     
     def energy_lower_bound(self) -> float:
-        """计算能耗理论下界"""
-        # 理论最优情况：所有节点直接向最近的簇头传输
+        """璁＄畻鑳借€楃悊璁轰笅鐣?""
+        # 鐞嗚鏈€浼樻儏鍐碉細鎵€鏈夎妭鐐圭洿鎺ュ悜鏈€杩戠殑绨囧ご浼犺緭
         n = self.params.num_nodes
         k = int(n * self.params.cluster_head_ratio)
         
-        # 假设节点均匀分布，计算平均传输距离
+        # 鍋囪鑺傜偣鍧囧寑鍒嗗竷锛岃绠楀钩鍧囦紶杈撹窛绂?
         area = self.params.area_width * self.params.area_height
         avg_cluster_area = area / k
         avg_transmission_distance = math.sqrt(avg_cluster_area / math.pi) / 2
         
-        # 计算理论最小能耗
+        # 璁＄畻鐞嗚鏈€灏忚兘鑰?
         bits_per_packet = self.params.packet_size * 8
         min_energy_per_transmission = (
             self.params.E_elec * bits_per_packet + 
             self.params.E_amp * bits_per_packet * (avg_transmission_distance ** 2)
         )
         
-        # 总的理论最小能耗
-        total_transmissions = n - k  # 非簇头节点数量
+        # 鎬荤殑鐞嗚鏈€灏忚兘鑰?
+        total_transmissions = n - k  # 闈炵皣澶磋妭鐐规暟閲?
         theoretical_min_energy = total_transmissions * min_energy_per_transmission
         
         return theoretical_min_energy
     
     def network_lifetime_upper_bound(self) -> int:
-        """计算网络生存时间理论上界"""
-        # 理论最优情况：能量消耗完全均匀
+        """璁＄畻缃戠粶鐢熷瓨鏃堕棿鐞嗚涓婄晫"""
+        # 鐞嗚鏈€浼樻儏鍐碉細鑳介噺娑堣€楀畬鍏ㄥ潎鍖€
         total_initial_energy = self.params.num_nodes * self.params.initial_energy
         min_energy_per_round = self.energy_lower_bound()
         
@@ -269,12 +269,12 @@ class TheoreticalAnalyzer:
         return max_rounds
     
     def optimal_cluster_head_count(self) -> int:
-        """计算理论最优簇头数量"""
-        # 基于经典LEACH理论分析
+        """璁＄畻鐞嗚鏈€浼樼皣澶存暟閲?""
+        # 鍩轰簬缁忓吀LEACH鐞嗚鍒嗘瀽
         n = self.params.num_nodes
         area = self.params.area_width * self.params.area_height
         
-        # Heinzelman等人的理论分析
+        # Heinzelman绛変汉鐨勭悊璁哄垎鏋?
         optimal_ratio = math.sqrt(
             self.params.E_elec / (2 * math.pi * self.params.E_amp)
         ) * math.sqrt(area) / math.sqrt(n)
@@ -283,7 +283,7 @@ class TheoreticalAnalyzer:
         return optimal_count
     
     def performance_bounds_analysis(self) -> Dict[str, float]:
-        """综合性能边界分析"""
+        """缁煎悎鎬ц兘杈圭晫鍒嗘瀽"""
         return {
             'min_energy_per_round': self.energy_lower_bound(),
             'max_network_lifetime': self.network_lifetime_upper_bound(),
@@ -292,12 +292,12 @@ class TheoreticalAnalyzer:
         }
 
 def demonstrate_mathematical_model():
-    """演示数学模型的使用"""
+    """婕旂ず鏁板妯″瀷鐨勪娇鐢?""
     
-    print("🔬 Enhanced EEHFR协议数学建模演示")
+    print("[INFO] AERIS protocol mathematical modeling demo")
     print("=" * 50)
     
-    # 创建网络参数
+    # 鍒涘缓缃戠粶鍙傛暟
     params = NetworkParameters(
         num_nodes=50,
         area_width=100,
@@ -308,31 +308,21 @@ def demonstrate_mathematical_model():
         base_station_y=50
     )
     
-    # 初始化数学模型
+    # 鍒濆鍖栨暟瀛︽ā鍨?
     model = WSNMathematicalModel(params)
     
-    # 复杂度分析
-    print("\n📊 算法复杂度分析:")
-    complexity = ComplexityAnalyzer()
+    # 澶嶆潅搴﹀垎鏋?
+    print("\n[ANALYSIS] Algorithmic complexity analysis:")
+    print(f"   CH selection: {ch_complexity['time_complexity']} time, {ch_complexity['space_complexity']} space")
+    print(f"   Routing construction: {routing_complexity['time_complexity']} time, {routing_complexity['space_complexity']} space")
+    print(f"   Overall complexity: {overall['time_complexity']} time, {overall['space_complexity']} space")
     
-    ch_complexity = complexity.cluster_head_selection_complexity(params.num_nodes)
-    print(f"   簇头选择: {ch_complexity['time_complexity']} 时间, {ch_complexity['space_complexity']} 空间")
+    # 鐞嗚鍒嗘瀽
+    print("\n[ANALYSIS] Theoretical performance bounds:")
+    print(f"   Min energy per round (theoretical): {bounds['min_energy_per_round']:.6f} J")
+    print(f"   Max network lifetime (theoretical): {bounds['max_network_lifetime']} rounds")
+    print(f"   Optimal number of CHs (theoretical): {bounds['optimal_cluster_heads']}")
+    print(f"   Theoretical efficiency upper bound: {bounds['theoretical_efficiency']:.1f}")
     
-    routing_complexity = complexity.routing_construction_complexity(params.num_nodes, 5)
-    print(f"   路由构建: {routing_complexity['time_complexity']} 时间, {routing_complexity['space_complexity']} 空间")
-    
-    overall = complexity.overall_complexity(params.num_nodes)
-    print(f"   整体复杂度: {overall['time_complexity']} 时间, {overall['space_complexity']} 空间")
-    
-    # 理论分析
-    print("\n🎯 理论性能边界分析:")
-    analyzer = TheoreticalAnalyzer(params)
-    bounds = analyzer.performance_bounds_analysis()
-    
-    print(f"   理论最小能耗/轮: {bounds['min_energy_per_round']:.6f} J")
-    print(f"   理论最大生存时间: {bounds['max_network_lifetime']} 轮")
-    print(f"   理论最优簇头数: {bounds['optimal_cluster_heads']}")
-    print(f"   理论能效上界: {bounds['theoretical_efficiency']:.1f}")
-    
-    # 约束条件验证
-    print("\n✅ 约束条件验
+    # 绾︽潫鏉′欢楠岃瘉
+    print("\n[OK] End of theoretical condition checks")

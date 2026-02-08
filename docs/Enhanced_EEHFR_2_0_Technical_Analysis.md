@@ -1,4 +1,4 @@
-# Enhanced EEHFR 2.0 技术分析报告
+# Enhanced AERIS 2.0 技术分析报告
 ## WSN基础概念与数学公式详解
 
 ### 1. WSN (无线传感器网络) 基础概念
@@ -27,7 +27,7 @@
 - 节点分组，每组有一个簇头 (Cluster Head, CH)
 - 簇头负责收集组内数据并转发给基站
 
-### 2. Enhanced EEHFR 2.0 算法详解
+### 2. Enhanced AERIS 2.0 算法详解
 
 #### 2.1 算法整体流程
 
@@ -166,7 +166,7 @@ $$\text{PDR} = \frac{\text{Packets Received by Base Station}}{\text{Packets Rece
 - **传输**：链式传递数据到链头，链头发送给基站
 - **能效**：278.32 packets/J
 
-#### 5.2 Enhanced EEHFR 2.0
+#### 5.2 Enhanced AERIS 2.0
 - **策略**：智能簇头选择 + 簇内聚合
 - **传输**：两阶段传输（簇内收集 + 簇头转发）
 - **能效**：293.52 packets/J
@@ -217,4 +217,4 @@ $$\text{PDR} = \frac{\text{Packets Received by Base Station}}{\text{Packets Rece
 
 ### 结论
 
-Enhanced EEHFR 2.0通过多因子簇头选择和两阶段数据传输，实现了相对于PEGASIS协议5.46%的能效提升。这个提升是基于真实的WSN能耗模型和公平的实验对比得出的，具有一定的技术价值和学术意义。
+Enhanced AERIS 2.0通过多因子簇头选择和两阶段数据传输，实现了相对于PEGASIS协议5.46%的能效提升。这个提升是基于真实的WSN能耗模型和公平的实验对比得出的，具有一定的技术价值和学术意义。

@@ -164,7 +164,7 @@ def prove_convergence():
 - 明确说明技术局限性
 
 ### 技术风险
-- 保持现有Enhanced EEHFR作为基线
+- 保持现有Enhanced AERIS作为基线
 - 分阶段验证每个创新点
 - 确保算法可重现性
 

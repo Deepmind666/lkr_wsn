@@ -1,0 +1,46 @@
+﻿# Multi-dataset evaluation plan (template)
+# TODO: fill with verified dataset URLs/paths and scenario mappings.
+
+datasets:
+  - name: intel_lab
+    type: environment
+    path: data/intel_lab  # TODO
+    schema: docs/data_schema.md
+    notes: "Primary dataset"
+  - name: sensorscope
+    type: environment
+    path: data/sensorscope  # TODO
+    schema: docs/data_schema.md
+    notes: "Requires verified download script"
+  - name: link_quality
+    type: link_quality
+    path: data/link_quality  # TODO
+    schema: docs/data_schema.md
+    notes: "RSSI/LQI/SNR validation"
+
+protocols:
+  - LEACH
+  - HEED
+  - PEGASIS
+  - SEP
+  - TEEN
+  - AERIS_E
+  - AERIS_R
+
+common_config:
+  phy_energy: configs/phy_energy.yaml
+  baseline_params: configs/baseline_params.yaml
+
+metrics:
+  - pdr
+  - energy_total_j
+  - energy_per_success_j
+  - control_overhead_packets
+  - control_overhead_bytes
+  - latency_ms  # only if measured
+
+statistics:
+  ci: bootstrap
+  ci_level: 0.95
+  multiple_testing: holm_bonferroni
+  effect_size: cohens_d

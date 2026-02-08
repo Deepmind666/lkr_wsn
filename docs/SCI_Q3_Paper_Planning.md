@@ -40,7 +40,7 @@
 
 ### 🎯 **论文标题** (3个备选)
 1. **"Enhanced Energy-Efficient Hybrid Fuzzy Routing Protocol for Wireless Sensor Networks: A Multi-Objective Optimization Approach"**
-2. **"EEHFR: An Energy-Efficient Routing Protocol Using Fuzzy Logic and Particle Swarm Optimization for WSNs"**
+2. **"AERIS: An Energy-Efficient Routing Protocol Using Fuzzy Logic and Particle Swarm Optimization for WSNs"**
 3. **"Multi-Objective Energy Optimization in Wireless Sensor Networks: A Hybrid Fuzzy-PSO Approach"**
 
 **推荐**: 标题2，简洁明确，突出技术特点
@@ -53,7 +53,7 @@
 ```
 结构框架：
 - 问题陈述 (30词): WSN能耗问题的重要性
-- 方法概述 (60词): EEHFR协议的核心技术
+- 方法概述 (60词): AERIS协议的核心技术
 - 实验验证 (40词): 基于Intel数据集的对比实验
 - 主要结果 (30词): 7.9%能耗改进，8.6%能效提升
 
@@ -104,7 +104,7 @@ Particle Swarm Optimization, Routing Protocol
 - 多目标优化问题表述
 ```
 
-#### **4. Enhanced EEHFR Protocol Design (1200-1500词)**
+#### **4. Enhanced AERIS Protocol Design (1200-1500词)**
 ```
 4.1 协议总体架构 (300词)
 - 三层优化结构
@@ -216,7 +216,7 @@ Particle Swarm Optimization, Routing Protocol
 │ HEED            │ 48.468   │ 275.8轮    │ 45,803      │ -78.5%   │
 │ LEACH           │ 24.160   │ 450.2轮    │ 91,895      │ -56.8%   │
 │ PEGASIS         │ 11.329   │ 500.0轮    │ 195,968     │ -7.9%    │
-│ Enhanced EEHFR  │ 10.432   │ 500.0轮    │ 212,847     │ 基准     │
+│ Enhanced AERIS  │ 10.432   │ 500.0轮    │ 212,847     │ 基准     │
 └─────────────────┴──────────┴────────────┴─────────────┴──────────┘
 
 关键指标：

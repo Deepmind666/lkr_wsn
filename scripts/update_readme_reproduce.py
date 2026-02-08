@@ -37,8 +37,8 @@ AETHER supports quick profiles:
 
 Example:
 ```
-from integrated_enhanced_eehfr import IntegratedEnhancedEEHFRProtocol
-proto = IntegratedEnhancedEEHFRProtocol(cfg, enable_gateway=True, profile='robust')
+from aeris_protocol import AerisProtocol
+proto = AerisProtocol(cfg, enable_gateway=True, profile='robust')
 ```
 
 - Metric semantics

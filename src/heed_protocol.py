@@ -16,6 +16,27 @@ import math
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 from enum import Enum
+try:
+    from realistic_channel_model import RealisticChannelModel, EnvironmentType
+except Exception:
+    RealisticChannelModel = None
+    EnvironmentType = None
+
+
+def _resolve_channel_env(env):
+    if EnvironmentType is None:
+        return None
+    if isinstance(env, EnvironmentType):
+        return env
+    if isinstance(env, str):
+        key = env.strip().lower()
+        for item in EnvironmentType:
+            if item.value == key:
+                return item
+        for item in EnvironmentType:
+            if item.name.lower() == key:
+                return item
+    return EnvironmentType.INDOOR_OFFICE
 
 class NodeState(Enum):
     UNCOVERED = "uncovered"
@@ -65,6 +86,13 @@ class HEEDConfig:
     network_height: float = 100.0
     base_station_x: float = 50.0
     base_station_y: float = 50.0
+    enable_channel: bool = False
+    channel_env: Optional[str] = None
+    tx_power_dbm: float = 0.0
+    temperature_c: float = 25.0
+    humidity_ratio: float = 0.5
+    link_retx: int = 0
+    link_retx_power_step: float = 0.0
 
 class HEEDProtocol:
     """HEED Protocol Implementation"""
@@ -88,6 +116,21 @@ class HEEDProtocol:
             'cluster_heads': [],
             'network_lifetime': 0
         }
+
+        self.source_packets_total = 0
+        self.bs_delivered_total = 0
+        self._all_hop_counts = []
+        self.enable_channel = bool(getattr(config, "enable_channel", False))
+        self.tx_power_dbm = float(getattr(config, "tx_power_dbm", 0.0) or 0.0)
+        self.link_retx = max(0, int(getattr(config, "link_retx", 0) or 0))
+        self.link_retx_power_step = float(getattr(config, "link_retx_power_step", 0.0) or 0.0)
+        self.temperature_c = float(getattr(config, "temperature_c", 25.0) or 25.0)
+        self.humidity_ratio = float(getattr(config, "humidity_ratio", 0.5) or 0.5)
+        if self.enable_channel and RealisticChannelModel is not None:
+            env = _resolve_channel_env(getattr(config, "channel_env", None))
+            self.channel_model = RealisticChannelModel(env)
+        else:
+            self.channel_model = None
     
     def initialize_network(self, node_positions: List[Tuple[float, float]]):
         """Initialize network with given node positions"""
@@ -106,7 +149,14 @@ class HEEDProtocol:
         # Build neighbor lists
         self._build_neighbor_lists()
         self.alive_nodes = len(self.nodes)
-    
+        self.total_energy_consumed = 0.0
+        self.packets_transmitted = 0
+        self.packets_received = 0
+        self.round_number = 0
+        self.source_packets_total = 0
+        self.bs_delivered_total = 0
+        self._all_hop_counts = []
+
     def _build_neighbor_lists(self):
         """Build neighbor lists for all nodes"""
         for i, node in enumerate(self.nodes):
@@ -273,28 +323,42 @@ class HEEDProtocol:
         """Execute communication phase"""
         if not self.clusters:
             return
-        
+
         # Intra-cluster communication
         for ch_id, members in self.clusters.items():
             ch_node = self.nodes[ch_id]
             if ch_node.current_energy <= 0:
                 continue
-            
+
+            payload_packets = 1
+            self.source_packets_total += 1
+
             # Members send data to cluster head
             for member_id in members:
-                if member_id != ch_id:  # Skip cluster head itself
-                    member_node = self.nodes[member_id]
-                    if member_node.current_energy > 0:
-                        self._transmit_data(member_node, ch_node)
-            
+                if member_id == ch_id:
+                    continue
+                member_node = self.nodes[member_id]
+                if member_node.current_energy > 0:
+                    self.source_packets_total += 1
+                    if self._transmit_data(member_node, ch_node):
+                        payload_packets += 1
+
             # Cluster head aggregates and sends to base station
-            if members:
-                self._transmit_to_base_station(ch_node)
-    
-    def _transmit_data(self, sender: HEEDNode, receiver: HEEDNode):
+            if payload_packets > 0 and self._transmit_to_base_station(ch_node):
+                self.bs_delivered_total += payload_packets
+                for _ in range(payload_packets):
+                    self._all_hop_counts.append(2)
+
+    def _transmit_data(self, sender: HEEDNode, receiver: HEEDNode) -> bool:
         """Simulate data transmission between nodes"""
         if sender.current_energy <= 0 or receiver.current_energy <= 0:
-            return
+            return False
+
+        def link_success(distance: float, tx_power: float) -> bool:
+            if self.channel_model is None:
+                return True
+            metrics = self.channel_model.calculate_link_metrics(tx_power, distance, self.temperature_c, self.humidity_ratio)
+            return random.random() < metrics.get("pdr", 0.0)
         
         distance = self._calculate_distance(sender, receiver)
         
@@ -307,21 +371,31 @@ class HEEDProtocol:
         tx_energy = E_elec * packet_bits + E_amp * packet_bits * (distance ** 2)
         rx_energy = E_elec * packet_bits
         
-        # Consume energy
-        sender.current_energy -= tx_energy
-        receiver.current_energy -= rx_energy
-        
-        # Update statistics
-        self.total_energy_consumed += (tx_energy + rx_energy)
-        self.packets_transmitted += 1
-        
-        if receiver.current_energy >= 0:
-            self.packets_received += 1
-    
-    def _transmit_to_base_station(self, ch_node: HEEDNode):
+        for attempt in range(self.link_retx + 1):
+            tx_power = self.tx_power_dbm + attempt * self.link_retx_power_step
+            if sender.current_energy < tx_energy or receiver.current_energy < rx_energy:
+                if sender.current_energy < tx_energy:
+                    sender.current_energy = 0
+                if receiver.current_energy < rx_energy:
+                    receiver.current_energy = 0
+                return False
+
+            # Consume energy
+            sender.current_energy -= tx_energy
+            receiver.current_energy -= rx_energy
+            self.total_energy_consumed += (tx_energy + rx_energy)
+            self.packets_transmitted += 1
+
+            if link_success(distance, tx_power):
+                self.packets_received += 1
+                return True
+
+        return False
+
+    def _transmit_to_base_station(self, ch_node: HEEDNode) -> bool:
         """Transmit aggregated data to base station"""
         if ch_node.current_energy <= 0:
-            return
+            return False
         
         # Distance to base station
         distance = math.sqrt(
@@ -336,37 +410,70 @@ class HEEDProtocol:
         packet_bits = self.config.packet_size * 8
         tx_energy = E_elec * packet_bits + E_amp * packet_bits * (distance ** 2)
         
-        ch_node.current_energy -= tx_energy
-        self.total_energy_consumed += tx_energy
-        self.packets_transmitted += 1
-        self.packets_received += 1  # Assume base station always receives
+        def link_success(distance: float, tx_power: float) -> bool:
+            if self.channel_model is None:
+                return True
+            metrics = self.channel_model.calculate_link_metrics(tx_power, distance, self.temperature_c, self.humidity_ratio)
+            return random.random() < metrics.get("pdr", 0.0)
+
+        for attempt in range(self.link_retx + 1):
+            tx_power = self.tx_power_dbm + attempt * self.link_retx_power_step
+            if ch_node.current_energy < tx_energy:
+                ch_node.current_energy = 0
+                return False
+            ch_node.current_energy -= tx_energy
+            self.total_energy_consumed += tx_energy
+            self.packets_transmitted += 1
+            if link_success(distance, tx_power):
+                self.packets_received += 1
+                return True
+        return False
     
-    def run_round(self):
+    def run_round(self) -> Dict:
         """Execute one complete round of HEED protocol"""
         self.round_number += 1
-        
+
         # Update alive nodes count
         self.alive_nodes = sum(1 for node in self.nodes if node.current_energy > 0)
-        
+
         if self.alive_nodes == 0:
-            return False
-        
+            return self.get_statistics()
+
         # Clustering phase
-        self.run_clustering_phase()
-        
-        # Communication phase
-        self.run_communication_phase()
-        
+        try:
+            self.run_clustering_phase()
+
+            # Check if clustering was successful
+            if not self.clusters or len(self.clusters) == 0:
+                print(f"[HEED Debug] Round {self.round_number}: No clusters formed")
+                # Fallback: allow some nodes to become self-clustered
+                for node in self.nodes:
+                    if node.current_energy > 0 and node.state == NodeState.UNCOVERED:
+                        node.state = NodeState.FINAL_CH
+                        node.cluster_head_id = node.id
+                        self.clusters[node.id] = [node.id]
+
+        except Exception as e:
+            print(f"[HEED Error] Clustering failed in round {self.round_number}: {e}")
+            return self.get_statistics()
+
+        # Communication phase - limit energy consumption in first round
+        try:
+            self.run_communication_phase()
+        except Exception as e:
+            print(f"[HEED Error] Communication failed in round {self.round_number}: {e}")
+            return self.get_statistics()
+
         # Update statistics
         self.stats['energy_consumed'] = self.total_energy_consumed
         self.stats['packets_transmitted'] = self.packets_transmitted
         self.stats['packets_received'] = self.packets_received
         self.stats['alive_nodes'] = self.alive_nodes
-        self.stats['cluster_heads'] = [ch_id for ch_id in self.clusters.keys() 
+        self.stats['cluster_heads'] = [ch_id for ch_id in self.clusters.keys()
                                      if self.nodes[ch_id].current_energy > 0]
         self.stats['network_lifetime'] = self.round_number
-        
-        return self.alive_nodes > 0
+
+        return self.get_statistics()
     
     def get_statistics(self) -> Dict:
         """Get current protocol statistics"""
@@ -377,9 +484,12 @@ class HEEDProtocol:
             'packets_transmitted': self.packets_transmitted,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': self.packets_received / max(self.packets_transmitted, 1),
+            'packet_delivery_ratio_end2end': self.bs_delivered_total / max(self.source_packets_total, 1),
             'energy_efficiency': self.packets_received / max(self.total_energy_consumed, 1e-9),
             'num_clusters': len(self.clusters),
-            'cluster_heads': list(self.clusters.keys()) if self.clusters else []
+            'cluster_heads': list(self.clusters.keys()) if self.clusters else [],
+            'source_packets_total': self.source_packets_total,
+            'bs_delivered_total': self.bs_delivered_total
         }
     
     def get_final_statistics(self) -> Dict:
@@ -394,10 +504,14 @@ class HEEDProtocol:
             'packets_transmitted': self.packets_transmitted,
             'packets_received': self.packets_received,
             'packet_delivery_ratio': pdr,
+            'packet_delivery_ratio_end2end': self.bs_delivered_total / max(self.source_packets_total, 1),
             'energy_efficiency': energy_efficiency,
             'final_alive_nodes': self.alive_nodes,
             'additional_metrics': {
                 'total_packets_sent': self.packets_transmitted,
-                'total_packets_received': self.packets_received
-            }
+                'total_packets_received': self.packets_received,
+                'source_packets_total': self.source_packets_total,
+                'bs_delivered_total': self.bs_delivered_total
+            },
+            'avg_hops_to_bs': (sum(self._all_hop_counts) / len(self._all_hop_counts)) if self._all_hop_counts else 0,
         }

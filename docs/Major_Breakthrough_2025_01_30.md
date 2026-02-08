@@ -1,18 +1,18 @@
-# 重大突破：集成版Enhanced EEHFR协议成功
+# 重大突破：集成版Enhanced AERIS协议成功
 
 **日期**: 2025年1月30日  
-**里程碑**: 集成版Enhanced EEHFR协议测试成功  
+**里程碑**: 集成版Enhanced AERIS协议测试成功  
 **状态**: 重大技术突破
 
 ---
 
 ## 🎉 **重大成果**
 
-### **集成版Enhanced EEHFR协议性能突破**
+### **集成版Enhanced AERIS协议性能突破**
 
-经过诚实验证和技术集成，我们成功实现了集成版Enhanced EEHFR协议，并取得了**显著的性能突破**：
+经过诚实验证和技术集成，我们成功实现了集成版Enhanced AERIS协议，并取得了**显著的性能突破**：
 
-| 性能指标 | Enhanced EEHFR | LEACH | PEGASIS | 改进幅度 |
+| 性能指标 | Enhanced AERIS | LEACH | PEGASIS | 改进幅度 |
 |----------|----------------|-------|---------|----------|
 | **能效** | **9550.6 packets/J** | 1249.9 | 1164.5 | **+691%** |
 | **总能耗** | **1.466 J** | 12.001 J | 12.881 J | **-88%** |
@@ -32,7 +32,7 @@
 
 ### **1. 完整的组件集成**
 ```python
-class IntegratedEnhancedEEHFRProtocol:
+class IntegratedEnhancedAERISProtocol:
     def __init__(self, config: NetworkConfig):
         # 集成所有优化组件
         self.energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
@@ -69,7 +69,7 @@ class IntegratedEnhancedEEHFRProtocol:
 ### **三协议对比测试** ✅
 - **LEACH**: 能效1249.9 packets/J，投递率0.821
 - **PEGASIS**: 能效1164.5 packets/J，投递率0.967
-- **Enhanced EEHFR**: 能效9550.6 packets/J，投递率0.934
+- **Enhanced AERIS**: 能效9550.6 packets/J，投递率0.934
 
 ### **性能优势分析**
 1. **能效领先**: 比LEACH高663%，比PEGASIS高720%
@@ -141,7 +141,7 @@ class IntegratedEnhancedEEHFRProtocol:
 ## 📝 **重要文件记录**
 
 ### **核心实现文件**
-- `src/integrated_enhanced_eehfr.py`: 集成版Enhanced EEHFR协议主实现
+- `src/integrated_enhanced_eehfr.py`: 集成版Enhanced AERIS协议主实现
 - `src/test_integrated_eehfr.py`: 协议测试和验证脚本
 - `results/integrated_eehfr_test_20250730_115641.json`: 详细测试结果
 
@@ -195,4 +195,4 @@ class IntegratedEnhancedEEHFRProtocol:
 
 ---
 
-**总结**: 今天取得了项目的重大突破，集成版Enhanced EEHFR协议不仅成功运行，而且取得了显著的性能提升。这标志着项目从理论研究成功转向工程实现，具备了发表高质量学术论文的技术基础。下一步将继续优化和完善，向SCI期刊发表的目标迈进。
+**总结**: 今天取得了项目的重大突破，集成版Enhanced AERIS协议不仅成功运行，而且取得了显著的性能提升。这标志着项目从理论研究成功转向工程实现，具备了发表高质量学术论文的技术基础。下一步将继续优化和完善，向SCI期刊发表的目标迈进。

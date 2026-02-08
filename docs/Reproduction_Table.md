@@ -1,0 +1,9 @@
+| 场景 / 图表 | 核心命令 | 种子 / 复现设置 | 主要输出 | 关联图表 |
+|---|---|---|---|---|
+| Intel replay baselines | `python scripts/run_intel_baselines_all.py` | Trace-driven (no RNG) | results/intel_baselines_all.json<br>results/Sensors_figures/paper_intel_baselines_*.pdf | Fig. 1–2 |
+| 50x100 Monte Carlo | `python scripts/run_monte_carlo_uniform.py` | 100 seeds (0–99) | results/monte_carlo_uniform50.json<br>results/for_submission/monte_carlo_stats.md | Fig. 11 |
+| Dynamic corridor (phase shifts) | `python scripts/run_dynamic_corridor_compare.py --replicates 5 --seed-stride 500 --output results/dynamic_corridor_compare_reps.json` | base 55000 + 500×replicate | results/dynamic_corridor_compare_reps.json<br>results/Sensors_figures/paper_dynamic_corridor_compare.pdf | Fig. 3, Fig. 6 |
+| Moving base station corridor | `python scripts/run_dynamic_moving_bs_compare.py --replicates 5 --seed-stride 500 --output results/dynamic_moving_bs_compare_reps.json` | base 56000 + 500×replicate | results/dynamic_moving_bs_compare_reps.json<br>results/Sensors_figures/paper_dynamic_moving_bs_compare.pdf | Fig. 4 |
+| Random dropout stress test | `python scripts/run_dynamic_dropout_compare.py --replicates 5 --seed-stride 500 --output results/dynamic_dropout_compare_reps.json` | base 90001 + 500×replicate | results/dynamic_dropout_compare_reps.json<br>results/Sensors_figures/paper_dynamic_dropout_compare.pdf | Fig. 5 |
+| Large-scale 1000-round simulations | `python scripts/run_large_scale_long.py` | Uniform-300 seed 81001; Uniform-500 seed 82001 | results/large_scale_long.json<br>results/Sensors_figures/paper_large_scale_compare.pdf | Fig. 8–10 |
+| Dynamic diagnostics (cluster radius / CH->BS / gateway) | `python scripts/plot_dynamic_diagnostics.py` | 读取 dynamic_*_compare_reps.json（与对应场景一致） | results/Sensors_figures/paper_dynamic_diagnostics.pdf | Fig. 7 (diagnostics) |

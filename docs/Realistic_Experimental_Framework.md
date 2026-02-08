@@ -222,6 +222,14 @@ industrial_scenario = {
 }
 ```
 
+
+---
+
+Cross-referencing note (for integration during final polishing):
+- For scenarios involving mobility and adversarial link-layer interference beyond our current stationary setup, refer to distributed MADRL routing in tactical mobile sensor networks [CITE:Okine2024_TNSM].
+- For learning-based energy-aware routing under unequal clustering and latency constraints, see DRL-based intelligent routing [CITE:Kaur2021_JIOT].
+- For scalable cooperative control in dense WSNs, mean-field multi-agent routing provides guidance for large-scale coordination [CITE:Ren2024_IoTJ_MeFi].
+
 ### 🌾 **场景2：智慧农业环境**
 ```yaml
 Environment:
@@ -300,7 +308,7 @@ def comprehensive_score(pdr, energy_efficiency, network_lifetime, deployment_com
 - [ ] 记录真实的性能数据
 - [ ] 分析理想vs现实的性能差距
 
-### 📅 **第3阶段：Enhanced EEHFR优化** (3周)
+### 📅 **第3阶段：Enhanced AERIS优化** (3周)
 - [ ] 针对环境挑战优化协议
 - [ ] 增加自适应重传机制
 - [ ] 实现信道质量感知路由
@@ -404,7 +412,7 @@ class EnvironmentalAdaptation:
 - **从**："一种改进的WSN路由协议"
 - **到**："面向真实环境挑战的WSN路由协议设计与评估"
 
-这样的研究将更有**实际价值**和**工程意义**，也更符合SCI期刊对**创新性**和**实用性**的要求。
+这样的研究将更有**实际价值**和**工程意义**，更符合SCI期刊对**创新性**和**实用性**的要求。
 
 ## 📚 **参考文献**
 
@@ -453,26 +461,3 @@ class EnvironmentalAdaptation:
 [19] Polastre, J., et al. (2005). Telos: Enabling ultra-low power wireless research. *Proceedings of the 4th International Symposium on Information Processing in Sensor Networks*.
 
 [20] Langendoen, K., et al. (2006). Murphy loves potatoes: Experiences from a pilot sensor network deployment in precision agriculture. *Proceedings of the 20th International Parallel and Distributed Processing Symposium*.
-
----
-
-## 🎯 **实施建议**
-
-### 📋 **第一步：文献验证**
-1. **深入阅读关键文献** [1,4,5,9] - 理解信道建模的理论基础
-2. **研究仿真工具文档** [15,16,17] - 了解现有工具的实现方法
-3. **分析实际部署案例** [19,20] - 学习真实环境的挑战
-
-### 📋 **第二步：模型实现**
-1. **实现Log-Normal Shadowing模型** - 基于文献[1,2,3]
-2. **集成IEEE 802.15.4链路质量** - 参考文献[6,7,8]
-3. **添加干扰建模** - 基于文献[9,10,11]
-
-### 📋 **第三步：验证与校准**
-1. **与现有仿真工具对比** - 验证模型正确性
-2. **使用公开数据集校准** - 如Intel Lab数据集
-3. **进行敏感性分析** - 确定关键参数
-
----
-
-**这个基于文献的框架将确保我们的研究具有坚实的理论基础和工程实用性！**

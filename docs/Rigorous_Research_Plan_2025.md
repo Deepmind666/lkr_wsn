@@ -235,7 +235,7 @@ LARGE_SCALE_CONFIGS = [
 
 # 多协议对比实验
 PROTOCOL_COMPARISON = [
-    'Enhanced_EEHFR',
+    'Enhanced_AERIS',
     'LEACH',
     'PEGASIS', 
     'HEED',

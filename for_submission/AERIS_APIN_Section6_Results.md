@@ -102,7 +102,34 @@ Scalability experiments use 60 independent seeds per configuration across six no
 
 Full statistical details: `scalability_significance_table.csv` and `scalability_significance_summary.md`.
 
-### 6.5 Summary of Evidence
+### 6.5 Latency Analysis: Hop Count to Base Station (n=30)
+
+Data source:
+- latency_indoor_office_20260208_234902.json
+- latency_indoor_factory_20260208_234929.json
+- latency_outdoor_urban_20260208_234952.json
+- latency_outdoor_suburban_20260209_071707.json
+
+Setup: 100 nodes, 200x200m, 300 rounds, 30 independent seeds per environment.
+Metric: avg_hops_to_bs (average number of hops per successfully delivered packet).
+
+**Table 6.5: Average Hop Count to BS (mean +/- std, n=30)**
+
+| Environment | AERIS | LEACH | PEGASIS | HEED | TEEN |
+|---|---|---|---|---|---|
+| indoor_office | 1.99+/-0.00 | 2.00+/-0.00 | 51.00+/-0.00 | 2.00+/-0.00 | 1.29+/-0.03 |
+| indoor_factory | 1.99+/-0.00 | 2.00+/-0.00 | 51.00+/-0.02 | 2.00+/-0.00 | 1.31+/-0.04 |
+| outdoor_urban | 1.99+/-0.00 | 2.00+/-0.00 | 50.98+/-0.04 | 2.00+/-0.00 | 1.28+/-0.04 |
+| outdoor_suburban | 1.99+/-0.00 | 2.00+/-0.00 | 51.00+/-0.03 | 2.00+/-0.00 | 1.30+/-0.04 |
+
+**Interpretation**:
+
+- AERIS, LEACH, and HEED all exhibit ~2-hop paths (sensor→CH→BS), consistent with their cluster-based architectures. AERIS's gateway relay occasionally shortens paths, yielding 1.99 vs 2.00.
+- PEGASIS's ~51-hop count reflects its chain-based design where data aggregates along the full chain before reaching BS. This is an inherent architectural property, not a deficiency—PEGASIS trades latency for energy efficiency through in-network aggregation.
+- TEEN achieves the lowest hop count (~1.29) because its hard/soft threshold mechanism suppresses transmissions from most nodes; only nodes near the BS with readings exceeding thresholds transmit, resulting in shorter average paths but substantially lower PDR in harsh environments.
+- All differences between AERIS and each baseline are statistically significant (Welch's t-test p < 0.001 in all cases). Full significance table: `latency_hop_significance.csv`.
+
+### 6.6 Summary of Evidence
 
 1) At 100 nodes (n=30), AERIS leads baselines in all four environments (Table 6.1).
 2) CAS multi-mode is triggerable, but higher CHAIN use trades off PDR in sparse

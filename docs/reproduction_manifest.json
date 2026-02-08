@@ -1,0 +1,81 @@
+[
+  {
+    "scenario": "Smoke: AERIS integrated sanity (20/30 nodes)",
+    "command": "python scripts/run_experiments.py --test quick",
+    "seeds": "deterministic (config fixed); timestamped output file",
+    "outputs": [
+      "simple_enhanced_aeris_results_*.json",
+      "simple_enhanced_aeris_chart_*.png"
+    ],
+    "figures": "Sanity only (not for paper); verifies pipeline health"
+  },
+  {
+    "scenario": "Intel replay baselines",
+    "command": "python scripts/run_intel_baselines_all.py",
+    "seeds": "Trace-driven (no RNG)",
+    "outputs": [
+      "results/intel_baselines_all.json",
+      "results/Sensors_figures/paper_intel_baselines_*.pdf"
+    ],
+    "figures": "Fig. 1–2"
+  },
+  {
+    "scenario": "50x100 Monte Carlo",
+    "command": "python scripts/run_monte_carlo_uniform.py",
+    "seeds": "100 seeds (0–99)",
+    "outputs": [
+      "results/monte_carlo_uniform50.json",
+      "results/for_submission/monte_carlo_stats.md"
+    ],
+    "figures": "Fig. 11"
+  },
+  {
+    "scenario": "Dynamic corridor (phase shifts)",
+    "command": "python scripts/run_dynamic_corridor_compare.py --replicates 5 --seed-stride 500 --output results/dynamic_corridor_compare_reps.json",
+    "seeds": "base 55000 + 500×replicate",
+    "outputs": [
+      "results/dynamic_corridor_compare_reps.json",
+      "results/Sensors_figures/paper_dynamic_corridor_compare.pdf"
+    ],
+    "figures": "Fig. 3, Fig. 6"
+  },
+  {
+    "scenario": "Moving base station corridor",
+    "command": "python scripts/run_dynamic_moving_bs_compare.py --replicates 5 --seed-stride 500 --output results/dynamic_moving_bs_compare_reps.json",
+    "seeds": "base 56000 + 500×replicate",
+    "outputs": [
+      "results/dynamic_moving_bs_compare_reps.json",
+      "results/Sensors_figures/paper_dynamic_moving_bs_compare.pdf"
+    ],
+    "figures": "Fig. 4"
+  },
+  {
+    "scenario": "Random dropout stress test",
+    "command": "python scripts/run_dynamic_dropout_compare.py --replicates 5 --seed-stride 500 --output results/dynamic_dropout_compare_reps.json",
+    "seeds": "base 90001 + 500×replicate",
+    "outputs": [
+      "results/dynamic_dropout_compare_reps.json",
+      "results/Sensors_figures/paper_dynamic_dropout_compare.pdf"
+    ],
+    "figures": "Fig. 5"
+  },
+  {
+    "scenario": "Large-scale 1000-round simulations",
+    "command": "python scripts/run_large_scale_long.py",
+    "seeds": "Uniform-300 seed 81001; Uniform-500 seed 82001",
+    "outputs": [
+      "results/large_scale_long.json",
+      "results/Sensors_figures/paper_large_scale_compare.pdf"
+    ],
+    "figures": "Fig. 8–10"
+  },
+  {
+    "scenario": "Dynamic diagnostics (cluster radius / CH->BS / gateway)",
+    "command": "python scripts/plot_dynamic_diagnostics.py",
+    "seeds": "读取 dynamic_*_compare_reps.json（与对应场景一致）",
+    "outputs": [
+      "results/Sensors_figures/paper_dynamic_diagnostics.pdf"
+    ],
+    "figures": "Fig. 7 (diagnostics)"
+  }
+]

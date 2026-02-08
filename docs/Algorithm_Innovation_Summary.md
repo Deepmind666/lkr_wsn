@@ -1,20 +1,20 @@
-# Enhanced EEHFR Algorithm Innovation Summary & Future Roadmap
+# AERIS Algorithm Innovation Summary & Future Roadmap
 
 ## 📁 关键文件路径记录
-- **主项目目录**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\`
-- **核心算法**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\src\EEHFR_protocol.py`
-- **数据加载器**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\src\intel_dataset_loader.py`
-- **实验结果**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\results\latest_results.json`
+- **主项目目录**: `D:\lkr_wsn\AERIS-WSN-Protocol\`
+- **核心算法**: `D:\lkr_wsn\AERIS-WSN-Protocol\src\AERIS_protocol.py`
+- **数据加载器**: `D:\lkr_wsn\AERIS-WSN-Protocol\src\intel_dataset_loader.py`
+- **实验结果**: `D:\lkr_wsn\AERIS-WSN-Protocol\results\latest_results.json`
 - **深度调研**: `D:\lkr_wsn\wsn调研.txt` (433行核心洞察)
-- **性能数据**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\results\WSN_Performance_Data.md`
-- **精美图表**: `D:\lkr_wsn\Enhanced-EEHFR-WSN-Protocol\results\Enhanced_EEHFR_Premium_Analysis_20250729_195231.png`
+- **性能数据**: `D:\lkr_wsn\AERIS-WSN-Protocol\results\WSN_Performance_Data.md`
+- **精美图表**: `D:\lkr_wsn\AERIS-WSN-Protocol\results\AERIS_Premium_Analysis_20250729_195231.png`
 
 ## 🚀 核心算法创新点 (基于最新文献验证)
 
 ### 1. 混合智能优化架构 ⚠️ **需要重新评估**
 ```python
 # 三层优化结构
-class EnhancedEEHFR:
+class AerisPrototype:
     def __init__(self):
         self.fuzzy_engine = FuzzyLogicEngine()      # 模糊逻辑决策
         self.pso_optimizer = PSOOptimizer()         # 粒子群优化
@@ -80,7 +80,7 @@ def energy_aware_routing(self, source, destination, available_paths):
 | HEED | 48.468 | 275.8 | 45,803 | -78.5% |
 | LEACH | 24.160 | 450.2 | 91,895 | -56.8% |
 | PEGASIS | 11.329 | 500.0 | 195,968 | -7.9% |
-| **Enhanced EEHFR** | **10.432** | **500.0** | **212,847** | **基准** |
+| **Enhanced AERIS** | **10.432** | **500.0** | **212,847** | **基准** |
 
 ### 关键成就 (实事求是评估)
 - ✅ **能耗优化**: 相比PEGASIS降低7.9%能耗 (实际测量值)
@@ -132,7 +132,7 @@ WSN_Architecture = {
 ### Phase 1: 安全增强 (1-2个月)
 ```python
 # 安全模块集成
-class SecurityEnhancedEEHFR(EnhancedEEHFR):
+class SecurityEnhancedAERIS(EnhancedAERIS):
     def __init__(self):
         super().__init__()
         self.intrusion_detector = IntrusionDetectionSystem()
@@ -253,7 +253,7 @@ class SystemLevelOptimization:
 
 ### 论文结构 (基于实际内容)
 1. Introduction & Related Work
-2. Enhanced EEHFR Algorithm Design ✅ **已完成**
+2. Enhanced AERIS Algorithm Design ✅ **已完成**
 3. Performance Evaluation & Comparison ✅ **已完成**
 4. Security Considerations (可选扩展)
 5. Conclusion & Future Work

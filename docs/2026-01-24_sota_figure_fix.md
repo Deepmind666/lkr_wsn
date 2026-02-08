@@ -29,6 +29,12 @@
 - `for_submission/figures/sota_comparison_6panel.png`
 - `for_submission/figures/sota_comparison_6panel.svg`
 
+## Paper Draft Update (Same-Day)
+- Updated SOTA comparison paragraph + caption in `for_submission/aeris_paper_final.tex`
+  to match the new 7-protocol SOTA figure (LEACH/HEED/PEGASIS/SEP/TEEN + AERIS‑E/R).
+- Replaced outdated numbers (n=60, 94.6% PDR, etc.) with values from
+  `results/sota_comparison.json` (n=30 runs).
+
 ## Notes / Next Checks
 - Confirm panel (c) shows all protocols (LEACH/HEED/PEGASIS/SEP/TEEN) vs both AERIS‑E/AERIS‑R.
 - Confirm panel (f) text legibility at 100% zoom in the compiled PDF.

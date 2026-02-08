@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-强化学习增强的Enhanced EEHFR协议 (RL-Enhanced EEHFR)
+强化学习增强的Enhanced AERIS协议 (RL-AERIS)
 
-基于Q-Learning的自适应路由决策：
+基于Q-Learning的自适应路由决策�?
 1. 智能下一跳选择
 2. 自适应环境学习
-3. 多目标奖励函数优化
-4. 分布式学习机制
+3. 多目标奖励函数优�?
+4. 分布式学习机�?
 
 基于2024年顶级期刊ML+WSN研究成果
-作者: Enhanced EEHFR Research Team
+作�? AERIS Research Team
 日期: 2025-01-31
 版本: 1.0 (Machine Learning Integration)
 """
@@ -35,9 +35,9 @@ from improved_energy_model import ImprovedEnergyModel, HardwarePlatform
 
 @dataclass
 class RLNode(Node):
-    """强化学习节点类"""
+    """强化学习节点�?""
     
-    # RL相关属性
+    # RL相关属�?
     q_table: Dict = None
     state_history: List = None
     action_history: List = None
@@ -67,7 +67,7 @@ class RLNode(Node):
             self.reward_history = deque(maxlen=100)
 
 class QLearningAgent:
-    """Q-Learning智能体"""
+    """Q-Learning智能�?""
     
     def __init__(self, node_id: int, learning_rate: float = 0.1, 
                  discount_factor: float = 0.9, epsilon: float = 0.1):
@@ -78,7 +78,7 @@ class QLearningAgent:
         self.epsilon_decay = 0.995
         self.min_epsilon = 0.01
         
-        # Q表：状态 -> 动作 -> Q值
+        # Q表：状�?-> 动作 -> Q�?
         self.q_table = defaultdict(lambda: defaultdict(float))
         
         # 经验回放
@@ -93,19 +93,19 @@ class QLearningAgent:
         discretized = []
         
         for feature in state_features:
-            # 将[0,1]范围的特征离散化为10个区间
+            # 将[0,1]范围的特征离散化�?0个区�?
             discrete_value = min(9, int(feature * 10))
             discretized.append(discrete_value)
         
         return tuple(discretized)
     
     def get_q_value(self, state: Tuple, action: int) -> float:
-        """获取Q值"""
+        """获取Q�?""
         discrete_state = self.discretize_state(state)
         return self.q_table[discrete_state][action]
     
     def select_action(self, state: Tuple, available_actions: List[int]) -> int:
-        """选择动作（ε-贪婪策略）"""
+        """选择动作（�?贪婪策略�?""
         if not available_actions:
             return -1
         
@@ -117,20 +117,20 @@ class QLearningAgent:
             q_values = [self.get_q_value(state, action) for action in available_actions]
             max_q = max(q_values)
             
-            # 如果有多个最优动作，随机选择一个
+            # 如果有多个最优动作，随机选择一�?
             best_actions = [action for action, q in zip(available_actions, q_values) if q == max_q]
             return random.choice(best_actions)
     
     def update_q_value(self, state: Tuple, action: int, reward: float, 
                       next_state: Tuple, next_available_actions: List[int]):
-        """更新Q值"""
+        """更新Q�?""
         discrete_state = self.discretize_state(state)
         discrete_next_state = self.discretize_state(next_state)
         
-        # 当前Q值
+        # 当前Q�?
         current_q = self.q_table[discrete_state][action]
         
-        # 下一状态的最大Q值
+        # 下一状态的最大Q�?
         if next_available_actions:
             max_next_q = max([self.q_table[discrete_next_state][a] for a in next_available_actions])
         else:
@@ -167,24 +167,24 @@ class QLearningAgent:
         }
 
 class StateExtractor:
-    """状态特征提取器"""
+    """状态特征提取器""
     
     def __init__(self):
         self.feature_names = [
-            'normalized_energy',    # 归一化剩余能量
-            'distance_to_bs',      # 到基站的归一化距离
+            'normalized_energy',    # 归一化剩余能�?
+            'distance_to_bs',      # 到基站的归一化距�?
             'neighbor_density',    # 邻居密度
             'environment_factor',  # 环境因子
             'load_factor'         # 负载因子
         ]
     
     def extract_state(self, node: RLNode, network_info: Dict) -> Tuple[float, ...]:
-        """提取节点状态特征"""
+        """提取节点状态特�?""
         
-        # 1. 归一化剩余能量
+        # 1. 归一化剩余能�?
         normalized_energy = node.current_energy / node.initial_energy
         
-        # 2. 到基站的归一化距离
+        # 2. 到基站的归一化距�?
         bs_distance = math.sqrt(
             (node.x - network_info['bs_x'])**2 + 
             (node.y - network_info['bs_y'])**2
@@ -219,7 +219,7 @@ class StateExtractor:
         return state
 
 class RewardCalculator:
-    """奖励函数计算器"""
+    """奖励函数计算�?""
     
     def __init__(self, energy_weight: float = 0.4, success_weight: float = 0.4, 
                  delay_weight: float = 0.2):
@@ -228,7 +228,7 @@ class RewardCalculator:
         self.delay_weight = delay_weight
     
     def calculate_reward(self, transmission_result: Dict) -> float:
-        """计算多目标奖励函数"""
+        """计算多目标奖励函�?""
         
         # 1. 能耗奖励（负奖励，鼓励低能耗）
         energy_consumed = transmission_result.get('energy_consumed', 0)
@@ -238,7 +238,7 @@ class RewardCalculator:
         success = transmission_result.get('success', False)
         success_reward = 10.0 if success else -10.0
         
-        # 3. 延迟奖励（负奖励，鼓励低延迟）
+        # 3. 延迟奖励（负奖励，鼓励低延迟�?
         delay = transmission_result.get('delay', 0)
         delay_reward = -delay * 0.1
         
@@ -255,18 +255,22 @@ class RewardCalculator:
         
         return total_reward
 
-class RLEnhancedEEHFRProtocol:
-    """强化学习增强的Enhanced EEHFR协议"""
+class RLAERISProtocol:
+    """强化学习增强的Enhanced AERIS协议"""
     
     def __init__(self, config: NetworkConfig):
         self.config = config
         
-        # 初始化组件
+        # 环境参数缓存，确保能耗模型考虑温湿度影�?
+        self.temperature_c = getattr(config, 'temperature_c', 25.0)
+        self.humidity_ratio = getattr(config, 'humidity_ratio', 0.5)
+        
+        # 初始化组�?
         self.energy_model = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
         self.state_extractor = StateExtractor()
         self.reward_calculator = RewardCalculator()
         
-        # 网络状态
+        # 网络状�?
         self.nodes: List[RLNode] = []
         self.rl_agents: Dict[int, QLearningAgent] = {}
         self.current_round = 0
@@ -279,13 +283,13 @@ class RLEnhancedEEHFRProtocol:
         
         # 学习参数
         self.learning_enabled = True
-        self.exploration_rounds = 100  # 前100轮主要用于探索
+        self.exploration_rounds = 100  # �?00轮主要用于探�?
         
-        # 初始化网络
+        # 初始化网�?
         self._initialize_network()
     
     def _initialize_network(self):
-        """初始化网络节点和RL智能体"""
+        """初始化网络节点和RL智能�?""
         
         self.nodes = []
         self.rl_agents = {}
@@ -306,7 +310,7 @@ class RLEnhancedEEHFRProtocol:
             )
             self.nodes.append(node)
             
-            # 为每个节点创建RL智能体
+            # 为每个节点创建RL智能�?
             self.rl_agents[i] = QLearningAgent(
                 node_id=i,
                 learning_rate=0.1,
@@ -340,23 +344,23 @@ class RLEnhancedEEHFRProtocol:
         target_ch_count = max(1, int(len(alive_nodes) * 0.1))
         network_info = self._get_network_info()
         
-        # 重置簇头状态
+        # 重置簇头状�?
         for node in alive_nodes:
             node.is_cluster_head = False
             node.cluster_id = -1
         
-        # 为每个节点计算成为簇头的Q值
+        # 为每个节点计算成为簇头的Q�?
         ch_candidates = []
         
         for node in alive_nodes:
             state = self.state_extractor.extract_state(node, network_info)
             agent = self.rl_agents[node.id]
             
-            # 动作：成为簇头(1) 或 不成为簇头(0)
-            q_ch = agent.get_q_value(state, 1)  # 成为簇头的Q值
-            q_member = agent.get_q_value(state, 0)  # 成为成员的Q值
+            # 动作：成为簇�?1) �?不成为簇�?0)
+            q_ch = agent.get_q_value(state, 1)  # 成为簇头的Q�?
+            q_member = agent.get_q_value(state, 0)  # 成为成员的Q�?
             
-            # 簇头倾向性得分
+            # 簇头倾向性得�?
             ch_preference = q_ch - q_member + node.current_energy / node.initial_energy
             ch_candidates.append((node, ch_preference))
         
@@ -364,13 +368,13 @@ class RLEnhancedEEHFRProtocol:
         ch_candidates.sort(key=lambda x: x[1], reverse=True)
         selected_chs = [candidate[0] for candidate in ch_candidates[:target_ch_count]]
         
-        # 设置簇头状态
+        # 设置簇头状�?
         for i, ch in enumerate(selected_chs):
             ch.is_cluster_head = True
             ch.cluster_id = i
     
     def _form_clusters(self):
-        """形成簇结构"""
+        """形成簇结�?""
         cluster_heads = [node for node in self.nodes if node.is_cluster_head and node.is_alive]
         member_nodes = [node for node in self.nodes if not node.is_cluster_head and node.is_alive]
         
@@ -392,7 +396,7 @@ class RLEnhancedEEHFRProtocol:
                 member.cluster_id = best_cluster_head.cluster_id
     
     def _rl_next_hop_selection(self, sender: RLNode, candidates: List[RLNode]) -> Optional[RLNode]:
-        """使用RL选择下一跳节点"""
+        """使用RL选择下一跳节�?""
         if not candidates:
             return None
         
@@ -406,7 +410,7 @@ class RLEnhancedEEHFRProtocol:
         # 使用RL智能体选择动作
         selected_action = agent.select_action(state, available_actions)
         
-        # 找到对应的节点
+        # 找到对应的节�?
         selected_node = next((node for node in candidates if node.id == selected_action), None)
         
         # 记录状态和动作
@@ -416,7 +420,7 @@ class RLEnhancedEEHFRProtocol:
         return selected_node
     
     def _execute_transmission(self, sender: RLNode, receiver: RLNode) -> Dict:
-        """执行传输并返回结果"""
+        """执行传输并返回结�?""
         if not sender.is_alive or not receiver.is_alive:
             return {'success': False, 'energy_consumed': 0, 'delay': 0}
         
@@ -431,11 +435,15 @@ class RLEnhancedEEHFRProtocol:
         else:
             tx_power = 5.0   # 5 dBm
         
-        # 计算能耗
+        # 计算能耗（显式传递温湿度参数�?
         tx_energy = self.energy_model.calculate_transmission_energy(
-            self.config.packet_size * 8, distance, tx_power
+            self.config.packet_size * 8, distance, tx_power,
+            temperature_c=self.temperature_c, humidity_ratio=self.humidity_ratio
         )
-        rx_energy = self.energy_model.calculate_reception_energy(self.config.packet_size * 8)
+        rx_energy = self.energy_model.calculate_reception_energy(
+            self.config.packet_size * 8,
+            temperature_c=self.temperature_c, humidity_ratio=self.humidity_ratio
+        )
         
         # 更新能量
         sender.current_energy -= tx_energy
@@ -445,7 +453,7 @@ class RLEnhancedEEHFRProtocol:
         sender.total_energy_consumed += tx_energy
         receiver.total_energy_consumed += rx_energy
         
-        # 检查节点状态
+        # 检查节点状�?
         if sender.current_energy <= 0:
             sender.is_alive = False
             sender.current_energy = 0
@@ -454,7 +462,7 @@ class RLEnhancedEEHFRProtocol:
             receiver.current_energy = 0
         
         # 计算成功率（简化模型）
-        success_rate = 0.95 - (distance / 100) * 0.1  # 距离越远成功率越低
+        success_rate = 0.95 - (distance / 100) * 0.1  # 距离越远成功率越�?
         success = random.random() < success_rate
         
         # 计算延迟（简化模型）
@@ -468,7 +476,7 @@ class RLEnhancedEEHFRProtocol:
         }
     
     def _update_rl_agents(self, transmission_results: List[Dict]):
-        """更新RL智能体"""
+        """更新RL智能�?""
         if not self.learning_enabled:
             return
         
@@ -495,7 +503,7 @@ class RLEnhancedEEHFRProtocol:
                              if node.is_alive and node.id != sender.id]
             available_actions = [node.id for node in alive_neighbors]
             
-            # 更新Q值
+            # 更新Q�?
             agent = self.rl_agents[sender_id]
             agent.update_q_value(prev_state, action, reward, current_state, available_actions)
             
@@ -536,16 +544,17 @@ class RLEnhancedEEHFRProtocol:
         
         for ch in cluster_heads:
             if ch.current_energy > 0:
-                # 簇头向基站发送数据
+                # 簇头向基站发送数�?
                 # 这里简化为直接传输，实际可以使用RL选择中继节点
                 bs_distance = math.sqrt(
                     (ch.x - self.config.base_station_x)**2 + 
                     (ch.y - self.config.base_station_y)**2
                 )
                 
-                # 计算传输能耗
+                # 计算传输能耗（显式传递温湿度参数�?
                 tx_energy = self.energy_model.calculate_transmission_energy(
-                    self.config.packet_size * 8, bs_distance, 0.0
+                    self.config.packet_size * 8, bs_distance, 0.0,
+                    temperature_c=self.temperature_c, humidity_ratio=self.humidity_ratio
                 )
                 
                 ch.current_energy -= tx_energy
@@ -555,7 +564,7 @@ class RLEnhancedEEHFRProtocol:
                     ch.is_alive = False
                     ch.current_energy = 0
                 
-                # 基站传输成功率较高
+                # 基站传输成功率较�?
                 success = random.random() < 0.98
                 delay = bs_distance * 0.001
                 
@@ -605,22 +614,23 @@ class RLEnhancedEEHFRProtocol:
         self.round_statistics.append(round_stats)
     
     def run_simulation(self, max_rounds: int) -> Dict[str, Any]:
-        """运行RL增强的EEHFR仿真"""
+        """运行RL增强的AERIS仿真"""
         
-        print(f"🤖 开始强化学习增强的Enhanced EEHFR协议仿真")
-        print(f"   节点数量: {len(self.nodes)}")
-        print(f"   最大轮数: {max_rounds}")
-        print(f"   探索轮数: {self.exploration_rounds}")
+        print(f"[RL] Round {round_num}: switched to exploitation mode")
+        print(f"[INFO] Start RL-enhanced AERIS simulation")
+        print(f"   Node count: {len(self.nodes)}")
+        print(f"   Max rounds: {max_rounds}")
+        print(f"   Exploration rounds: {self.exploration_rounds}")
         
         start_time = time.time()
         
         for round_num in range(max_rounds):
             self.current_round = round_num
             
-            # 检查是否还有存活节点
+            # 检查是否还有存活节�?
             alive_nodes = [node for node in self.nodes if node.is_alive]
             if len(alive_nodes) < 2:
-                print(f"💀 网络在第 {round_num} 轮结束生命周期")
+                print(f"Network terminated at round {round_num} (no alive nodes)")
                 break
             
             # 定期重新选择簇头
@@ -630,7 +640,7 @@ class RLEnhancedEEHFRProtocol:
             
             # 调整学习参数
             if round_num == self.exploration_rounds:
-                print(f"🎯 第 {round_num} 轮：切换到利用模式")
+                print(f"[RL] Round {round_num}: switched to exploitation mode")
                 for agent in self.rl_agents.values():
                     agent.epsilon = 0.1
             
@@ -643,13 +653,13 @@ class RLEnhancedEEHFRProtocol:
             # 合并传输结果
             all_results = collection_results + forwarding_results
             
-            # 更新RL智能体
+            # 更新RL智能�?
             self._update_rl_agents(all_results)
             
             # 收集统计信息
             self._collect_round_statistics(round_num, all_results)
             
-            # 更新总统计
+            # 更新总统�?
             self.total_packets_sent += len(all_results)
             self.total_packets_received += sum(1 for r in all_results if r['success'])
             self.total_energy_consumed += sum(r['energy_consumed'] for r in all_results)
@@ -657,15 +667,15 @@ class RLEnhancedEEHFRProtocol:
             # 定期输出进度
             if round_num % 50 == 0:
                 avg_reward = sum(sum(node.reward_history) for node in self.nodes if node.reward_history) / len(alive_nodes)
-                print(f"   轮数 {round_num}: 存活节点 {len(alive_nodes)}, 平均奖励 {avg_reward:.2f}")
+                print(f"   Round {round_num}: alive {len(alive_nodes)}, avg reward {avg_reward:.2f}")
         
         execution_time = time.time() - start_time
         
-        # 生成最终结果
+        # 生成最终结�?
         return self._generate_final_results(execution_time)
     
     def _generate_final_results(self, execution_time: float) -> Dict[str, Any]:
-        """生成最终结果"""
+        """生成最终结�?""
         
         final_alive_nodes = sum(1 for node in self.nodes if node.is_alive)
         network_lifetime = len(self.round_statistics)
@@ -685,17 +695,17 @@ class RLEnhancedEEHFRProtocol:
         total_failed = sum(node.failed_transmissions for node in self.nodes)
         success_rate = total_successful / (total_successful + total_failed) if (total_successful + total_failed) > 0 else 0
         
-        # 智能体学习统计
+        # 智能体学习统�?
         agent_stats = {}
         for node_id, agent in self.rl_agents.items():
             agent_stats[node_id] = agent.get_learning_stats()
         
-        print(f"✅ RL增强仿真完成，网络在 {network_lifetime} 轮后结束")
-        print(f"   学习成功率: {success_rate:.3f}")
-        print(f"   平均Q表大小: {np.mean([stats['q_table_size'] for stats in agent_stats.values()]):.1f}")
+        print(f"[OK] RL-enhanced simulation finished: network ended after {network_lifetime} rounds")
+        print(f"   Learning success rate: {success_rate:.3f}")
+        print(f"   Average Q-table size: {np.mean([stats['q_table_size'] for stats in agent_stats.values()]):.1f}")
         
         return {
-            'protocol': 'RL_Enhanced_EEHFR',
+            'protocol': 'RL_AERIS',
             'network_lifetime': network_lifetime,
             'total_energy_consumed': self.total_energy_consumed,
             'final_alive_nodes': final_alive_nodes,
@@ -727,10 +737,10 @@ class RLEnhancedEEHFRProtocol:
 
 
 # 测试函数
-def test_rl_enhanced_eehfr():
-    """测试强化学习增强的EEHFR协议"""
+def test_RL_AERIS():
+    """测试强化学习增强的AERIS协议"""
     
-    print("🤖 测试强化学习增强的Enhanced EEHFR协议")
+    print("Test RL-enhanced AERIS protocol")
     print("=" * 70)
     
     # 网络配置
@@ -745,32 +755,23 @@ def test_rl_enhanced_eehfr():
     )
     
     # 创建协议实例
-    protocol = RLEnhancedEEHFRProtocol(config)
+    protocol = RLAERISProtocol(config)
     
     # 运行仿真
     result = protocol.run_simulation(200)
     
     # 输出结果
-    print(f"\n📊 测试结果:")
-    print(f"   网络生存时间: {result['network_lifetime']} 轮")
-    print(f"   总能耗: {result['total_energy_consumed']:.3f} J")
-    print(f"   能效: {result['energy_efficiency']:.1f} packets/J")
-    print(f"   数据包投递率: {result['packet_delivery_ratio']:.3f}")
-    print(f"   学习成功率: {result['rl_metrics']['learning_success_rate']:.3f}")
-    print(f"   平均Q表大小: {result['rl_metrics']['average_q_table_size']:.1f}")
-    print(f"   最终ε值: {result['rl_metrics']['final_epsilon']:.3f}")
+    print(f"\n[RESULT] Test result:")
+    print(f"   Network lifetime: {result['network_lifetime']} rounds")
+    print(f"   Total energy: {result['total_energy_consumed']:.3f} J")
+    print(f"   Energy efficiency: {result['energy_efficiency']:.1f} packets/J")
+    print(f"   Packet delivery ratio: {result['packet_delivery_ratio']:.3f}")
+    print(f"   Learning success rate: {result['rl_metrics']['learning_success_rate']:.3f}")
+    print(f"   Average Q-table size: {result['rl_metrics']['average_q_table_size']:.1f}")
+    print(f"   Final epsilon: {result['rl_metrics']['final_epsilon']:.3f}")
     
     return result
 
 
 if __name__ == "__main__":
-    test_rl_enhanced_eehfr()
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-强化学习增强的Enhanced EEHFR协议 (RL-Enhanced EEHFR)
-
-基于Q-Learning的自适应路由决策：
-1. 智能下一跳选择
-2. 自适应环境学习
-3. 多目
+    test_RL_AERIS()
