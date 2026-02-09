@@ -18,11 +18,11 @@ Do not launch extra experiments.
 ```powershell
 powershell -File C:\AERIS-WSN-Protocol\scripts\run_overnight_scalability_10h.ps1 `
   -Replicates 550 `
-  -Workers 14 `
+  -Workers 12 `
   -Nodes "100,200,300,500,800,1000" `
   -Rounds 300 `
-  -MaxCpuPercent 70 `
-  -MaxMemPercent 70 `
+  -MaxCpuPercent 65 `
+  -MaxMemPercent 65 `
   -Environments "indoor_office,outdoor_suburban"
 ```
 
@@ -70,4 +70,4 @@ Still to verify:
 - No manuscript edits.
 - No `src/` code edits.
 - No parameter changes without approval.
-- No run above CPU 70% or MEM 70%.
+- No run above CPU 65% or MEM 65%.

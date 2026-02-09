@@ -5,8 +5,8 @@
 This SOP defines one safe and reproducible workflow for long-running publication-tier experiments.
 
 Hard safety limits:
-- CPU usage <= 70%
-- Memory usage <= 70%
+- CPU usage <= 65%
+- Memory usage <= 65%
 - No unapproved experiment expansion
 
 ## 2. Role Split
@@ -29,9 +29,9 @@ Run all checks before any long run:
 1. `git rev-parse --short=8 HEAD` is the same on local and server.
 2. `scripts/run_overnight_scalability_10h.ps1` and `scripts/run_scalability_experiment.py` are synced.
 3. Resource limits are explicitly set:
-   - `Workers=14`
-   - `MaxCpuPercent=70`
-   - `MaxMemPercent=70`
+   - `Workers=12`
+   - `MaxCpuPercent=65`
+   - `MaxMemPercent=65`
 4. Experiment config is fixed:
    - `Replicates=550`
    - `Nodes=100,200,300,500,800,1000`
@@ -47,11 +47,11 @@ Run all checks before any long run:
 ```powershell
 powershell -File C:\AERIS-WSN-Protocol\scripts\run_overnight_scalability_10h.ps1 `
   -Replicates 550 `
-  -Workers 14 `
+  -Workers 12 `
   -Nodes "100,200,300,500,800,1000" `
   -Rounds 300 `
-  -MaxCpuPercent 70 `
-  -MaxMemPercent 70 `
+  -MaxCpuPercent 65 `
+  -MaxMemPercent 65 `
   -Environments "indoor_factory,outdoor_urban"
 ```
 
@@ -60,11 +60,11 @@ powershell -File C:\AERIS-WSN-Protocol\scripts\run_overnight_scalability_10h.ps1
 ```powershell
 powershell -File C:\AERIS-WSN-Protocol\scripts\run_overnight_scalability_10h.ps1 `
   -Replicates 550 `
-  -Workers 14 `
+  -Workers 12 `
   -Nodes "100,200,300,500,800,1000" `
   -Rounds 300 `
-  -MaxCpuPercent 70 `
-  -MaxMemPercent 70 `
+  -MaxCpuPercent 65 `
+  -MaxMemPercent 65 `
   -Environments "indoor_office,outdoor_suburban"
 ```
 
@@ -112,8 +112,8 @@ If machine stability degrades:
 Stop-Process -Id <pid> -Force
 ```
 2. Reduce load and restart failed environments only:
-   - `Workers=12`
-   - Keep `MaxCpuPercent=70`, `MaxMemPercent=70`
+   - `Workers=10`
+   - Keep `MaxCpuPercent=65`, `MaxMemPercent=65`
 3. Do not change seeds, nodes, rounds, or protocols.
 
 ## 8. Reporting Template
