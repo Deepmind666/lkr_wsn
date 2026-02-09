@@ -341,7 +341,8 @@ def run_teen(args: Tuple) -> Dict:
             enable_channel=True,
             channel_env=env_name,
         )
-        proto = TEENProtocol(cfg, external_channel_model=channel)
+        cfg.external_channel_model = channel
+        proto = TEENProtocol(cfg)
         proto.initialize_network(positions)
         sim = proto.run_simulation(max_rounds=num_rounds)
 

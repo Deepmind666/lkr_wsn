@@ -113,6 +113,7 @@ class PEGASISProtocol:
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
+        self._all_hop_counts = []
 
         # Construct initial chain
         self.construct_chain()
@@ -360,7 +361,7 @@ class PEGASISProtocol:
                 # Average source->leader hop distance in a chain:
                 # mean_i |i - leader_pos|, then +1 for leader->BS hop.
                 chain_len = len(self.chain)
-                leader_pos = min(max(self.current_leader_index, 0), max(0, chain_len - 1))
+                leader_pos = min(max(leader.chain_position, 0), max(0, chain_len - 1))
                 left_sum = leader_pos * (leader_pos + 1) / 2.0
                 right_count = chain_len - leader_pos - 1
                 right_sum = right_count * (right_count + 1) / 2.0

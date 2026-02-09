@@ -119,6 +119,7 @@ class LEACHProtocol:
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
+        self._all_hop_counts = []
 
         print(f"[OK] LEACH initialization complete")
         print(f"   Nodes: {len(self.nodes)}")

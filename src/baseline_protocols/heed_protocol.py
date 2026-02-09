@@ -120,6 +120,7 @@ class HEEDProtocol:
         self.network_lifetime = 0
         self.energy_consumption_per_round = []
         self.alive_nodes_per_round = []
+        self._all_hop_counts = []
 
         # Initialize neighbor relationships
         self.initialize_neighbors()

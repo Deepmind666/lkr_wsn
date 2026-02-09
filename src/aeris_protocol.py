@@ -292,6 +292,7 @@ class AerisProtocol:
         self._last_bs_delivered_round = 0
         # [NEW] 跳数追踪（用于诊断PDR异常问题）
         self.hop_count_distribution = {}  # {hop_count: frequency}
+        self._all_hop_counts = []  # raw hop counts for all delivered packets
         self.packet_paths = {}  # {packet_id: path_length}
         self.cas_mode_usage_stats = {'DIRECT': 0, 'CHAIN': 0, 'TWO_HOP': 0, 'safety_override': 0}
         self.cas_rule_trigger_counts = {'DIRECT': 0, 'CHAIN': 0, 'TWO_HOP': 0, 'NONE': 0}
@@ -848,6 +849,11 @@ class AerisProtocol:
             if payload_count <= 0 or sender is None or sender.current_energy <= 0:
                 return False
 
+            # Record hop latency per successfully delivered source packet.
+            def record_hops(hops: int):
+                if payload_count > 0:
+                    hop_counts_to_bs.extend([hops] * payload_count)
+
             # ---- 重写 uplink：CTP/ORW 风格：多父集合 + 双副本 + Hop-ARQ + 功率阶梯 + 并行补链 ----
             tx_power_base = tx_power_override if tx_power_override is not None else sender.transmission_power
             distance = self._distance_to_nearest_bs(sender.x, sender.y) if target_bs is None else math.hypot(sender.x - target_bs[0], sender.y - target_bs[1])
@@ -945,7 +951,7 @@ class AerisProtocol:
                         continue
                     ok2 = hop_with_arq(lambda pw: one_try_bs(target_bs, pw, parent), tx_power_base + p_boost + 1.5)
                     if ok2:
-                        hop_counts_to_bs.append(2)
+                        record_hops(2)
                         return True
                 return False
 
@@ -979,7 +985,7 @@ class AerisProtocol:
                 # "求援"双副本：sender->cand（2 副本），cand->BS（2 副本），高功率 + ARQ
                 if hop_with_arq(lambda pw: one_try_link(sender, cand, tx_power_base + parent_boost + 1.5 + pw), 0.0):
                     if hop_with_arq(lambda pw: one_try_bs(target_bs, tx_power_base + parent_boost + 3.0 + pw, cand), 0.0):
-                        hop_counts_to_bs.append(2)
+                        record_hops(2)
                         return True
 
             # 直达 BS 阶梯兜底
@@ -987,12 +993,12 @@ class AerisProtocol:
             for j in range(direct_tries):
                 pw = tx_power_base + j * 1.5
                 if hop_with_arq(lambda step: one_try_bs(target_bs, pw, sender), 0.0):
-                    hop_counts_to_bs.append(1)
+                    record_hops(1)
                     return True
             for bs_pos in self.base_stations:
                 for j in range(10):
                     if hop_with_arq(lambda step: one_try_bs(bs_pos, tx_power_base + 3.0 + j * 1.2, sender), 0.0):
-                        hop_counts_to_bs.append(1)
+                        record_hops(1)
                         return True
 
             # 广播级兜底（近似 flood）：选取前 12 个离 BS 最近的活跃节点并行尝试
@@ -1005,13 +1011,13 @@ class AerisProtocol:
                 if relay.id == sender.id:
                     continue
                 if hop_with_arq(lambda pw: one_try_bs(target_bs, tx_power_base + 6.0 + pw, relay), 0.0):
-                    hop_counts_to_bs.append(2)
+                    record_hops(2)
                     return True
 
             # 极限兜底
             for _ in range(12):
                 if one_try_bs(target_bs, tx_power_base + 13.5, sender):
-                    hop_counts_to_bs.append(1)
+                    record_hops(1)
                     return True
 
             # 终极“可靠模式”兜底：近似 CTP/ORW flood，强行计为成功但扣除能量
@@ -1030,7 +1036,7 @@ class AerisProtocol:
                 self._last_bs_delivered_round += payload_count
                 self._round_uplink_success += 1
                 self.uplink_success_total += 1
-                hop_counts_to_bs.append(3)  # flood approximation
+                record_hops(3)  # flood approximation
                 return True
             return False
 

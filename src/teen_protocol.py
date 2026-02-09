@@ -140,6 +140,7 @@ class TEENProtocol:
         self.source_packets_total = 0  # 实际尝试发送的包数 (attempted)
         self.source_packets_expected = 0  # 期望包数 = 每轮存活节点数累计
         self.bs_delivered_total = 0
+        self._all_hop_counts = []
 
         # Packet size in bits
         self.bits_per_packet = self.config.packet_size * 8
