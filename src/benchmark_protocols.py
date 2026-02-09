@@ -86,6 +86,7 @@ class Node:
     is_alive: bool = True
     is_cluster_head: bool = False
     cluster_id: int = -1
+    chain_position: int = -1
     
     def __post_init__(self):
         if self.current_energy is None:
@@ -664,6 +665,8 @@ class PEGASISProtocol:
             remaining_nodes.remove(nearest_node)
 
         # 鍒濆鍖栭瀵艰€呬负閾句腑闂寸殑鑺傜偣
+        for idx, node in enumerate(self.chain):
+            node.chain_position = idx
         self.leader_index = len(self.chain) // 2
 
     def _update_chain(self):
@@ -681,6 +684,8 @@ class PEGASISProtocol:
             self._construct_chain()
         else:
             self.chain = alive_chain
+            for idx, node in enumerate(self.chain):
+                node.chain_position = idx
             # 璋冩暣棰嗗鑰呯储寮?
             if self.leader_index >= len(self.chain):
                 self.leader_index = len(self.chain) // 2
@@ -817,7 +822,8 @@ class PEGASISProtocol:
         self.bs_delivered_total += delivered
         if delivered > 0:
             chain_len = len(self.chain)
-            leader_pos = min(max(self.leader_index, 0), max(0, chain_len - 1))
+            leader = self.chain[self.leader_index]
+            leader_pos = min(max(getattr(leader, "chain_position", self.leader_index), 0), max(0, chain_len - 1))
             left_sum = leader_pos * (leader_pos + 1) / 2.0
             right_count = chain_len - leader_pos - 1
             right_sum = right_count * (right_count + 1) / 2.0

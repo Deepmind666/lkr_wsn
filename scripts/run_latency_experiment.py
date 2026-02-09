@@ -13,10 +13,12 @@ Key points:
 import argparse
 import hashlib
 import json
+import math
 import os
 import random
 import subprocess
 import sys
+import time
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from typing import Dict, List, Tuple
@@ -24,6 +26,11 @@ from typing import Dict, List, Tuple
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
+
+try:
+    import psutil
+except ImportError:
+    psutil = None
 
 
 DEFAULT_PROTOCOLS = ("AERIS", "LEACH", "PEGASIS", "HEED", "TEEN")
@@ -35,7 +42,10 @@ DEFAULT_PACKET_SIZE = 1024
 DEFAULT_ROUNDS = 300
 DEFAULT_TX_POWER = 10.0
 DEFAULT_ENV = "indoor_office"
-OUTPUT_VERSION = "v2_2"
+OUTPUT_VERSION = "v2_3"
+DEFAULT_MAX_CPU_PERCENT = 70.0
+DEFAULT_MAX_MEM_PERCENT = 70.0
+DEFAULT_RESOURCE_CHECK_SEC = 2.0
 
 
 def get_git_commit() -> str:
@@ -80,6 +90,34 @@ def get_git_diff_stat() -> Dict[str, str]:
 def get_script_sha256() -> str:
     with open(__file__, "rb") as f:
         return hashlib.sha256(f.read()).hexdigest()
+
+
+def get_safe_worker_limit(requested_workers: int, max_cpu_percent: float) -> int:
+    """Cap workers by CPU budget to avoid oversubscription spikes."""
+    cpu_total = max(1, os.cpu_count() or 1)
+    cpu_budget_workers = max(1, math.floor(cpu_total * (max_cpu_percent / 100.0)) - 1)
+    return max(1, min(requested_workers, cpu_budget_workers))
+
+
+def wait_for_resource_headroom(max_cpu_percent: float, max_mem_percent: float, check_sec: float) -> None:
+    """Block until machine load is under configured CPU/MEM limits."""
+    if psutil is None:
+        raise RuntimeError("psutil is required for resource guard but is not installed.")
+    attempts = 0
+    while True:
+        cpu_now = psutil.cpu_percent(interval=0.25)
+        mem_now = psutil.virtual_memory().percent
+        if cpu_now <= max_cpu_percent and mem_now <= max_mem_percent:
+            if attempts > 0:
+                print(f"[ResourceGuard] Recovered: cpu={cpu_now:.1f}% mem={mem_now:.1f}%")
+            return
+        attempts += 1
+        if attempts == 1 or attempts % 10 == 0:
+            print(
+                "[ResourceGuard] Waiting: "
+                f"cpu={cpu_now:.1f}%>{max_cpu_percent:.1f}% or mem={mem_now:.1f}%>{max_mem_percent:.1f}%"
+            )
+        time.sleep(max(check_sec, 0.5))
 
 
 def stable_hash(s: str) -> int:
@@ -398,13 +436,19 @@ def parse_args():
     ap.add_argument("--rounds", type=int, default=DEFAULT_ROUNDS)
     ap.add_argument("--tx-power", type=float, default=DEFAULT_TX_POWER)
     ap.add_argument("--run-tier", type=str, default="publication")
+    ap.add_argument("--max-cpu-percent", type=float, default=DEFAULT_MAX_CPU_PERCENT)
+    ap.add_argument("--max-mem-percent", type=float, default=DEFAULT_MAX_MEM_PERCENT)
+    ap.add_argument("--resource-check-sec", type=float, default=DEFAULT_RESOURCE_CHECK_SEC)
     ap.add_argument("--output", type=str, default="")
     return ap.parse_args()
 
 
 def main():
     args = parse_args()
+    if psutil is None:
+        raise RuntimeError("psutil is required for resource guard but is not installed.")
     protocols = DEFAULT_PROTOCOLS
+    workers_effective = get_safe_worker_limit(args.workers, args.max_cpu_percent)
 
     seed_list = [args.seed + i for i in range(args.replicates)]
     all_positions = {s: generate_positions(s, args.nodes, DEFAULT_AREA_SIZE) for s in seed_list}
@@ -419,13 +463,22 @@ def main():
 
     raw_results: List[Dict] = []
     started = datetime.now()
+    print(
+        f"[{datetime.now():%H:%M:%S}] resource limits: "
+        f"cpu<={args.max_cpu_percent:.1f}% mem<={args.max_mem_percent:.1f}% "
+        f"workers={workers_effective}/{args.workers}"
+    )
     for proto in protocols:
+        wait_for_resource_headroom(args.max_cpu_percent, args.max_mem_percent, args.resource_check_sec)
         tasks = [
             (s, all_positions[s], args.rounds, DEFAULT_AREA_SIZE, args.tx_power, args.env)
             for s in seed_list
         ]
-        print(f"[{datetime.now():%H:%M:%S}] running {proto} ({len(tasks)} runs)")
-        raw_results.extend(execute_protocol_batch(proto, protocol_runners[proto], tasks, args.workers))
+        print(
+            f"[{datetime.now():%H:%M:%S}] running {proto} ({len(tasks)} runs, "
+            f"workers={workers_effective})"
+        )
+        raw_results.extend(execute_protocol_batch(proto, protocol_runners[proto], tasks, workers_effective))
 
     summary = aggregate(raw_results, protocols)
     failed_runs = sum(1 for r in raw_results if r.get("error"))
@@ -454,6 +507,10 @@ def main():
             "base_station": list(DEFAULT_BASE_STATION),
             "packet_size": DEFAULT_PACKET_SIZE,
             "initial_energy": DEFAULT_INITIAL_ENERGY,
+            "workers_requested": args.workers,
+            "workers_effective": workers_effective,
+            "max_cpu_percent": args.max_cpu_percent,
+            "max_mem_percent": args.max_mem_percent,
             "output_version": OUTPUT_VERSION,
         },
         "raw_results": raw_results,
