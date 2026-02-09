@@ -8,18 +8,26 @@ Outputs results with full metadata for reproducibility.
 """
 
 import argparse
+import contextlib
 import hashlib
 import json
+import math
 import os
 import random
 import subprocess
 import sys
+import time
 from datetime import datetime
 from copy import deepcopy
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from typing import Dict, List, Tuple
 
 import numpy as np
+
+try:
+    import psutil
+except ImportError:
+    psutil = None
 
 
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
@@ -46,6 +54,9 @@ DEFAULT_PACKET_SIZE = 1024
 DEFAULT_TX_POWER = 10.0
 DEFAULT_ROUNDS = 300
 DEFAULT_ENV = "indoor_office"
+DEFAULT_MAX_CPU_PERCENT = 70.0
+DEFAULT_MAX_MEM_PERCENT = 70.0
+DEFAULT_RESOURCE_CHECK_SEC = 2.0
 
 
 def stable_hash(s: str) -> int:
@@ -66,6 +77,45 @@ def get_git_commit() -> str:
         return result.stdout.strip() if result.returncode == 0 else "unknown"
     except Exception:
         return "unknown"
+
+
+def get_safe_worker_limit(requested_workers: int, max_cpu_percent: float) -> int:
+    """Cap workers so this process does not request > configured CPU share."""
+    cpu_total = max(1, os.cpu_count() or 1)
+    # Keep one-core buffer below the hard threshold to avoid burst overshoot.
+    cpu_budget_workers = max(1, math.floor(cpu_total * (max_cpu_percent / 100.0)) - 1)
+    return max(1, min(requested_workers, cpu_budget_workers))
+
+
+def has_resource_headroom(max_cpu_percent: float, max_mem_percent: float) -> bool:
+    """Check if system usage is within configured thresholds."""
+    if psutil is None:
+        return True
+    cpu_now = psutil.cpu_percent(interval=0.25)
+    mem_now = psutil.virtual_memory().percent
+    return cpu_now <= max_cpu_percent and mem_now <= max_mem_percent
+
+
+def wait_for_resource_headroom(max_cpu_percent: float, max_mem_percent: float, check_sec: float) -> None:
+    """Block until CPU and memory are under thresholds."""
+    if psutil is None:
+        print("[WARN] psutil not installed; resource headroom checks disabled.")
+        return
+    attempts = 0
+    while True:
+        cpu_now = psutil.cpu_percent(interval=0.25)
+        mem_now = psutil.virtual_memory().percent
+        if cpu_now <= max_cpu_percent and mem_now <= max_mem_percent:
+            if attempts > 0:
+                print(f"[ResourceGuard] Recovered: cpu={cpu_now:.1f}% mem={mem_now:.1f}%")
+            return
+        attempts += 1
+        if attempts == 1 or attempts % 10 == 0:
+            print(
+                "[ResourceGuard] Waiting: "
+                f"cpu={cpu_now:.1f}%>{max_cpu_percent:.1f}% or mem={mem_now:.1f}%>{max_mem_percent:.1f}%"
+            )
+        time.sleep(max(check_sec, 0.5))
 
 
 def generate_positions(seed: int, num_nodes: int, width: float, height: float) -> List[Tuple[float, float]]:
@@ -141,33 +191,46 @@ def compute_pdr_expected(res: Dict) -> float:
     return -1.0
 
 
-def run_protocol(protocol: str, cfg: NetworkConfig, seed: int, rounds: int) -> Dict:
+def run_protocol(
+    protocol: str,
+    cfg: NetworkConfig,
+    seed: int,
+    rounds: int,
+    verbose_protocol_logs: bool = False,
+) -> Dict:
     random.seed(seed)
     np.random.seed(seed)
     cfg_local = deepcopy(cfg)
     em = ImprovedEnergyModel(HardwarePlatform.CC2420_TELOSB)
 
-    if protocol == "LEACH":
-        res = LEACHProtocol(cfg_local, em).run_simulation(rounds)
-    elif protocol == "PEGASIS":
-        res = PEGASISProtocol(cfg_local, em).run_simulation(rounds)
-    elif protocol == "HEED":
-        res = HEEDProtocolWrapper(cfg_local, em).run_simulation(rounds)
-    elif protocol == "TEEN":
-        res = TEENProtocolWrapper(cfg_local, em).run_simulation(rounds)
-    elif protocol == "AERIS":
-        res = AerisProtocol(
-            cfg_local,
-            enable_cas=True,
-            enable_fairness=True,
-            enable_gateway=True,
-            enable_skeleton=True,
-            profile="energy",
-            verbose=False,
-            seed=seed,
-        ).run_simulation(rounds)
-    else:
+    def _run_once() -> Dict:
+        if protocol == "LEACH":
+            return LEACHProtocol(cfg_local, em).run_simulation(rounds)
+        if protocol == "PEGASIS":
+            return PEGASISProtocol(cfg_local, em).run_simulation(rounds)
+        if protocol == "HEED":
+            return HEEDProtocolWrapper(cfg_local, em).run_simulation(rounds)
+        if protocol == "TEEN":
+            return TEENProtocolWrapper(cfg_local, em).run_simulation(rounds)
+        if protocol == "AERIS":
+            return AerisProtocol(
+                cfg_local,
+                enable_cas=True,
+                enable_fairness=True,
+                enable_gateway=True,
+                enable_skeleton=True,
+                profile="energy",
+                verbose=False,
+                seed=seed,
+            ).run_simulation(rounds)
         raise ValueError(f"Unknown protocol: {protocol}")
+
+    if verbose_protocol_logs:
+        res = _run_once()
+    else:
+        with open(os.devnull, "w", encoding="utf-8", errors="ignore") as devnull:
+            with contextlib.redirect_stdout(devnull), contextlib.redirect_stderr(devnull):
+                res = _run_once()
 
     pdr_expected = compute_pdr_expected(res)
     return {
@@ -181,12 +244,23 @@ def run_protocol(protocol: str, cfg: NetworkConfig, seed: int, rounds: int) -> D
 
 def run_task(args: Tuple) -> Dict:
     """Execute a single experiment task and never raise to parent."""
-    num_nodes, replicate, protocol, base_seed, area_size, base_station, env, tx_power, rounds = args
+    (
+        num_nodes,
+        replicate,
+        protocol,
+        base_seed,
+        area_size,
+        base_station,
+        env,
+        tx_power,
+        rounds,
+        verbose_protocol_logs,
+    ) = args
     seed = base_seed + replicate * 997 + stable_hash(protocol) % 997
 
     try:
         cfg = build_config(num_nodes, seed, area_size, base_station, env, tx_power)
-        metrics = run_protocol(protocol, cfg, seed + 17, rounds)
+        metrics = run_protocol(protocol, cfg, seed + 17, rounds, verbose_protocol_logs=verbose_protocol_logs)
         return {
             "num_nodes": num_nodes,
             "replicate": replicate,
@@ -216,7 +290,14 @@ def run_task(args: Tuple) -> Dict:
         }
 
 
-def execute_tasks(tasks: List[Tuple], workers: int, progress_step: int = 10) -> List[Dict]:
+def execute_tasks(
+    tasks: List[Tuple],
+    workers: int,
+    max_cpu_percent: float,
+    max_mem_percent: float,
+    resource_check_sec: float,
+    progress_step: int = 10,
+) -> List[Dict]:
     """Run with bounded in-flight futures to reduce memory pressure."""
     runs: List[Dict] = []
     total = len(tasks)
@@ -225,10 +306,15 @@ def execute_tasks(tasks: List[Tuple], workers: int, progress_step: int = 10) -> 
     next_idx = 0
     max_inflight = max(workers * 4, workers)
 
+    wait_for_resource_headroom(max_cpu_percent, max_mem_percent, resource_check_sec)
+
     with ProcessPoolExecutor(max_workers=workers) as executor:
         inflight = {}
 
         while next_idx < total and len(inflight) < max_inflight:
+            if not has_resource_headroom(max_cpu_percent, max_mem_percent):
+                time.sleep(max(resource_check_sec, 0.5))
+                continue
             fut = executor.submit(run_task, tasks[next_idx])
             inflight[fut] = tasks[next_idx]
             next_idx += 1
@@ -246,6 +332,9 @@ def execute_tasks(tasks: List[Tuple], workers: int, progress_step: int = 10) -> 
                     print(f"[Scalability] {completed}/{total} completed, failed={failed}")
 
                 while next_idx < total and len(inflight) < max_inflight:
+                    if not has_resource_headroom(max_cpu_percent, max_mem_percent):
+                        time.sleep(max(resource_check_sec, 0.5))
+                        break
                     nf = executor.submit(run_task, tasks[next_idx])
                     inflight[nf] = tasks[next_idx]
                     next_idx += 1
@@ -288,12 +377,41 @@ def parse_args():
     parser.add_argument("--run-tier", type=str, default="publication", help="Run tier")
     parser.add_argument("--output", default=None, help="Output JSON path")
     parser.add_argument("--allow-partial", action="store_true", help="Exit 0 even if some tasks fail")
+    parser.add_argument(
+        "--verbose-protocol-logs",
+        action="store_true",
+        help="Keep protocol internal debug logs (default is silent for stability)",
+    )
+    parser.add_argument(
+        "--max-cpu-percent",
+        type=float,
+        default=DEFAULT_MAX_CPU_PERCENT,
+        help="Maximum allowed system CPU percentage before queueing new tasks",
+    )
+    parser.add_argument(
+        "--max-mem-percent",
+        type=float,
+        default=DEFAULT_MAX_MEM_PERCENT,
+        help="Maximum allowed system memory percentage before queueing new tasks",
+    )
+    parser.add_argument(
+        "--resource-check-sec",
+        type=float,
+        default=DEFAULT_RESOURCE_CHECK_SEC,
+        help="Seconds between resource guard checks",
+    )
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
     protocols = DEFAULT_PROTOCOLS
+    workers = get_safe_worker_limit(args.workers, args.max_cpu_percent)
+    if workers < args.workers:
+        print(
+            "[ResourceGuard] Worker cap applied: "
+            f"requested={args.workers}, capped={workers}, max_cpu_percent={args.max_cpu_percent:.1f}"
+        )
 
     if args.nodes:
         node_counts = tuple(int(x.strip()) for x in args.nodes.split(",") if x.strip())
@@ -317,9 +435,17 @@ def main():
                     args.env,
                     args.tx_power,
                     args.rounds,
+                    args.verbose_protocol_logs,
                 ))
 
-    runs = execute_tasks(tasks, args.workers, progress_step=10)
+    runs = execute_tasks(
+        tasks,
+        workers,
+        args.max_cpu_percent,
+        args.max_mem_percent,
+        args.resource_check_sec,
+        progress_step=10,
+    )
     seeds_used = sorted(set(r["seed"] for r in runs))
     failed_runs = sum(1 for r in runs if not r.get("success", True))
 
@@ -332,6 +458,10 @@ def main():
         "primary_metric": "pdr_expected",
         "environment": args.env,
         "tx_power_dbm": args.tx_power,
+        "max_cpu_percent": args.max_cpu_percent,
+        "max_mem_percent": args.max_mem_percent,
+        "workers_requested": args.workers,
+        "workers_effective": workers,
         "error_runs": failed_runs,
         "config": {
             "seeds": seeds_used,

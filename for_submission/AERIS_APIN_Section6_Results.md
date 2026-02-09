@@ -82,7 +82,7 @@ C:\AERIS-WSN-Protocol\for_submission\figures\fig2_ablation_heatmap_20260206_0255
 **Figure 6.3**
 C:\AERIS-WSN-Protocol\for_submission\figures\fig3_gateway_effect_20260206_025510.pdf
 
-### 6.4 Scalability Analysis (100鈥?000 nodes, n=60)
+### 6.4 Scalability Analysis (100-1000 nodes, n=60)
 
 Data source:
 C:\AERIS-WSN-Protocol\results\mega_experiments\overnight_scalability_20260208_005918\
@@ -98,19 +98,19 @@ Scalability experiments use 60 independent seeds per configuration across six no
 | outdoor_urban | **0.990** | 0.155 | 0.272 | 0.130 | 0.203 | 1st |
 | outdoor_suburban | **0.990** | 0.593 | 0.791 | 0.547 | 0.695 | 1st |
 
-**Key finding**: AERIS ranks first in 3/4 environments across all tested scales (100鈥?000 nodes). In indoor_office, PEGASIS achieves significantly higher PDR than AERIS at all node counts 鈮?00 (Hedges' g = 鈭?.88 to 鈭?.36, Holm-corrected p < 0.001). This is consistent with PEGASIS's chain-based design being well-suited to low-loss indoor channels.
+**Key finding**: AERIS ranks first in 3/4 environments across all tested scales (100-1000 nodes). In indoor_office, PEGASIS achieves significantly higher PDR than AERIS at all node counts >=500 (Hedges' g = -8.88 to -5.36, Holm-corrected p < 0.001). This is consistent with PEGASIS's chain-based design being well-suited to low-loss indoor channels.
 
 Full statistical details: `scalability_significance_table.csv` and `scalability_significance_summary.md`.
 
 ### 6.5 Latency Analysis: Hop Count to Base Station (n=30)
 
 Data source:
-- latency_indoor_office_fix_20260209_074608.json
-- latency_indoor_factory_fix_20260209_074608.json
-- latency_outdoor_urban_fix_20260209_074608.json
-- latency_outdoor_suburban_fix_20260209_074608.json
-- latency_hop_fix_20260209_074608_stats.csv
-- latency_hop_fix_20260209_074608_significance.csv
+- latency_indoor_office_20260209_132945.json
+- latency_indoor_factory_20260209_133051.json
+- latency_outdoor_urban_20260209_133155.json
+- latency_outdoor_suburban_20260209_133257.json
+- latency_hop_v2_stats.csv
+- latency_hop_v2_significance.csv
 
 Setup: 100 nodes, 200x200m, 300 rounds, 30 independent seeds per environment.
 Metric: avg_hops_to_bs (average transmission hops per successfully delivered source packet).
@@ -119,10 +119,10 @@ Metric: avg_hops_to_bs (average transmission hops per successfully delivered sou
 
 | Environment | AERIS | LEACH | PEGASIS | HEED | TEEN |
 |---|---|---|---|---|---|
-| indoor_office | 1.99+/-0.01 | 1.82+/-0.03 | 33.61+/-0.63 | 2.00+/-0.00 | 1.28+/-0.04 |
-| indoor_factory | 1.97+/-0.02 | 1.71+/-0.05 | 32.15+/-1.94 | 2.00+/-0.00 | 1.29+/-0.05 |
-| outdoor_urban | 1.97+/-0.02 | 1.55+/-0.08 | 31.35+/-2.65 | 2.00+/-0.00 | 1.23+/-0.05 |
-| outdoor_suburban | 1.98+/-0.02 | 1.77+/-0.04 | 32.40+/-1.55 | 2.00+/-0.00 | 1.30+/-0.05 |
+| indoor_office | 1.99+/-0.01 | 1.82+/-0.03 | 33.67+/-0.62 | 2.00+/-0.00 | 1.28+/-0.04 |
+| indoor_factory | 1.97+/-0.02 | 1.71+/-0.05 | 32.22+/-1.93 | 2.00+/-0.00 | 1.29+/-0.05 |
+| outdoor_urban | 1.97+/-0.02 | 1.55+/-0.08 | 31.47+/-2.66 | 2.00+/-0.00 | 1.23+/-0.05 |
+| outdoor_suburban | 1.98+/-0.02 | 1.77+/-0.04 | 32.46+/-1.55 | 2.00+/-0.00 | 1.30+/-0.05 |
 
 **Interpretation**:
 
@@ -131,7 +131,7 @@ Metric: avg_hops_to_bs (average transmission hops per successfully delivered sou
 - LEACH averages ~1.55-1.82 hops because non-CH nodes that fail to join a cluster transmit directly to BS (1-hop), mixing with the 2-hop CH-aggregated path.
 - PEGASIS shows the highest latency (~31-34 hops) due to chain-relay aggregation: each source packet traverses on average N/4 chain links (for a chain of length N with a centrally positioned leader) plus one leader->BS hop. This is a known chain-routing trade-off.
 - TEEN reports the lowest hop count (~1.23-1.30) because its threshold-triggered reporting means many nodes transmit directly to BS (1-hop) when they exceed the hard threshold, while only a fraction of packets are aggregated through CHs (2-hop).
-- All AERIS-vs-baseline differences are statistically significant (Welch's t-test with Holm correction, all p_holm < 0.001). See latency_hop_fix_20260209_074608_significance.csv.
+- All AERIS-vs-baseline differences are statistically significant (Welch's t-test with Holm correction, all p_holm < 0.001). See latency_hop_v2_significance.csv.
 - Scope note: this latency metric is hop-based and does not claim wall-clock milliseconds.
 
 ### 6.6 Summary of Evidence
@@ -140,6 +140,5 @@ Metric: avg_hops_to_bs (average transmission hops per successfully delivered sou
 2) CAS multi-mode is triggerable, but higher CHAIN use trades off PDR in sparse
    conditions (Table 6.2).
 3) Gateway effect is environment-dependent: positive in 3/4 environments and near-neutral in indoor_office (Table 6.3).
-4) At scale (100鈥?000 nodes, n=60), AERIS maintains first rank in 3/4 environments
+4) At scale (100-1000 nodes, n=60), AERIS maintains first rank in 3/4 environments
    but PEGASIS surpasses AERIS in indoor_office (Table 6.4).
-
