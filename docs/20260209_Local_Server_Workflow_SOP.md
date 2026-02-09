@@ -133,3 +133,14 @@ Still to verify:
 1) ...
 2) ...
 ```
+
+## 9. Mandatory ETA in Every Experiment Update
+
+Each progress update must include all six items below:
+
+1. Current stage
+2. Elapsed time
+3. Reference runtime basis (which prior logs/stages)
+4. Remaining stages
+5. Estimated remaining time window
+6. Current resource snapshot (`CPU%`, `MEM%`)

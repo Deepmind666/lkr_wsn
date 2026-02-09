@@ -59,6 +59,13 @@ Completed:
 2) exit_code per environment
 3) raw_results count per environment
 4) metadata snapshot (git_commit, git_dirty, run_tier, primary_metric)
+5) ETA block:
+   - current stage
+   - elapsed
+   - runtime basis
+   - remaining stages
+   - estimated remaining
+   - CPU% and MEM%
 
 Still to verify:
 1) any failed environment rerun required?
